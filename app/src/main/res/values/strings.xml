@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">IM</string>
+
+    <!-- login -->
+    <string name="hint_account">Account</string>
+    <string name="hint_password">Password</string>
+    <string name="action_login_button">Login</string>
+    <string name="action_register_button">Register</string>
+
+    <!-- Main -->
+    <string name="title_chat">Chat</string>
+    <string name="title_contact">Contact</string>
+    <string name="title_discovery">Discovery</string>
+    <string name="title_me">Me</string>
+</resources>
