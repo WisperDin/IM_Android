@@ -7,4 +7,10 @@
     <!-- login -->
     <color name="devide_line">#CBCED2</color>
     <color name="blue">#499BF7</color>
+    <color name="colorBackground">#BC9F77</color>
+    <color name="colorLoginButton">#70F6C555</color>
+    <color name="colorLoginButtonPress">#c0F6C555</color>
+    <color name="colorLoginByMessage">#703F51B5</color>
+    <color name="colorLoginByMessagePress">#c03F51B5</color>
+
 </resources>
