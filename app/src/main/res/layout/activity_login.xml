@@ -236,7 +236,7 @@
             android:textColor="#ffffff"
             android:text="@string/prompt_forget_password"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
+
             android:layout_marginBottom="5dp"/>
 
     </LinearLayout>
