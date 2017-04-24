@@ -73,6 +73,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             //页面跳转
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
+            LoginActivity.this.finish();
             Toast.makeText(this,"Login Success", Toast.LENGTH_SHORT).show();
         }
         else
