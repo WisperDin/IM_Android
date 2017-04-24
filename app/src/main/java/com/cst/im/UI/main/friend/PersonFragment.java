@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cst.im.R;
 
@@ -25,6 +26,8 @@ public class PersonFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sub_content, container, false);
+        TextView textView = (TextView) view.findViewById(R.id.fragment_text_view);
+        textView.setText("ok");
         return view;
     }
 }

@@ -9,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-
-        android:textColor="@color/colorAccent"
+        android:text="fffffff"
+        android:textColor="@color/blue"
         android:textSize="24sp"
         android:textStyle="bold"/>
 </RelativeLayout>
