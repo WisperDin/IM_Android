@@ -81,9 +81,11 @@
                     android:background="@drawable/login_username"/>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/usernameWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="10dp"
+                    >
 
                     <EditText
                         android:id="@+id/username"
@@ -118,6 +120,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/login_password"/>
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/passwordWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -236,7 +239,7 @@
             android:textColor="#ffffff"
             android:text="@string/prompt_forget_password"
             android:layout_gravity="center_horizontal"
-
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"/>
 
     </LinearLayout>

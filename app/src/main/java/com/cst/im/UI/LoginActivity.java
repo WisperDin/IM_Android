@@ -2,7 +2,9 @@ package com.cst.im.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -19,52 +21,53 @@ import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;
 
-public class LoginActivity extends AppCompatActivity implements ILoginView {
+public class LoginActivity extends AppCompatActivity implements ILoginView,View.OnClickListener,View.OnFocusChangeListener{
+    //显示动画
+    final TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+            Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+            -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+
     private EditText editUser;
     private EditText editPwd;
     private Button btnLogin;
-
-
     private ImageView topPicture ;
-    private EditText userName;
-    private EditText passWord;
     private ImageView showPassword;
-    private Button loginButton;
-    private Button loginByMessage;
-    private ImageView loginByQQ;
-    private ImageView loginByWechat;
-    private ImageView loginByWeibo;
-    private TextView forgetPassword;
+
+    private Button btnLoginByMessage;
+    private ImageView ivLoginByQQ;
+    private ImageView ivLoginByWechat;
+    private ImageView ivLoginByWeibo;
+    private TextView tvForgetPassword;
     private LinearLayout activityMain ;
+    private TextInputLayout tilUsername;
+    private TextInputLayout tilPassword;
     //登录业务逻辑
     ILoginPresenter loginPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.cst.im.R.layout.activity_login);
-
         //init login presenter
         loginPresenter = new LoginPresenterCompl(this);
-
         //find Control
         topPicture = (ImageView) findViewById(R.id.top_picture);
-        userName = (EditText) findViewById(R.id.username);
-        passWord = (EditText) findViewById(R.id.password);
-        loginButton = (Button) findViewById(R.id.login_button);
-        loginByMessage = (Button) findViewById(R.id.login_message);
-        loginByQQ = (ImageView) findViewById(R.id.qq_login);
-        loginByWechat = (ImageView) findViewById(R.id.wechat_login);
-        loginByWeibo = (ImageView) findViewById(R.id.weibo_login);
+        editUser = (EditText) findViewById(R.id.username);
+        editPwd = (EditText) findViewById(R.id.password);
+        btnLogin = (Button) findViewById(R.id.login_button);
+        btnLoginByMessage = (Button) findViewById(R.id.login_message);
+        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
+        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
+        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
         activityMain = (LinearLayout) findViewById(R.id.activity_main);
-        //set btn listener
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginPresenter.doLogin(userName.getText().toString(),passWord.getText().toString());
-            }
-        });
+        tilUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
+        tilPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
 
-        HandleLoginAnimator();
+
+        mShowAction.setDuration(500);//动画运行时间
+
+        btnLogin.setOnClickListener(this); // 登录按钮
+        editPwd.setOnFocusChangeListener(this); // 输入密码时图标消失
+
     }
     //处理登录事件的UI提示
     @Override
@@ -79,33 +82,36 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
         else
             Toast.makeText(this,"Login Fail, code = " + code,Toast.LENGTH_SHORT).show();
     }
-    //处理登录动画
-    private void HandleLoginAnimator(){
-        //显示动画
-        final TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        mShowAction.setDuration(500);
 
-        //隐藏动画
-        final TranslateAnimation mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                -1.0f);
-        mHiddenAction.setDuration(1000);
-        passWord.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-//                    topPicture.startAnimation(mHiddenAction);
-                    topPicture.setVisibility(View.GONE);
-                }
-                else{
-                    topPicture.startAnimation(mShowAction);
-                    topPicture.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+    //网络错误提示
+    @Override
+    public void onNetworkError() {
 
     }
+    //输入时的提醒
+    @Override
+    public void onEditTip() {
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.login_button){
+            loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus){
+            topPicture.setVisibility(View.GONE);
+        }
+        else{
+            topPicture.startAnimation(mShowAction);
+            topPicture.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 }
