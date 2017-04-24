@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.cst.im.R;
+import com.cst.im.UI.main.friend.PersonFragment;
 
 /**
  * Created by ASUS on 2017/4/24.
@@ -38,8 +39,8 @@ public class NavigationFragment extends Fragment implements BottomNavigationBar.
      */
     private void setDefaultFragment() {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        //ChatFragment chatFragment = mChatFragment.newInstance(getString(R.string.item_chat));
-        //transaction.replace(R.id.sub_content, chatFragment).commit();
+        PersonFragment chatFragment = PersonFragment.newInstance();
+        transaction.replace(R.id.sub_content, chatFragment).commit();
     }
 
 
