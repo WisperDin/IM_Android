@@ -81,6 +81,7 @@
                     android:background="@drawable/login_username"/>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/usernameWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -119,6 +120,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/login_password"/>
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/passwordWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
