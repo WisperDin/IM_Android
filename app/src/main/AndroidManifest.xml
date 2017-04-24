@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
 
+
+
         <activity
             android:name=".UI.main.chat.ChatActivity"
             android:theme="@android:style/Theme.NoTitleBar"
