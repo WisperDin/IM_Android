@@ -64,7 +64,7 @@ public class ChatPresenter implements IChatPresenter{
     public void SendMsg(String contString){
         if (contString.length() > 0) {
             IMsg entity = new MsgModel();
-            entity.setName("必败");
+            entity.setName(localUser.getName());
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);

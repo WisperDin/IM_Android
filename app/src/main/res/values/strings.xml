@@ -5,6 +5,7 @@
     <string name="prompt_username">用户名/手机/邮箱</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in">登录</string>
+    <string name="success_login">登录成功</string>
     <string name="error_username_1">用户名不正确(不能全是数字)</string>
     <string name="error_username_2">用户名不正确(长度在4~30字符)</string>
     <string name="error_username_3">用户名已存在</string>

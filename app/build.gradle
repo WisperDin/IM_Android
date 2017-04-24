@@ -36,4 +36,5 @@ dependencies {
 
     // 如果要使用Mockito，你需要添加此条依赖库
     testCompile 'org.mockito:mockito-core:1.+'
+    androidTestCompile 'org.testng:testng:6.9.6'
 }
