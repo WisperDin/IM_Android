@@ -13,4 +13,8 @@
     <color name="colorLoginByMessage">#703F51B5</color>
     <color name="colorLoginByMessagePress">#c03F51B5</color>
 
+    <!--forMsgList-->
+    <color name="Black">#000000</color>
+    <color name="Gray">#999999</color>
+
 </resources>
