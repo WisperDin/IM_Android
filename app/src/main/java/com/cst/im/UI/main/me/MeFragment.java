@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.friend.PersonFragment;
 
 /**
  * Created by PolluxLee on 2017/4/25.

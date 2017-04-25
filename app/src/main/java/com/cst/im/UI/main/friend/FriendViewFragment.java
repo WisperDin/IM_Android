@@ -28,7 +28,7 @@ public class FriendViewFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_friend_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_friends, container, false);
         //TextView textView = (TextView) view.findViewById(R.id.fragment_text_view);
         //textView.setText("ok");
 
