@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cst.im.R;
+import com.cst.im.model.IMsg;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
@@ -23,6 +24,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
     private EditText mEditTextContent;//输入消息的栏
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
+    private TextView opposite_name;
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
 
@@ -76,6 +78,8 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mBtnBack.setOnClickListener(this);
         mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
+        opposite_name = (TextView)findViewById(R.id.opposite_name);
+        opposite_name.setText("聊天对象ID");
     }
 
 

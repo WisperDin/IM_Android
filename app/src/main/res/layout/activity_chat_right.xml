@@ -48,7 +48,7 @@
             android:lineSpacingExtra="2dp"
             android:minHeight="50dp"
             android:textColor="#ff000000"
-            android:textSize="15sp"
+            android:textSize="20dp"
             android:layout_alignParentBottom="true" />
 
         <!--<TextView
