@@ -1,5 +1,7 @@
 package com.cst.im.view;
 
+import android.widget.EditText;
+
 /**
  * Created by ASUS on 2017/4/23.
  */
