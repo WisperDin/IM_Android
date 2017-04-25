@@ -33,7 +33,7 @@ public class LoginUITest {
     public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
            LoginActivity.class);
 
-    //验证点击登录事件
+    //验证点击登录成功事件
     @Test
     public void loginWithCorrectPassword() {
 
@@ -41,9 +41,21 @@ public class LoginUITest {
         onView(withId(R.id.password)).perform(typeText("mvp"),closeSoftKeyboard());
         onView(withId(R.id.login_button)).perform(click());
 
-        onView(withText(R.string.success_login)).inRoot(new ToastMatcher())
+        onView(withText("Login Success")).inRoot(new ToastMatcher())
            .check(matches(isDisplayed()));
+    }
 
+
+    //验证点击登录失败事件
+    @Test
+    public void loginWithWrongPassword() {
+
+        onView(withId(R.id.username)).perform(typeText("mvp"),closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("abc"),closeSoftKeyboard());
+        onView(withId(R.id.login_button)).perform(click());
+
+        onView(withText("Login Fail, code = -1")).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
     }
     @Test
     public void useAppContext() throws Exception {

@@ -1,14 +1,12 @@
 package com.cst.im.UI;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
-import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;
@@ -81,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     public void onLoginResult(Boolean result, int code){
         if (result){
             //页面跳转
-            Intent it = new Intent(LoginActivity.this, ChatActivity.class);
+            Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
             Toast.makeText(this,"Login Success", Toast.LENGTH_SHORT).show();
