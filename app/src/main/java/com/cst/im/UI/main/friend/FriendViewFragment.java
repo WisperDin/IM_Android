@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import com.cst.im.R;
 
-public class FriendViewActivity extends Fragment implements
+public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
@@ -20,8 +20,8 @@ public class FriendViewActivity extends Fragment implements
             "W", "X", "Y", "Z" };
 
 
-    public static FriendViewActivity newInstance(){
-        FriendViewActivity homeFragment = new FriendViewActivity();
+    public static FriendViewFragment newInstance(){
+        FriendViewFragment homeFragment = new FriendViewFragment();
         return homeFragment;
     }
 
