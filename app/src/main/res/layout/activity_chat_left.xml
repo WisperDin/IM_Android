@@ -3,13 +3,16 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="6dp" >
+    android:padding="6dp"
+    android:weightSum="1"
+    >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_weight="1.18">
 
         <TextView
             android:id="@+id/tv_sendtime"
@@ -19,18 +22,18 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="5dp" >
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dp">
 
         <ImageView
             android:id="@+id/iv_userhead"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:background="@drawable/chat_avatar_shadow"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/tv_chatcontent"
@@ -38,10 +41,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="20dp"
-            android:layout_toRightOf="@id/iv_userhead"
             android:background="@drawable/chat_from_bg"
-            />
+            android:minHeight="50dp"
+            android:textSize="20dp"
+            android:layout_toEndOf="@+id/iv_userhead"
+            android:layout_marginStart="12dp"
+            android:layout_alignTop="@+id/iv_userhead" />
         <!--android:layout_above="@+id/tv_username"-->
 
         <!--<TextView
