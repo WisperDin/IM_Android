@@ -1,0 +1,27 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+    <!-- 要把下面的注释放回去，才会在点击header的时候进入到 $ 后面的函数  -->
+    <!--    android:fragment="com.huang.im.SettingsActivity$GeneralPreferenceFragment"-->
+    <header
+
+        android:icon="@drawable/setting_ic_info_black_24dp"
+        android:title="@string/pref_header_general" />
+
+    <!--android:fragment="com.huang.im.SettingsActivity$NotificationPreferenceFragment"-->
+    <header
+
+        android:icon="@drawable/setting_ic_notifications_black_24dp"
+        android:title="@string/pref_header_notifications" />
+
+    <!--android:fragment="com.huang.im.SettingsActivity$DataSyncPreferenceFragment"-->
+    <header
+
+        android:icon="@drawable/setting_ic_sync_black_24dp"
+        android:title="@string/pref_header_data_sync" />
+
+    <!-- android:fragment="com.huang.im.SettingsActivity$AboutPreferenceFragment"-->
+    <header
+
+        android:title="About"/>
+</preference-headers>

@@ -16,10 +16,6 @@ import com.cst.im.R;
 
 public class DiscoveryFragment extends Fragment{
 
-    public static DiscoveryFragment newInstance(){
-        DiscoveryFragment discoveryFragment = new DiscoveryFragment();
-        return discoveryFragment;
-    }
 
     @Nullable
     @Override
