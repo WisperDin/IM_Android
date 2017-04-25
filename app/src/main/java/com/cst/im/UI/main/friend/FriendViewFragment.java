@@ -20,11 +20,6 @@ public class FriendViewFragment extends Fragment implements
             "W", "X", "Y", "Z" };
 
 
-    public static FriendViewFragment newInstance(){
-        FriendViewFragment homeFragment = new FriendViewFragment();
-        return homeFragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

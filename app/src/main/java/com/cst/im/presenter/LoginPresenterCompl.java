@@ -35,6 +35,6 @@ public class LoginPresenterCompl implements ILoginPresenter {
         return code;
     }
     private void initUser(){
-        user = new UserModel("mvp","mvp");
+        user = new UserModel("","");
     }
 }

@@ -15,10 +15,6 @@ import com.cst.im.R;
 
 public class MsgFragment extends Fragment {
 
-    public static MsgFragment newInstance() {
-        MsgFragment msgFragment = new MsgFragment();
-        return msgFragment;
-    }
 
     @Nullable
     @Override

@@ -11,7 +11,7 @@ import com.cst.im.R;
 import com.cst.im.UI.main.chat.MsgFragment;
 import com.cst.im.UI.main.discovery.DiscoveryFragment;
 import com.cst.im.UI.main.friend.FriendViewFragment;
-import com.cst.im.UI.main.me.MeFragment;
+import com.cst.im.UI.main.me.SettingFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.replace(R.id.content, new DiscoveryFragment()).commit();
                     return true;
                 case R.id.navigation_me:
-                    transaction.replace(R.id.content, new MeFragment()).commit();
+                    transaction.replace(R.id.content, new SettingFragment()).commit();
                     return true;
             }
             return false;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCurrentFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        MsgFragment msgFragment = MsgFragment.newInstance();
+        MsgFragment msgFragment = new MsgFragment();
         transaction.replace(R.id.content, msgFragment).commit();
     }
 
