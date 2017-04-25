@@ -5,5 +5,12 @@ package com.cst.im.presenter;
  */
 
 public interface ILoginPresenter {
+    void saveLoginInf(); //保存用户信息，下次直接登录
+
     int doLogin(String name, String passwd);
+    boolean doOtherLogin();
+    boolean doRegister();
+    void doForgetPassword();
+    short judgeUsername(String username);
+    boolean judgePassword(String password);
 }

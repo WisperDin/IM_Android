@@ -1,9 +1,14 @@
 package com.cst.im.UI;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -67,6 +72,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
         btnLogin.setOnClickListener(this); // 登录按钮
         editPwd.setOnFocusChangeListener(this); // 输入密码时图标消失
+        onEditTip();
+
 
     }
     //处理登录事件的UI提示
@@ -77,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
             Intent it = new Intent(LoginActivity.this, ChatActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
-            Toast.makeText(this,R.string.success_login, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Login Success", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this,"Login Fail, code = " + code,Toast.LENGTH_SHORT).show();
@@ -91,7 +98,61 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     //输入时的提醒
     @Override
     public void onEditTip() {
+        editUser.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
+                drawable.setBounds(0,0,56,56);
+                switch (loginPresenter.judgeUsername(editUser.getText().toString())){
+                    case 0:
+                        editUser.setError("=.=",drawable);
+                        break;
+                    case 1:
+                        editUser.setError("手机号",drawable);
+                        break;
+                    case 2:
+                        editUser.setError("邮箱",drawable);
+                        break;
+                    default:
+                        editUser.setError("用户名",drawable);
+                        break;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        editPwd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
+                drawable.setBounds(0,0,56,56);
+                if(loginPresenter.judgePassword(editPwd.getText().toString())){
+                    editPwd.setError("√",drawable);
+                }
+                else {
+                    editPwd.setError("x",drawable);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
 
@@ -112,6 +173,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
             topPicture.setVisibility(View.VISIBLE);
         }
     }
+
 
 
 }
