@@ -4,10 +4,6 @@ import com.cst.im.model.IMsg;
 
 import java.util.List;
 
-/**
- * Created by ASUS on 2017/4/23.
- */
-
 public interface IChatPresenter {
     //加载历史消息
     List<IMsg>  LoadHisMsg();

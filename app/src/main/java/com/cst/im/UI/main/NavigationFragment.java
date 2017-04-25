@@ -18,6 +18,7 @@ import com.cst.im.UI.main.friend.PersonFragment;
  */
 
 public class NavigationFragment extends Fragment implements BottomNavigationBar.OnTabSelectedListener {
+
     public static NavigationFragment newInstance() {
         NavigationFragment navigationFragment = new NavigationFragment();
         return navigationFragment;
