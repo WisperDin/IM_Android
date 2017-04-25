@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
+import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     public void onLoginResult(Boolean result, int code){
         if (result){
             //页面跳转
-            Intent it = new Intent(LoginActivity.this, MainActivity.class);
+            Intent it = new Intent(LoginActivity.this, ChatActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
             Toast.makeText(this,R.string.success_login, Toast.LENGTH_SHORT).show();
