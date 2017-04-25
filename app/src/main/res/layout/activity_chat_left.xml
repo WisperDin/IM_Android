@@ -40,16 +40,17 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/iv_userhead"
             android:background="@drawable/chat_from_bg"
-            android:layout_above="@+id/tv_username" />
+            />
+        <!--android:layout_above="@+id/tv_username"-->
 
-        <TextView
+        <!--<TextView
             android:id="@+id/tv_username"
             style="@style/chat_text_name_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/iv_userhead"
-            android:layout_toLeftOf="@id/tv_chatcontent" />
+            android:layout_toLeftOf="@id/tv_chatcontent" />-->
     </RelativeLayout>
 
 </LinearLayout>
