@@ -1,8 +1,11 @@
 package com.cst.im.UI;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
+import com.cst.im.imConn.ComService;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;
@@ -45,6 +49,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private TextInputLayout tilPassword;
     //登录业务逻辑
     ILoginPresenter loginPresenter;
+
+    ComService comService;
+    ServiceConnection serviceConn;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +80,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
         editPwd.setOnFocusChangeListener(this); // 输入密码时图标消失
         onEditTip();
 
+//网络接口测试部分
+////////////////////////////////////////////////////////////////////
+        serviceConn =new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                comService = ((ComService.MyBind)service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        bindService(new Intent(this, ComService.class), serviceConn, BIND_AUTO_CREATE);
+//////////////////////////////////////////////////////////////////////////////
 
     }
     //处理登录事件的UI提示
