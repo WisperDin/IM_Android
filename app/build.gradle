@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.google.protobuf'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -22,6 +22,37 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            proto {
+                srcDir 'src/main/proto'
+            }
+        }
+    }
+}
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    //D:\protoc-3.2.0-win32\bin
+
+
+    generateProtoTasks {
+        all().each { task ->
+            //task.builtins {
+                //java { }
+                //remove java
+            //}
+            task.builtins {
+                java { }
+                //cpp { }
+            }
+        }
+    }
+
 }
 
 dependencies {
@@ -39,4 +70,7 @@ dependencies {
     androidTestCompile 'org.testng:testng:6.9.6'
 
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.3.1'
+
+    //protobuf的依赖
+    compile 'com.google.protobuf:protobuf-java:3.0.0'
 }

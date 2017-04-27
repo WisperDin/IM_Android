@@ -5,11 +5,17 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.cst.im.imConn.proto.DeEnCode;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by cjwddz on 2017/4/23.
@@ -21,7 +27,7 @@ public abstract class TcpService extends Service {
     public void onCreate() {
         super.onCreate();
         //这里是设置服务器的ip地址和端口
-        client = new TcpClient("192.168.1.116",6666);
+        client = new TcpClient("192.168.191.1",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -54,8 +60,14 @@ public abstract class TcpService extends Service {
             running=true;
             socket = new Socket(serverIp,port);
             lastSendTime= System.currentTimeMillis();
+
+            // 获取Socket的OutputStream对象用于发送数据。
+            OutputStream outputStream = socket.getOutputStream();
+            outputStream.write(DeEnCode.encodeTest());
+            // 发送读取的数据到服务端
+            outputStream.flush();
             //new Thread(new KeepHeartThread()).start();
-            //new Thread(new ReceiveThread()).start();
+            new Thread(new ReceiveThread()).start();
         }
         public void stop(){
             if(running){
@@ -107,7 +119,7 @@ public abstract class TcpService extends Service {
                 }
             }
         }*/
-       /* class ReceiveThread implements Runnable {
+       class ReceiveThread implements Runnable {
             private ExecutorService msgPool = Executors.newCachedThreadPool();
             byte[] buffer=new byte[1024];
             StringBuffer stringBuffer;
@@ -115,17 +127,24 @@ public abstract class TcpService extends Service {
             public void run() {
                 while(client.running){
                     try {
-                        if(sum==0 || stringBuffer==null)
-                            stringBuffer=new StringBuffer();
+                        //if(sum==0 || stringBuffer==null)
+                            //stringBuffer=new StringBuffer();
                         InputStream in = socket.getInputStream();
                         if(in.available()>0){
-                            int count= in.read(buffer,0,1024);
-                            stringBuffer.append(new String(buffer,0,count));
-                            sum+=count;
-                            if(count>=1024)
-                                continue;
-                            if(sum>0){
-                                String data=stringBuffer.toString();
+                            //读字节流
+                            //int count= in.read(buffer,0,1024);
+                            //解码
+                            tutorial.Example.Person person =  DeEnCode.decodeTest(in);
+
+                            //stringBuffer.append(new String(buffer,0,count));
+
+                            //sum+=count;
+                            //if(count>=1024)
+                            //    continue;
+                            //if(sum>0){
+                                //String data=stringBuffer.toString();
+                                String data=person.getName();
+
                                 final JSONObject msg=new JSONObject(data);
                                 stringBuffer=new StringBuffer();
                                 sum=0;
@@ -140,16 +159,17 @@ public abstract class TcpService extends Service {
                                     }
                                 });
                             }
-                        }else{
-                            Thread.sleep(10);
-                        }
+                       // }
+                       // else{
+                        //    Thread.sleep(10);
+                       // }
                     } catch (Exception e) {
                         e.printStackTrace();
                         TcpClient.this.stop();
                     }
                 }
             }
-        }*/
+        }
     }
     public abstract  void OnTcpStop();
     public abstract void OnMessageCome(JSONObject msg) throws JSONException;
