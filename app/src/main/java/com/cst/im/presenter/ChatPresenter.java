@@ -1,14 +1,20 @@
 package com.cst.im.presenter;
 
+import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.cst.im.dataBase.DBManager;
+import com.cst.im.dataBase.DatabaseHelper;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.view.IChatView;
 
+import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +26,18 @@ public class ChatPresenter implements IChatPresenter{
     private List<IMsg> mDataArrays = new ArrayList<IMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
+    private SQLiteOpenHelper helper;//从数据库获取历史消息
     private IUser localUser;//假设这个是登录这个客户端的用户
-    public ChatPresenter(IChatView iChatView) {
-        this.iChatView = iChatView;
+    public ChatPresenter(Activity activity) {
+        this.iChatView = (IChatView) activity;
         handler = new Handler(Looper.getMainLooper());
         localUser=new UserModel("lzy","123");
+        helper = DBManager.getIntance(activity);
+        //以下两个方法作用一致，都提供了打开可供读写的数据库，若数据库不存在，则新建
+        //helper.getReadableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
     }
+
 
 
     //历史记录

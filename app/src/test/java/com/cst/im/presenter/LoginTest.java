@@ -30,8 +30,6 @@ public class LoginTest {
     }
 
 
-
-
     @Test
     public void login_Success() throws Exception {
         int errCode = loginPresenter.doLogin("mvp","mvp");

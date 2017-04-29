@@ -1,6 +1,7 @@
 package com.cst.im.UI.main.chat;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cst.im.R;
+import com.cst.im.dataBase.DatabaseHelper;
 import com.cst.im.model.IMsg;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
@@ -20,17 +22,22 @@ import com.cst.im.view.IChatView;
  * @author way
  */
 public class ChatActivity extends Activity implements View.OnClickListener ,IChatView {
+    private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
     private EditText mEditTextContent;//输入消息的栏
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
-    private TextView opposite_name;
+    private TextView opposite_name;     //显示聊天对象名字
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        //数据库的创建及调用
+        helper = new DatabaseHelper(this, "LocalMessage.db", null, 1);
+        helper.getWritableDatabase();
 
         initView();// 初始化view
 
