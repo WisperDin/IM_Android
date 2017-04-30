@@ -8,15 +8,14 @@ import android.support.annotation.Nullable;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.model.UserModel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import protocol.Protocol.Frame;
 
 /**
  * Created by cjwddz on 2017/4/23.
@@ -124,8 +123,8 @@ public abstract class TcpService extends Service {
        class ReceiveThread implements Runnable {
             private ExecutorService msgPool = Executors.newCachedThreadPool();
             byte[] buffer=new byte[1024];
-            StringBuffer stringBuffer;
-            int sum=0;
+            //StringBuffer stringBuffer;
+            //int sum=0;
             public void run() {
                 while(client.running){
                     try {
@@ -134,37 +133,43 @@ public abstract class TcpService extends Service {
                         InputStream in = socket.getInputStream();
                         if(in.available()>0){
                             //读字节流
-                            //int count= in.read(buffer,0,1024);
+                            int count= in.read(buffer,0,1024);
+                            System.out.print("Rec:  ");
+                            for (int i= 0 ;i<count;i++){
+                                System.out.print(buffer[i]+" ");
+                            }
+                            //复制有效字节到新的字节数组中
+                            //以后要注意粘帧的情况
+                            byte[] frameData = new byte[count];
+                            System.arraycopy(buffer, 0, frameData, 0, count);
+
                             //解码
-                            protocol.Protocol.Frame frame =  DeEnCode.decodeFbFrame(in);
-
+                            final Frame frame =  DeEnCode.decodeFbFrame(frameData);
+                            //System.out.println(frame.getMsgType());
                             //stringBuffer.append(new String(buffer,0,count));
-
+                            //Frame frame = Frame.getDefaultInstance();
                             //sum+=count;
                             //if(count>=1024)
                             //    continue;
                             //if(sum>0){
                                 //String data=stringBuffer.toString();
-                                String data="";
+                                //String data="";
 
-                                final JSONObject msg=new JSONObject(data);
-                                stringBuffer=new StringBuffer();
-                                sum=0;
+                                //final JSONObject msg=new JSONObject(data);
+                                //stringBuffer=new StringBuffer();
+                                //sum=0;
                                 msgPool.execute(new Runnable() {
                                     @Override
-                                    public void run() {
-                                        try {
-                                            OnMessageCome(msg);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                                    public void run() {OnMessageCome(frame);
                                     }
                                 });
+
+
                             }
                        // }
-                       // else{
-                        //    Thread.sleep(10);
-                       // }
+                        else{
+                            Thread.sleep(10);
+                       }
                     } catch (Exception e) {
                         e.printStackTrace();
                         TcpClient.this.stop();
@@ -174,7 +179,7 @@ public abstract class TcpService extends Service {
         }
     }
     public abstract  void OnTcpStop();
-    public abstract void OnMessageCome(JSONObject msg) throws JSONException;
+    public abstract void OnMessageCome(Frame frame);
     @Override
     public void onDestroy() {
         super.onDestroy();

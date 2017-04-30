@@ -4,8 +4,8 @@ import com.cst.im.model.IUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import protocol.Protocol.*;
+
+import protocol.Protocol.Frame;
 /**
  * Created by ASUS on 2017/4/27.
  */
@@ -25,7 +25,7 @@ public class DeEnCode {
         return baos.toByteArray();
     }*/
 
-        //编码-登录帧
+    //编码-登录帧
    public static byte[] encodeLoginFrame(IUser userToLogin) {
        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -46,11 +46,11 @@ public class DeEnCode {
         return addressBook;
     }*/
     //解码-反馈帧
-    public static Frame decodeFbFrame(InputStream is) {
+    public static Frame decodeFbFrame(byte[] buffer) {
         Frame frame = null;
         try {
-            frame = Frame.parseFrom(is);
-        } catch (IOException e) {
+            frame = Frame.parseFrom(buffer);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return frame;

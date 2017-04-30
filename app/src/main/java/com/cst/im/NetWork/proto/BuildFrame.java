@@ -9,6 +9,7 @@ public class BuildFrame {
     private Frame.Builder frame;
     public static final int Login  = 0;
     public static final int Register  = 1;
+    public static final int FeedBack  = 2;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
 

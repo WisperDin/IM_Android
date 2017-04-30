@@ -15,7 +15,7 @@ message DstUser {
 }
 message Action {
 	int32 rslCode=1;//状态码
-  int32 actionType=2;//行为码
+    int32 actionType=2;//行为码
 	string rslMsg=3;//状态信息
 }
 //登录，注册，添加好友，删除好友，发送消息
