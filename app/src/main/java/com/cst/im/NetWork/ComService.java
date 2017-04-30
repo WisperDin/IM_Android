@@ -35,29 +35,6 @@ public class ComService extends TcpService {
         loginFbEvent=loginCallback;
     }
 
-/*    public static void addMsgListener(MsgHandler msgListener){
-        if (msgListeners == null) {
-            msgListeners = new CopyOnWriteArrayList<>();
-        }
-        msgListeners.add(msgListener);
-    }
-    public static void removeMsgListener(MsgHandler msgListener){
-        if (msgListeners == null) {
-            msgListeners = new CopyOnWriteArrayList<>();
-        }
-        msgListeners.add(msgListener);
-    }*/
-    
-/*    public static boolean sendMessageObj(JSONObject object){
-        if(client==null ||object==null)
-            return false;
-        try {
-            client.sendJSON(object);
-            return true;
-        } catch (IOException e) {
-           return false;
-        }
-    }*/
 
     @Override
     public void OnTcpStop() {

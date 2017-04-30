@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.model.UserModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,7 @@ import protocol.Protocol.Frame;
  */
 
 public abstract class TcpService extends Service {
-    static TcpClient client;
+    public static TcpClient client;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,14 +61,23 @@ public abstract class TcpService extends Service {
             lastSendTime= System.currentTimeMillis();
 
             // 获取Socket的OutputStream对象用于发送数据。
-            OutputStream outputStream = socket.getOutputStream();
-            UserModel userToLogin = new UserModel("lzy","123");
-            outputStream.write(DeEnCode.encodeLoginFrame(userToLogin));
+            //OutputStream outputStream = socket.getOutputStream();
+            //UserModel userToLogin = new UserModel("lzy","123");
+            //outputStream.write(DeEnCode.encodeLoginFrame(userToLogin));
             // 发送读取的数据到服务端
-            outputStream.flush();
+            //outputStream.flush();
             //new Thread(new KeepHeartThread()).start();
             new Thread(new ReceiveThread()).start();
         }
+        //发送消息
+        public void SendData(byte[] data) throws IOException {
+            if(socket==null)
+                return;
+            OutputStream out=socket.getOutputStream();
+            out.write(data);
+            out.flush();
+        }
+
         public void stop(){
             if(running){
                 running=false;
@@ -77,49 +85,11 @@ public abstract class TcpService extends Service {
             }
 
         }
-        /*public void sendJSON(JSONObject obj) throws IOException {
-            if(socket==null)
-                return;
-            OutputStream out=socket.getOutputStream();
-            out.write(obj.toString().getBytes());
-            out.flush();
-        }*/
-/*        public JSONObject getHeartWord() throws JSONException {
-            JSONObject obj=new JSONObject();
-            //// TODO: 2017/4/23 心跳的消息码为0
-            obj.put("code",0);
-            return obj;
-        }*/
         public void destory() throws IOException {
             if(socket!=null)
                 socket.close();
         }
-        /*class KeepHeartThread implements Runnable {
-            long checkDelay = 10;
-            long keepAliveDelay = 2000;
-            public void run() {
-                while(client.running){
-                    if(System.currentTimeMillis()-client.lastSendTime>keepAliveDelay){
-                        try {
-                            client.sendJSON(getHeartWord());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            client.stop();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        client.lastSendTime = System.currentTimeMillis();
-                    }else{
-                        try {
-                            Thread.sleep(checkDelay);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            client.stop();
-                        }
-                    }
-                }
-            }
-        }*/
+
        class ReceiveThread implements Runnable {
             private ExecutorService msgPool = Executors.newCachedThreadPool();
             byte[] buffer=new byte[1024];
@@ -128,8 +98,7 @@ public abstract class TcpService extends Service {
             public void run() {
                 while(client.running){
                     try {
-                        //if(sum==0 || stringBuffer==null)
-                            //stringBuffer=new StringBuffer();
+
                         InputStream in = socket.getInputStream();
                         if(in.available()>0){
                             //读字节流
@@ -142,31 +111,15 @@ public abstract class TcpService extends Service {
                             //以后要注意粘帧的情况
                             byte[] frameData = new byte[count];
                             System.arraycopy(buffer, 0, frameData, 0, count);
-
                             //解码
                             final Frame frame =  DeEnCode.decodeFbFrame(frameData);
-                            //System.out.println(frame.getMsgType());
-                            //stringBuffer.append(new String(buffer,0,count));
-                            //Frame frame = Frame.getDefaultInstance();
-                            //sum+=count;
-                            //if(count>=1024)
-                            //    continue;
-                            //if(sum>0){
-                                //String data=stringBuffer.toString();
-                                //String data="";
-
-                                //final JSONObject msg=new JSONObject(data);
-                                //stringBuffer=new StringBuffer();
-                                //sum=0;
-                                msgPool.execute(new Runnable() {
+                            //放到线程池执行
+                            msgPool.execute(new Runnable() {
                                     @Override
                                     public void run() {OnMessageCome(frame);
                                     }
                                 });
-
-
                             }
-                       // }
                         else{
                             Thread.sleep(10);
                        }
