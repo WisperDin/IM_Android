@@ -108,7 +108,7 @@ public abstract class TcpService extends Service {
                                 System.out.print(buffer[i]+" ");
                             }
                             //复制有效字节到新的字节数组中
-                            //以后要注意粘帧的情况
+                            //TODO:以后要注意粘帧的情况
                             byte[] frameData = new byte[count];
                             System.arraycopy(buffer, 0, frameData, 0, count);
                             //解码

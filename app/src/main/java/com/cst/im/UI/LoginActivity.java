@@ -94,8 +94,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
         bindService(new Intent(this, ComService.class), serviceConn, BIND_AUTO_CREATE);
         */
         //启动服务
-        //Intent startIntent = new Intent(this, ComService.class);
-        //startService(startIntent);//记得最后结束
+        Intent startIntent = new Intent(this, ComService.class);
+        startService(startIntent);//记得最后结束
+        // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
 //////////////////////////////////////////////////////////////////////////////
 
     }
@@ -184,9 +185,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.login_button){
-            //启动服务，应该放在初始，这里只是为了测试
-            Intent startIntent = new Intent(this, ComService.class);
-            startService(startIntent);//记得最后结束
             loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
         }
     }
