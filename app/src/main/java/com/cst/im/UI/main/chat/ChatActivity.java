@@ -3,6 +3,7 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,15 +13,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cst.im.R;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.dataBase.DatabaseHelper;
 import com.cst.im.model.IMsg;
+import com.cst.im.model.IUser;
+import com.cst.im.model.MsgModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
-/**
- * @author way
- */
+import java.sql.Time;
+import java.util.List;
+
 public class ChatActivity extends Activity implements View.OnClickListener ,IChatView {
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
@@ -36,14 +41,20 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         setContentView(R.layout.activity_chat);
 
         //数据库的创建及调用
-        helper = new DatabaseHelper(this, "LocalMessage.db", null, 1);
+        helper = DBManager.getIntance(this);
         helper.getWritableDatabase();
+
+        InitData();//本地数据库测试
+
+        //从数据库获取聊天数据
+        List<IMsg> msg_list =  DBManager.QueryMsg("lzy" , "wzb");
 
         initView();// 初始化view
 
         //初始化数据（MVP）
-        chatPresenter=new ChatPresenter(this);
-        mAdapter = new ChatMsgViewAdapter(this, chatPresenter.LoadHisMsg());
+        chatPresenter=new ChatPresenter(this , msg_list);
+        mAdapter = new ChatMsgViewAdapter(this , msg_list);
+
         mListView.setAdapter(mAdapter);
         //消息列表选择到最后一行
         mListView.setSelection(mAdapter.getCount() - 1);
@@ -74,7 +85,6 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
         mEditTextContent.setText("");// 清空编辑框数据
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
-
     }
 
     /**
@@ -97,6 +107,23 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
                 finish();// 结束,实际开发中，可以返回主界面
                 break;
         }
+    }
+
+    public void InitData(){
+        MsgModel lzy_1 = new MsgModel("lzy" ,"wzb", "2012-09-22 18:00:02" , "有大吗" , true);
+        DBManager.InsertMsg(lzy_1);
+
+        MsgModel wzb_1 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:10:22" , "有！你呢？" , false);
+        DBManager.InsertMsg(wzb_1);
+
+        MsgModel lzy_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:11:24" , "我也有" , true);
+        DBManager.InsertMsg(lzy_2);
+
+
+        MsgModel wzb_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:20:23" , "那上吧" , false);
+        DBManager.InsertMsg(wzb_2);
+
+
     }
 
 }

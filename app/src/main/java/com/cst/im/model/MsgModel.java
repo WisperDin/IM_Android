@@ -4,30 +4,40 @@ package com.cst.im.model;
  * Created by ASUS on 2017/4/23.
  */
 
-public class MsgModel implements  IMsg {
+public class MsgModel implements IMsg {
 
     public MsgModel() {
     }
 
-    public MsgModel(String name, String date, String text, boolean isComMsg) {
+    public MsgModel(String left_name, String right_name,String date, String text, boolean isComMsg) {
         super();
-        this.name = name;
+        this.left_name = left_name;
+        this.right_name = right_name;
         this.date = date;
         this.message = text;
         this.isComMeg = isComMsg;
     }
 
-    String name;//消息来自
+    String left_name;//消息来自
+    String right_name;
     String date;//消息日期
     String message;//消息内容
     boolean isComMeg = true;// 是否为收到的消息
 
-    public String getName() {
-        return name;
+    public String getLeft_name() {
+        return left_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLeft_name(String left_name) {
+        this.left_name = left_name;
+    }
+
+    public String getRight_name() {
+        return right_name;
+    }
+
+    public void setRight_name(String right_name) {
+        this.right_name = right_name;
     }
 
     public String getDate() {

@@ -5,8 +5,11 @@ package com.cst.im.model;
  */
 
 public interface IMsg {
-    String getName();
-    void setName(String name);
+    String getLeft_name();
+    void setLeft_name(String left_name);
+
+    String getRight_name();
+    void setRight_name(String right_name);
 
     String getDate();
     void setDate(String date);

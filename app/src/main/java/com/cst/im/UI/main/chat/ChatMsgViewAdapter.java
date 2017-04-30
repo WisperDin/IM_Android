@@ -34,6 +34,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
     }
 
+
     public int getCount() {
         return coll.size();
     }
