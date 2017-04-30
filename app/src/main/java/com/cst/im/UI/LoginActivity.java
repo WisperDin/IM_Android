@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
-import com.cst.im.imConn.ComService;
+import com.cst.im.NetWork.ComService;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;

@@ -1,4 +1,4 @@
-package com.cst.im.imConn;
+package com.cst.im.NetWork;
 
 import android.content.Intent;
 import android.os.Binder;

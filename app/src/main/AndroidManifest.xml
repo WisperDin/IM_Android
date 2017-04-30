@@ -41,7 +41,7 @@
         </activity>
 
 
-        <service android:name=".imConn.ComService"/>
+        <service android:name=".NetWork.ComService"/>
 
     </application>
 

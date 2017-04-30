@@ -1,11 +1,12 @@
-package com.cst.im.imConn;
+package com.cst.im.NetWork;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.cst.im.imConn.proto.DeEnCode;
+import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.model.UserModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +64,8 @@ public abstract class TcpService extends Service {
 
             // 获取Socket的OutputStream对象用于发送数据。
             OutputStream outputStream = socket.getOutputStream();
-            outputStream.write(DeEnCode.encodeTest());
+            UserModel userToLogin = new UserModel("lzy","123");
+            outputStream.write(DeEnCode.encodeLoginFrame(userToLogin));
             // 发送读取的数据到服务端
             outputStream.flush();
             //new Thread(new KeepHeartThread()).start();
@@ -134,7 +136,7 @@ public abstract class TcpService extends Service {
                             //读字节流
                             //int count= in.read(buffer,0,1024);
                             //解码
-                            tutorial.Example.Person person =  DeEnCode.decodeTest(in);
+                            protocol.Protocol.Frame frame =  DeEnCode.decodeFbFrame(in);
 
                             //stringBuffer.append(new String(buffer,0,count));
 
@@ -143,7 +145,7 @@ public abstract class TcpService extends Service {
                             //    continue;
                             //if(sum>0){
                                 //String data=stringBuffer.toString();
-                                String data=person.getName();
+                                String data="";
 
                                 final JSONObject msg=new JSONObject(data);
                                 stringBuffer=new StringBuffer();

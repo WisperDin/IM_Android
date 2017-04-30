@@ -1,0 +1,33 @@
+syntax = "proto3";
+package protocol;
+message User {
+  string userName = 1;
+  string userPwd = 2;  // Unique ID number for this User.
+  
+  //用户信息
+}
+message Msg {
+	string msg = 1;
+	//一些消息的其他属性
+}
+message DstUser {
+  repeated User dst = 1;
+}
+message Action {
+	int32 rslCode=1;//状态码
+  int32 actionType=2;//行为码
+	string rslMsg=3;//状态信息
+}
+//登录，注册，添加好友，删除好友，发送消息
+message Frame {
+  int32 protoSign = 1;
+  int64 msgLength = 2;
+  int32 msgType = 3 ;
+  int64 senderTime = 4;
+  
+  User src = 5;
+  DstUser dst = 6;
+  Msg msg = 7;
+  
+  Action fbAction = 8;
+}
