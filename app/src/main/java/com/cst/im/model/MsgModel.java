@@ -19,7 +19,7 @@ public class MsgModel implements IMsg {
     }
 
     String left_name;//消息来自
-    String right_name;
+    String right_name;//用户自身
     String date;//消息日期
     String message;//消息内容
     boolean isComMeg = true;// 是否为收到的消息

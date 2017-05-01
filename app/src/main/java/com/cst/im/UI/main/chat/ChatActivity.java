@@ -47,7 +47,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        List<IMsg> msg_list =  DBManager.QueryMsg("lzy" , "wzb");
+        List<IMsg> msg_list =  DBManager.QueryMsg("lzy");
 
         initView();// 初始化view
 
@@ -122,6 +122,9 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
 
         MsgModel wzb_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:20:23" , "那上吧" , false);
         DBManager.InsertMsg(wzb_2);
+
+        MsgModel wzb_3 = new MsgModel("lz" ,"wzb" , "2015-09-22 18:10:22" , "傻逼" , false);
+        DBManager.InsertMsg(wzb_3);
 
 
     }
