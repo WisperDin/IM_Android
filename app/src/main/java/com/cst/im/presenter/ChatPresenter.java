@@ -74,6 +74,8 @@ public class ChatPresenter implements IChatPresenter{
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);
+
+            entity.setLeft_name("abc");
             //发送数据到服务器
             //编码聊天消息帧
             final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(entity);

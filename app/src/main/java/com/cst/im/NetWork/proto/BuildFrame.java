@@ -11,7 +11,7 @@ public class BuildFrame {
     public static final int Login  = 0;
     public static final int Register  = 1;
     public static final int FeedBack  = 2;
-    public static final int ChatMsg  = 3;
+    public static final int ChatMsg  = 4;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
 
