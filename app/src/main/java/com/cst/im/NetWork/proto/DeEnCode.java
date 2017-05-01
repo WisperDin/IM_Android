@@ -1,5 +1,6 @@
 package com.cst.im.NetWork.proto;
 
+import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +29,16 @@ public class DeEnCode {
     //编码-登录帧
    public static byte[] encodeLoginFrame(IUser userToLogin) {
        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
+    //编码-聊天消息帧
+    public static byte[] encodeChatMsgFrame(IMsg chatMsg) {
+        Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(chatMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);

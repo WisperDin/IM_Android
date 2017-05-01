@@ -4,12 +4,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.cst.im.NetWork.ComService;
+import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.view.IChatView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,13 +74,27 @@ public class ChatPresenter implements IChatPresenter{
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);
+            //发送数据到服务器
+            //编码聊天消息帧
+            final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(entity);
+            //调用发送数据接口
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ComService.client.SendData(chatMsgFrame);
+                    }
+                    catch (IOException ioe)
+                    {
+                        Log.w("send","send data failed");
+                    }
+                }});
             mDataArrays.add(entity);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     iChatView.onSendMsg();
                 }});
-
         }
 
     }

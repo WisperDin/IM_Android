@@ -35,7 +35,6 @@ public class ComService extends TcpService {
         loginFbEvent=loginCallback;
     }
 
-
     @Override
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
