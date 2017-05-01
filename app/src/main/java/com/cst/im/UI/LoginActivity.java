@@ -1,11 +1,9 @@
 package com.cst.im.UI;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -20,9 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
-import com.cst.im.imConn.ComService;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.view.ILoginView;
@@ -32,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     final TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
             -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-
     private EditText editUser;
     private EditText editPwd;
     private Button btnLogin;
@@ -82,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
 //网络接口测试部分
 ////////////////////////////////////////////////////////////////////
+        /*
         serviceConn =new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -94,21 +92,27 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
             }
         };
         bindService(new Intent(this, ComService.class), serviceConn, BIND_AUTO_CREATE);
+        */
+        //启动服务
+        Intent startIntent = new Intent(this, ComService.class);
+        startService(startIntent);//记得最后结束
+        // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
 //////////////////////////////////////////////////////////////////////////////
 
     }
     //处理登录事件的UI提示
     @Override
-    public void onLoginResult(Boolean result, int code){
-        if (result){
+    public void onLoginResult(int rslCode, String rslMsg){
+
+        if (rslCode==0){
             //页面跳转
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
-            Toast.makeText(this,"Login Success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,rslMsg, Toast.LENGTH_SHORT).show();
         }
         else
-            Toast.makeText(this,"Login Fail, code = " + code,Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Login Fail, code = " + rslCode,Toast.LENGTH_SHORT).show();
     }
 
     //网络错误提示
@@ -159,6 +163,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
                 drawable.setBounds(0,0,56,56);
                 if(loginPresenter.judgePassword(editPwd.getText().toString())){

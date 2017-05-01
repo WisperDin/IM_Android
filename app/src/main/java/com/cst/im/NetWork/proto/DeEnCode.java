@@ -1,9 +1,11 @@
-package com.cst.im.imConn.proto;
+package com.cst.im.NetWork.proto;
+
+import com.cst.im.model.IUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
+import protocol.Protocol.Frame;
 /**
  * Created by ASUS on 2017/4/27.
  */
@@ -23,12 +25,12 @@ public class DeEnCode {
         return baos.toByteArray();
     }*/
 
-        //编码
-   public static byte[] encodeTest() {
-        tutorial.Example.Person person = AddPerson.createPerson("lzy");
+    //编码-登录帧
+   public static byte[] encodeLoginFrame(IUser userToLogin) {
+       Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            person.writeTo(baos);
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
         return baos.toByteArray();
@@ -43,14 +45,14 @@ public class DeEnCode {
         }
         return addressBook;
     }*/
-    //解码
-    public static tutorial.Example.Person decodeTest(InputStream is) {
-        tutorial.Example.Person person = null;
+    //解码-反馈帧
+    public static Frame decodeFbFrame(byte[] buffer) {
+        Frame frame = null;
         try {
-            person = tutorial.Example.Person.parseFrom(is);
-        } catch (IOException e) {
+            frame = Frame.parseFrom(buffer);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return person;
+        return frame;
     }
 }
