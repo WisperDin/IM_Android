@@ -22,7 +22,7 @@ import protocol.Protocol.Frame;
 public class ComService extends TcpService {
     public interface MsgHandler{
         //void handleEvent(Frame frame);
-        void handleFbEvent(int rslCode,String rslMsg);//参数为反馈的状态码与状态信息
+        void handleFbEvent(int rslCode);//参数为反馈的状态码与状态信息
     }
     public interface ChatMsgHandler{
         void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
@@ -64,7 +64,7 @@ public class ComService extends TcpService {
                     case BuildFrame.Login://登录反馈信息
                         System.out.println("loginfb");
                         if(loginFbEvent!=null)//执行登录反馈事件
-                            loginFbEvent.handleFbEvent(action.getRslCode(),action.getRslMsg());
+                            loginFbEvent.handleFbEvent(action.getRslCode());
                         break;
                 }
                 break;
@@ -73,7 +73,7 @@ public class ComService extends TcpService {
             {
                 System.out.println("chatMsg");
                 //检查是否空
-                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDst(0).getUserName()!=""&&frame.getMsg().getMsg()!="")
+                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!="")
                 {
                     //模拟了一个date
                     IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
@@ -84,8 +84,8 @@ public class ComService extends TcpService {
                     if(chatMsgEvent!=null)//执行登录反馈事件
                         chatMsgEvent.handleChatMsgEvent(msgRecv);
                 }else{
-                    Log.e(" bad value", "ConService,OnMessageCome");
-                    System.out.println("ConService,OnMessageCome bad value");
+                    Log.e(" bad value", "ConService,OnMessageCome ChatMsg");
+                    System.out.println("ConService,OnMessageCome ChatMsg bad value");
                 }
                 break;
 
