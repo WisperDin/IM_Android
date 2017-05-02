@@ -23,6 +23,7 @@ import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
+import com.cst.im.presenter.Status;
 import com.cst.im.view.ILoginView;
 
 public class LoginActivity extends AppCompatActivity implements ILoginView,View.OnClickListener,View.OnFocusChangeListener{
@@ -134,17 +135,19 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
                 Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
                 drawable.setBounds(0,0,56,56);
                 switch (loginPresenter.judgeUsername(editUser.getText().toString())){
-                    case 0:
+                    case Status.Login.USERNAME_INVALID:
                         editUser.setError("=.=",drawable);
                         break;
-                    case 1:
+                    case Status.Login.USERNAME_PHONE:
                         editUser.setError("手机号",drawable);
                         break;
-                    case 2:
+                    case Status.Login.USERNAME_EMAIL:
                         editUser.setError("邮箱",drawable);
                         break;
-                    default:
+                    case Status.Login.USERNAME_ACCOUNT:
                         editUser.setError("用户名",drawable);
+                        break;
+                    default:
                         break;
                 }
             }

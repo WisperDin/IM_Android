@@ -23,16 +23,16 @@ public class LoginTest {
         //init login presenter
        loginPresenter=new LoginPresenterCompl(iLoginView);
     }
-    @Test
-    public void login_Failed() throws Exception {
-        int errCode = loginPresenter.doLogin("123","456");
-        assertEquals(errCode, -1);
-    }
-
-
-    @Test
-    public void login_Success() throws Exception {
-        int errCode = loginPresenter.doLogin("mvp","mvp");
-        assertEquals(errCode, 0);
-    }
+//    @Test
+//    public void login_Failed() throws Exception {
+//        int errCode = loginPresenter.doLogin("123","456");
+//        assertEquals(errCode, -1);
+//    }
+//
+//
+//    @Test
+//    public void login_Success() throws Exception {
+//        int errCode = loginPresenter.doLogin("mvp","mvp");
+//        assertEquals(errCode, 0);
+//    }
 }
