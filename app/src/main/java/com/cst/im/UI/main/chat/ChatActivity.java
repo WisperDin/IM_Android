@@ -26,7 +26,9 @@ import com.cst.im.view.IChatView;
 import java.sql.Time;
 import java.util.List;
 
-public class ChatActivity extends Activity implements View.OnClickListener ,IChatView {
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
+public class ChatActivity extends SwipeBackActivity implements View.OnClickListener ,IChatView {
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
     private EditText mEditTextContent;//输入消息的栏
