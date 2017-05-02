@@ -116,15 +116,16 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     @Override
     public void onLoginResult(int rslCode, String rslMsg){
 
-        if (rslCode==0){
+        if (rslCode==Status.Login.LOGINSUCCESS){
             //页面跳转
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
-            Toast.makeText(this,rslMsg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"登录成功", Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(this,"Login Fail, code = " + rslCode,Toast.LENGTH_SHORT).show();
+        else if(rslCode == Status.Login.LOGINFAILED)
+            Toast.makeText(this,"用户名或密码不正确",Toast.LENGTH_SHORT).show();
+
     }
 
     //网络错误提示
@@ -201,7 +202,12 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
         switch (v.getId()){
             case R.id.login_button:
-                loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+                String user = editUser.getText().toString();
+                String pwd = editPwd.getText().toString();
+                if(loginPresenter.canLogin(user,pwd)) //判断是否符合登录条件
+                    loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+                else
+                    Toast.makeText(this,"用户名或密码不规范", Toast.LENGTH_LONG).show();
                 break;
             case R.id.register_action:
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
