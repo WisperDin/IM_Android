@@ -3,7 +3,6 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,16 +13,12 @@ import android.widget.TextView;
 
 import com.cst.im.R;
 import com.cst.im.dataBase.DBManager;
-import com.cst.im.dataBase.DatabaseHelper;
 import com.cst.im.model.IMsg;
-import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
-import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
-import java.sql.Time;
 import java.util.List;
 
 public class ChatActivity extends Activity implements View.OnClickListener ,IChatView {
@@ -80,6 +75,14 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
             }
         });
     }
+    //接收到消息就会执行
+    @Override
+    public void onRecvMsg(String msg,String date){
+        mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
+        mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
+    }
+
+
     @Override
     public void onSendMsg(){
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变

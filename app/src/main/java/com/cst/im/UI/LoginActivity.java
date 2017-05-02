@@ -204,10 +204,12 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
             case R.id.login_button:
                 String user = editUser.getText().toString();
                 String pwd = editPwd.getText().toString();
-                if(loginPresenter.canLogin(user,pwd)) //判断是否符合登录条件
+                //TODO: 暂时版本
+                loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+                /*if(loginPresenter.canLogin(user,pwd)) //判断是否符合登录条件
                     loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
                 else
-                    Toast.makeText(this,"用户名或密码不规范", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"用户名或密码不规范", Toast.LENGTH_LONG).show();*/
                 break;
             case R.id.register_action:
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
