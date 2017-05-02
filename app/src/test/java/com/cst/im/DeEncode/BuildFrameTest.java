@@ -22,12 +22,38 @@ public class BuildFrameTest {
 
     }
     @Test
-    public void encodeChatMsgFrameTest()throws Exception{
+    public void encodeChatMsgFrameSuccessTest()throws Exception{
         //初始化帧
         BuildFrame chatFrame = new BuildFrame(BuildFrame.ChatMsg);
         //准备帧需要的实体
         IMsg entity = new MsgModel();
         entity.setRight_name("lzy");
+        entity.setDate(Tools.getDate());
+        entity.setMessage("testMsg");
+        entity.setMsgType(false);
+
+        entity.setLeft_name("abc");
+        //构建帧
+
+        Protocol.Frame frame = chatFrame.GetChatMsgFrame(entity);
+
+        System.out.println(frame.getProtoSign());
+        System.out.println(frame.getMsgLength());
+        System.out.println(frame.getMsgType());
+        System.out.println(frame.getSenderTime());
+        System.out.println(frame.getSrc().getUserName());
+        System.out.println(frame.getDst().getDst(0).getUserName());
+        System.out.println(frame.getMsg());
+    }
+
+    //错误样例
+    @Test
+    public void encodeChatMsgFrameFailedTest()throws Exception{
+        //初始化帧
+        BuildFrame chatFrame = new BuildFrame(BuildFrame.ChatMsg);
+        //准备帧需要的实体
+        IMsg entity = new MsgModel();
+        //entity.setRight_name("lzy");
         entity.setDate(Tools.getDate());
         entity.setMessage("testMsg");
         entity.setMsgType(false);

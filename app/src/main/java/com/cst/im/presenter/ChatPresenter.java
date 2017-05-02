@@ -20,7 +20,7 @@ import java.util.List;
  * Created by ASUS on 2017/4/23.
  */
 
-public class ChatPresenter implements IChatPresenter{
+public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private List<IMsg> mDataArrays = new ArrayList<IMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
@@ -30,6 +30,8 @@ public class ChatPresenter implements IChatPresenter{
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
         localUser=new UserModel("lzy","123");
+        //监听收到消息的接口
+        ComService.setChatMsgCallback(this);
     }
 
 
@@ -65,6 +67,18 @@ public class ChatPresenter implements IChatPresenter{
 //        }
 //        return mDataArrays;
 //    }
+    //接受到新的消息 //参数为接收到的消息
+    @Override
+    public void handleChatMsgEvent(final IMsg msgRecv){
+        //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
+        mDataArrays.add(msgRecv);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iChatView.onRecvMsg(msgRecv.getMessage(), msgRecv.getDate());
+            }});
+
+    }
 
     @Override
     public void SendMsg(String contString){

@@ -112,7 +112,7 @@ public abstract class TcpService extends Service {
                             byte[] frameData = new byte[count];
                             System.arraycopy(buffer, 0, frameData, 0, count);
                             //解码
-                            final Frame frame =  DeEnCode.decodeFbFrame(frameData);
+                            final Frame frame =  DeEnCode.decodeFrame(frameData);
                             //放到线程池执行
                             msgPool.execute(new Runnable() {
                                     @Override

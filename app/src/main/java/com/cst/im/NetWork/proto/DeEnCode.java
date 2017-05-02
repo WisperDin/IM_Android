@@ -56,8 +56,8 @@ public class DeEnCode {
         }
         return addressBook;
     }*/
-    //解码-反馈帧
-    public static Frame decodeFbFrame(byte[] buffer) {
+    //解码-所有帧
+    public static Frame decodeFrame(byte[] buffer) {
         Frame frame = null;
         try {
             frame = Frame.parseFrom(buffer);
