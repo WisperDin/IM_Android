@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private ImageView topPicture ;
     private ImageView showPassword;
 
-    private Button btnLoginByMessage;
     private ImageView ivLoginByQQ;
     private ImageView ivLoginByWechat;
     private ImageView ivLoginByWeibo;
@@ -45,6 +44,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private LinearLayout activityMain ;
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
+
+    // 注册按钮
+    Button btnRegister;
+
     //登录业务逻辑
     ILoginPresenter loginPresenter;
 
@@ -52,29 +55,20 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     ServiceConnection serviceConn;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.cst.im.R.layout.activity_login);
+
+        initView();
+
         //init login presenter
         loginPresenter = new LoginPresenterCompl(this);
-        //find Control
-        topPicture = (ImageView) findViewById(R.id.top_picture);
-        editUser = (EditText) findViewById(R.id.username);
-        editPwd = (EditText) findViewById(R.id.password);
-        btnLogin = (Button) findViewById(R.id.login_button);
-        btnLoginByMessage = (Button) findViewById(R.id.login_message);
-        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
-        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
-        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
-        activityMain = (LinearLayout) findViewById(R.id.activity_main);
-        tilUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
-        tilPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
-
-
         mShowAction.setDuration(500);//动画运行时间
 
         btnLogin.setOnClickListener(this); // 登录按钮
+        btnRegister.setOnClickListener(this); // 注册按钮
         editPwd.setOnFocusChangeListener(this); // 输入密码时图标消失
         onEditTip();
 
@@ -101,6 +95,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 //////////////////////////////////////////////////////////////////////////////
 
     }
+
+    // 初始化控件
+    private void initView(){
+        //find Control
+        topPicture = (ImageView) findViewById(R.id.top_picture);
+        editUser = (EditText) findViewById(R.id.username);
+        editPwd = (EditText) findViewById(R.id.password);
+        btnLogin = (Button) findViewById(R.id.login_button);
+        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
+        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
+        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
+        activityMain = (LinearLayout) findViewById(R.id.activity_main);
+        tilUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
+        tilPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
+        btnRegister = (Button) findViewById(R.id.register_action);
+    }
+
     //处理登录事件的UI提示
     @Override
     public void onLoginResult(int rslCode, String rslMsg){
@@ -187,8 +198,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.login_button){
-            loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+
+        switch (v.getId()){
+            case R.id.login_button:
+                loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+                break;
+            case R.id.register_action:
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                break;
         }
     }
 

@@ -8,6 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Login Page -->
+    <style name="LoginTheme" parent="Theme.Design.Light.NoActionBar">
+        <!-- 首页（第一级页面不让Activity透明） -->
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+
+    <!-- Register Page -->
+    <style name="RegisterTheme" parent="Theme.Design.Light.NoActionBar">
+        <!-- 非首页（非第一级页面让Activity透明） -->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>
         <item name="android:textColor">#ffffff</item>
