@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
+import com.cst.im.model.IMsg;
+import com.cst.im.model.MsgModel;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -20,7 +22,10 @@ import protocol.Protocol.Frame;
 public class ComService extends TcpService {
     public interface MsgHandler{
         //void handleEvent(Frame frame);
-        void handleFbEvent(int rslCode,String rslMsg);//参数为反馈的状态码与状态信息
+        void handleFbEvent(int rslCode);//参数为反馈的状态码与状态信息
+    }
+    public interface ChatMsgHandler{
+        void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
     }
 
 
@@ -28,6 +33,8 @@ public class ComService extends TcpService {
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
     static MsgHandler registerEvent;
     static MsgHandler loginFbEvent;
+    static ChatMsgHandler chatMsgEvent;
+
 
     public static void setRegisterCallback(MsgHandler registerCallback){
         registerEvent =registerCallback;
@@ -36,6 +43,9 @@ public class ComService extends TcpService {
         loginFbEvent=loginCallback;
     }
 
+    public static void setChatMsgCallback(ChatMsgHandler chatMsgCallback){
+        chatMsgEvent=chatMsgCallback;
+    }
 
     @Override
     public void OnTcpStop() {
@@ -54,10 +64,30 @@ public class ComService extends TcpService {
                     case BuildFrame.Login://登录反馈信息
                         Log.d("OnMessageCome","登录反馈");
                         if(loginFbEvent!=null)//执行登录反馈事件
-                            loginFbEvent.handleFbEvent(action.getRslCode(),action.getRslMsg());
+                            loginFbEvent.handleFbEvent(action.getRslCode());
                         break;
                 }
-
+                break;
+            }
+            case BuildFrame.ChatMsg://聊天消息
+            {
+                System.out.println("chatMsg");
+                //检查是否空
+                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!="")
+                {
+                    //模拟了一个date
+                    IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
+                            frame.getDst().getDst(0).getUserName(),
+                            "1000",
+                            frame.getMsg().getMsg(),
+                            true);
+                    if(chatMsgEvent!=null)//执行登录反馈事件
+                        chatMsgEvent.handleChatMsgEvent(msgRecv);
+                }else{
+                    Log.e(" bad value", "ConService,OnMessageCome ChatMsg");
+                    System.out.println("ConService,OnMessageCome ChatMsg bad value");
+                }
+                break;
 
             }
 

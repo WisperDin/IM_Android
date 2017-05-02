@@ -11,8 +11,8 @@ public final class Status {
         public static final int USERNAME_PHONE = 1; // 用户名为手机号
         public static final int USERNAME_EMAIL = 2; // 用户名为邮箱
         public static final int USERNAME_ACCOUNT = 3; // 用户名为普通账号
-        public static final int LOGINSUCCESS = 200; // 成功登录
-        public static final int LOGINFAILED = 201; // 登录失败
+        public static final int LOGINSUCCESS = 200; // 登录成功
+        public static final int LOGINFAILED = 201; // 用户名为普通账号
     }
 
     public static final class Register{

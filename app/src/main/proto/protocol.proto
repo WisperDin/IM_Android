@@ -2,7 +2,8 @@ syntax = "proto3";
 package protocol;
 message User {
   string userName = 1;
-  string userPwd = 2;  // Unique ID number for this User.
+  string userPwd = 2;
+  int32 userID = 3;//用户唯一标识
   
   //用户信息
 }
@@ -16,7 +17,6 @@ message DstUser {
 message Action {
 	int32 rslCode=1;//状态码
     int32 actionType=2;//行为码
-	string rslMsg=3;//状态信息
 }
 //登录，注册，添加好友，删除好友，发送消息
 message Frame {
