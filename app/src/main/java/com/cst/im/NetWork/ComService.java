@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
 
@@ -46,12 +47,12 @@ public class ComService extends TcpService {
         switch (frame.getMsgType()){
             case BuildFrame.FeedBack://反馈信息
             {
-                System.out.println("fb");
+                Log.d("OnMessage","feedback");
                 Action action =  frame.getFbAction();
                 //选择反馈信息的类型
                 switch (action.getActionType()){
                     case BuildFrame.Login://登录反馈信息
-                        System.out.println("loginfb");
+                        Log.d("OnMessageCome","登录反馈");
                         if(loginFbEvent!=null)//执行登录反馈事件
                             loginFbEvent.handleFbEvent(action.getRslCode(),action.getRslMsg());
                         break;

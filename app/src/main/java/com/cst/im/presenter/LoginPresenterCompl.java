@@ -100,4 +100,13 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
     public boolean judgePassword(String password) {
         return user.checkPasswordValidity(password);
     }
+
+    @Override
+    public boolean canLogin(String username, String password) {
+        if(judgeUsername(username) != Status.Login.USERNAME_INVALID && judgePassword(password))
+            return true;
+        return false;
+    }
+
+
 }
