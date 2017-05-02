@@ -1,5 +1,7 @@
 package com.cst.im.UI.main.friend;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,11 +17,6 @@ public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
-    private String[] string = { "A", "B", "C", "D", "E", "F", "G", "H", "I",
-            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z" };
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,12 +28,19 @@ public class FriendViewFragment extends Fragment implements
         ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
 
-        int size = string.length;
-        for (int i = 0; i < size; i++) {
+        AddFriendName addfriend=new AddFriendName();
+        addfriend.SortAndAdd("suruijia");
+        addfriend.SortAndAdd("苏锐佳");
+        addfriend.SortAndAdd("ray");
+        addfriend.SortAndAdd("ah啊");
+        addfriend.SortAndAdd("张");
+        for (int i = 0; i < addfriend.getTittle().length; i++) {
             //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
-            adapter.addSeparatorItem(string[i],R.drawable.friend_icon);
-            for (int k = 0; k < 5; k++) {
-                adapter.addItem("item " + k,R.drawable.friend_icon);
+            if (addfriend.getFriendname().get(addfriend.getTittle()[i]).size() != 0) {
+                adapter.addSeparatorItem(addfriend.getTittle()[i], R.drawable.friend_icon);
+                for (int k = 0; k <addfriend.getFriendname().get(addfriend.getTittle()[i]).size(); k++) {
+                    adapter.addItem(addfriend.getFriendname().get(addfriend.getTittle()[i]).get(k), R.drawable.friend_icon);
+                }
             }
         }
         Friendlistview.setAdapter(adapter);
@@ -50,14 +54,26 @@ public class FriendViewFragment extends Fragment implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        //Toast.makeText(this, "item的点击" + parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), friendinformationActivity.class);
+        getActivity().startActivity(intent);
 
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view,
                                    int position, long id) {
-        //Toast.makeText(this, "item的长按" + parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+        final Customdialog.Builder builder = new Customdialog.Builder(getActivity());
+        final Dialog dialog=builder.create();
+        dialog.show();
+        builder.gettextview().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("click");
+                dialog.cancel();
+                Intent intent = new Intent(getActivity(), friendremarkActivity.class);
+                startActivity(intent);
+            }
+        });
         return true;
     }
 }
