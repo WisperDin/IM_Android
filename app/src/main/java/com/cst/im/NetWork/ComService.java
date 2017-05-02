@@ -67,6 +67,7 @@ public class ComService extends TcpService {
                             loginFbEvent.handleFbEvent(action.getRslCode(),action.getRslMsg());
                         break;
                 }
+                break;
             }
             case BuildFrame.ChatMsg://聊天消息
             {
