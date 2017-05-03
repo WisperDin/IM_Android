@@ -29,7 +29,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         this.iChatView =  chatView;
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
-        localUser=new UserModel("lzy","123");
+        localUser=new UserModel("lzy","123",1);
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
     }

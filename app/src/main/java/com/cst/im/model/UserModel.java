@@ -7,10 +7,12 @@ package com.cst.im.model;
 public class UserModel implements IUser {
     String name;
     String passwd;
+    int id;
 
-    public UserModel(String name, String passwd) {
+    public UserModel(String name, String passwd,int id) {
         this.name = name;
         this.passwd = passwd;
+        this.id=id;
     }
 
     @Override
@@ -21,6 +23,11 @@ public class UserModel implements IUser {
     @Override
     public String getPasswd() {
         return passwd;
+    }
+
+    @Override
+    public int getID() {
+        return id;
     }
 
     @Override

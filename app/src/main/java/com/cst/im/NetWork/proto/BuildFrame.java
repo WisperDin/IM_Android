@@ -36,6 +36,7 @@ public class BuildFrame {
             User.Builder src = User.newBuilder();
             src.setUserName(userToLogin.getName());
             src.setUserPwd(userToLogin.getPasswd());
+            src.setUserID(userToLogin.getID());
             frame.setSrc(src.build());
             return frame.build();
         }
