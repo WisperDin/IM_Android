@@ -45,7 +45,7 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
 
     @Override
     public void doLogin(String name, String passwd) {
-        IUser userToLogin = new UserModel(name,passwd,1);
+        IUser userToLogin = new UserModel(name,passwd,2);
         //编码登录帧
         final byte[] loginFrame = DeEnCode.encodeLoginFrame(userToLogin);
         handler.post(new Runnable() {

@@ -25,6 +25,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private IChatView iChatView;
     private  Handler handler;
     private IUser localUser;//假设这个是登录这个客户端的用户
+    private int DstID = 2;
     public ChatPresenter(IChatView chatView , List<IMsg> msg) {
         this.iChatView =  chatView;
         this.mDataArrays = msg;
@@ -71,6 +72,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     @Override
     public void handleChatMsgEvent(final IMsg msgRecv){
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
+        Log.d("test" , "_________________________________________________________________");
+        Log.d("Message" , msgRecv.getMessage());
         mDataArrays.add(msgRecv);
         handler.post(new Runnable() {
             @Override
@@ -88,7 +91,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);
-            entity.setRight_ID(1);
+            entity.setRight_ID(DstID);
 
             entity.setLeft_name("abc");
             //发送数据到服务器

@@ -68,7 +68,7 @@ public class MsgModel implements IMsg {
     public int getRight_ID(){return right_ID;}
 
     public void setRight_ID(int right_id){
-        right_id= right_id;
+        right_ID= right_id;
     }
 
 
