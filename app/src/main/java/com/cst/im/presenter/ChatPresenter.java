@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
@@ -94,6 +95,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             entity.setRight_ID(DstID);
 
             entity.setLeft_name("abc");
+            //DBManager.InsertMsg(entity);
             //发送数据到服务器
             //编码聊天消息帧
             final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(entity);

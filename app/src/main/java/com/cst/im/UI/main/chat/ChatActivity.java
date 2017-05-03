@@ -39,7 +39,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         helper = DBManager.getIntance(this);
         helper.getWritableDatabase();
 
-        InitData();//本地数据库测试
+        //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
         List<IMsg> msg_list =  DBManager.QueryMsg("lzy");

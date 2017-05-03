@@ -42,10 +42,11 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
             }});
     }
 
-
+////////////////////////////test
+    private int srcID = 2;
     @Override
     public void doLogin(String name, String passwd) {
-        IUser userToLogin = new UserModel(name,passwd,2);
+        IUser userToLogin = new UserModel(name,passwd,srcID);
         //编码登录帧
         final byte[] loginFrame = DeEnCode.encodeLoginFrame(userToLogin);
         handler.post(new Runnable() {
