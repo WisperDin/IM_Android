@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.MsgModel;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -20,7 +17,8 @@ import protocol.Protocol.Frame;
  */
 
 public class ComService extends TcpService {
-    public interface MsgHandler{
+
+    public interface MsgHandler {
         //void handleEvent(Frame frame);
         void handleFbEvent(int rslCode);//参数为反馈的状态码与状态信息
     }
@@ -28,19 +26,18 @@ public class ComService extends TcpService {
         void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
     }
 
-
-
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
     static MsgHandler registerEvent;
     static MsgHandler loginFbEvent;
     static ChatMsgHandler chatMsgEvent;
 
 
-    public static void setRegisterCallback(MsgHandler registerCallback){
-        registerEvent =registerCallback;
+    public static void setRegisterCallback(MsgHandler registerCallback) {
+        registerEvent = registerCallback;
     }
-    public static void setLoginCallback(MsgHandler loginCallback){
-        loginFbEvent=loginCallback;
+
+    public static void setLoginCallback(MsgHandler loginCallback) {
+        loginFbEvent = loginCallback;
     }
 
     public static void setChatMsgCallback(ChatMsgHandler chatMsgCallback){
@@ -51,24 +48,34 @@ public class ComService extends TcpService {
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
     }
+
     @Override
     public void OnMessageCome(Frame frame) {
         //根据消息类型分发客户端收到的消息
-        switch (frame.getMsgType()){
+        switch (frame.getMsgType()) {
             case BuildFrame.FeedBack://反馈信息
+                System.out.println("fb");
+                Action action = frame.getFbAction();
             {
                 Log.d("OnMessage","feedback");
                 Action action =  frame.getFbAction();
                 //选择反馈信息的类型
-                switch (action.getActionType()){
+                switch (action.getActionType()) {
                     case BuildFrame.Login://登录反馈信息
+                        System.out.println("loginfb");
+                        if (loginFbEvent != null)//执行登录反馈事件
+                            loginFbEvent.handleFbEvent(action.getRslCode(), action.getRslMsg());
+                        break;
+                }
+            //注册事件
+            /*case BuildFrame.Register:
                         Log.d("OnMessageCome","登录反馈");
                         if(loginFbEvent!=null)//执行登录反馈事件
                             loginFbEvent.handleFbEvent(action.getRslCode());
                         break;
                 }
                 break;
-            }
+            }*/
             case BuildFrame.ChatMsg://聊天消息
             {
                 System.out.println("chatMsg");
@@ -95,7 +102,8 @@ public class ComService extends TcpService {
             /*case 2://注册事件
                 if(registerEvent!=null)
                     registerEvent.handleEvent(msg);
-                break;
+                break;*/
+            /*
             case 3://消息事件
                 handlerMsg(msg);
                 break;*/
@@ -117,8 +125,9 @@ public class ComService extends TcpService {
     public IBinder onBind(Intent intent) {
         return new MyBind();
     }
+
     public class MyBind extends Binder {
-        public ComService getService(){
+        public ComService getService() {
             return ComService.this;
         }
     }

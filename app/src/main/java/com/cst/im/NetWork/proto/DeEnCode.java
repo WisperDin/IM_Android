@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import protocol.Protocol.Frame;
+
 /**
  * Created by ASUS on 2017/4/27.
  */
@@ -27,8 +28,8 @@ public class DeEnCode {
     }*/
 
     //编码-登录帧
-   public static byte[] encodeLoginFrame(IUser userToLogin) {
-       Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
+    public static byte[] encodeLoginFrame(IUser userToLogin) {
+        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
@@ -46,6 +47,19 @@ public class DeEnCode {
         }
         return baos.toByteArray();
     }
+    //编码-注册帧
+    public static byte[] encodeRegisterFrame(IUser userToRegister){
+        Frame frame = new BuildFrame(BuildFrame.Register).GetRegisterFrame(userToRegister);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
+
+
+
     /*//解码
     public static tutorial.Example.AddressBook decodeTest(InputStream is) {
         tutorial.Example.AddressBook addressBook = null;
@@ -56,8 +70,8 @@ public class DeEnCode {
         }
         return addressBook;
     }*/
-    //解码-所有帧
-    public static Frame decodeFrame(byte[] buffer) {
+    //解码-反馈帧
+    public static Frame decodeFbFrame(byte[] buffer) {
         Frame frame = null;
         try {
             frame = Frame.parseFrom(buffer);

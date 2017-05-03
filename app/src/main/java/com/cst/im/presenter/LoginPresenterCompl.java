@@ -17,10 +17,10 @@ import java.io.IOException;
 /**
  */
 
-public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandler {
+public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandler {
     ILoginView iLoginView;
     ILoginUser user;
-    Handler    handler;
+    Handler handler;
 
     public LoginPresenterCompl(ILoginView iLoginView) {
         this.iLoginView = iLoginView;
@@ -28,37 +28,41 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
         handler = new Handler(Looper.getMainLooper());
         ComService.setLoginCallback(this);
     }
+
     @Override
     public void saveLoginInf() {
 
     }
+
     //参数为反馈的状态码与状态信息
     @Override
-    public void handleFbEvent(final int rslCode){
+    public void handleFbEvent(final int rslCode, final String rslMsg) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                iLoginView.onLoginResult(rslCode);
-            }});
+                iLoginView.onLoginResult(rslCode, rslMsg);
+            }
+        });
     }
 
 
     @Override
     public void doLogin(String name, String passwd) {
-        IUser userToLogin = new UserModel(name,passwd);
+        IUser userToLogin = new UserModel(name, passwd);
         //编码登录帧
         final byte[] loginFrame = DeEnCode.encodeLoginFrame(userToLogin);
+
         handler.post(new Runnable() {
             @Override
             public void run() {
                 try {
                     ComService.client.SendData(loginFrame);
+                } catch (IOException ioe) {
+                    Log.w("send", "send data failed");
                 }
-                catch (IOException ioe)
-                {
-                    Log.w("send","send data failed");
-                }
-            }});
+            }
+        });
+
         //测试中，现在一启动程序就自动发一条登录帧到服务器
 /*        Boolean isLoginSuccess = true;
         final int code = user.checkUserValidity(name,passwd);
@@ -72,8 +76,9 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
         }});*/
         //return 1;
     }
-    private void initUser(){
-        user = new LoginUserModel("mvp","mvp");
+
+    private void initUser() {
+        user = new LoginUserModel("mvp", "mvp");
     }
 
     @Override
