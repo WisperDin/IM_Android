@@ -88,6 +88,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);
+            entity.setRight_ID(1);
 
             entity.setLeft_name("abc");
             //发送数据到服务器

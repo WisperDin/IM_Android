@@ -11,6 +11,9 @@ public interface IMsg {
     String getRight_name();
     void setRight_name(String right_name);
 
+    int getRight_ID();
+    void setRight_ID(int right_id);
+
     String getDate();
     void setDate(String date);
 

@@ -54,6 +54,7 @@ public class BuildFrame {
             //接收者
             User.Builder dst = User.newBuilder();
             dst.setUserName(chatMsg.getLeft_name());
+            dst.setUserID(chatMsg.getRight_ID());
 
             DstUser.Builder dstGroup = DstUser.newBuilder();
             dstGroup.addDst(dst);

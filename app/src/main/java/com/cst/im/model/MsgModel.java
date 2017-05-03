@@ -22,6 +22,7 @@ public class MsgModel implements IMsg {
     String right_name;//用户自身
     String date;//消息日期
     String message;//消息内容
+    int right_ID;//消息发送目的者id
     boolean isComMeg = true;// 是否为收到的消息
 
     public String getLeft_name() {
@@ -62,6 +63,12 @@ public class MsgModel implements IMsg {
 
     public void setMsgType(boolean isComMsg) {
         isComMeg = isComMsg;
+    }
+
+    public int getRight_ID(){return right_ID;}
+
+    public void setRight_ID(int right_id){
+        right_id= right_id;
     }
 
 
