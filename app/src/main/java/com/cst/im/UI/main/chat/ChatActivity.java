@@ -1,6 +1,7 @@
 package com.cst.im.UI.main.chat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.dataBase.DBManager;
@@ -34,6 +36,14 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        //by jijinping
+        //获取接收者的名称
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();//.getExtras()得到intent所附带的额外数据
+        String acceptName=bundle.getString("Accept");//getString()返回指定key的值
+        Toast.makeText(this, acceptName, Toast.LENGTH_LONG).show();
+
 
         //数据库的创建及调用
         helper = DBManager.getIntance(this);
