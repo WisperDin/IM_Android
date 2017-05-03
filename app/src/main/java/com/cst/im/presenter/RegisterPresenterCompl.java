@@ -94,7 +94,7 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
     }
 
     @Override
-    public void handleFbEvent(int rslCode, String rslMsg) {
+    public void handleFbEvent(int rslCode) {
 
     }
 }
