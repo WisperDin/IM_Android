@@ -42,22 +42,32 @@ public class MyAdapter extends BaseAdapter{
     public long getItemId(int i) {
         return i;
     }
-    //找到一行消息的的各个组件，分别为图标、昵称、最新消息、发送时间
-    public void setChatItem(int i,View view,int img_id,int name_id,int msg_id,int time_id)
-    {
-        ImageView img=(ImageView) view.findViewById(img_id);
-        TextView t_name=(TextView) view.findViewById(name_id);
-        TextView t_msg=(TextView) view.findViewById(msg_id);
-        TextView t_time=(TextView) view.findViewById(time_id);
-        img.setBackgroundResource(chatItems.get(i).getIcon());
-        t_name.setText(chatItems.get(i).getName());
-        t_msg.setText(chatItems.get(i).getLastMsg());
-        t_time.setText(chatItems.get(i).getLastTime());
-    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view= LayoutInflater.from(this.context).inflate(R.layout.msg_item,viewGroup,false);
-        setChatItem(i,view,R.id.item_icon,R.id.item_name,R.id.item_msg,R.id.item_time);
+        ViewHolder holder;
+        if(view==null)
+        {
+            view= LayoutInflater.from(this.context).inflate(R.layout.msg_item,viewGroup,false);
+            holder=new ViewHolder();
+            holder.img=(ImageView) view.findViewById(R.id.item_icon);
+            holder.t_name=(TextView) view.findViewById(R.id.item_name);
+            holder.t_msg=(TextView) view.findViewById(R.id.item_msg);
+            holder.t_time=(TextView) view.findViewById(R.id.item_time);
+            view.setTag(holder);
+        }else {
+            holder=(ViewHolder)view.getTag();
+        }
+        holder.img.setBackgroundResource(chatItems.get(i).getIcon());
+        holder.t_name.setText(chatItems.get(i).getName());
+        holder.t_msg.setText(chatItems.get(i).getLastMsg());
+        holder.t_time.setText(chatItems.get(i).getLastTime());
         return view;
+    }
+    static class ViewHolder{
+        ImageView img;
+        TextView t_name;
+        TextView t_msg;
+        TextView t_time;
     }
 }
