@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
     //处理登录事件的UI提示
     @Override
-    public void onLoginResult(int rslCode, String rslMsg){
+    public void onLoginResult(int rslCode){
 
         if (rslCode==Status.Login.LOGINSUCCESS){
             //页面跳转
