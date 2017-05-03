@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rl_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:background="#3333cc"
         android:orientation="vertical" >
 
@@ -45,10 +45,24 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:background="@drawable/chat_edittext"
             android:singleLine="true"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_toStartOf="@+id/btn_send" />
+        <!--android:layout_toLeftOf="@id/btn_send"android:layout_marginRight="10dp"-->
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="发送"
+            />
+
+
+
     </RelativeLayout>
 
     <ListView

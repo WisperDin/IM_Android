@@ -37,38 +37,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
 
 
-
-    //历史记录
-//    private String[] msgArray = new String[] { "有大吗", "有！你呢？", "我也有", "那上吧",
-//            "打啊！你放大啊！", "你TM咋不放大呢？留大抢人头啊？CAO！你个菜B", "2B不解释", "尼滚...",
-//            "今晚去网吧包夜吧？", "有毛片吗？", "种子一大堆啊~还怕没片？", "OK,搞起！！" };
-//
-//    private String[] dataArray = new String[] { "2012-09-22 18:00:02",
-//            "2012-09-22 18:10:22", "2012-09-22 18:11:24",
-//            "2012-09-22 18:20:23", "2012-09-22 18:30:31",
-//            "2012-09-22 18:35:37", "2012-09-22 18:40:13",
-//            "2012-09-22 18:50:26", "2012-09-22 18:52:57",
-//            "2012-09-22 18:55:11", "2012-09-22 18:56:45",
-//            "2012-09-22 18:57:33", };
-//    private final static int COUNT = 12;// 初始化数组总数
-//    //加载历史消息
-//    @Override
-//    public List<IMsg>  LoadHisMsg(){
-//        for (int i = 0; i < COUNT; i++) {
-//            IMsg entity = new MsgModel();
-//            entity.setDate(dataArray[i]);
-//            if (i % 2 == 0) {
-//                entity.setName("肖B");
-//                entity.setMsgType(true);// 收到的消息
-//            } else {
-//                entity.setName("必败");
-//                entity.setMsgType(false);// 自己发送的消息
-//            }
-//            entity.setMessage(msgArray[i]);
-//            mDataArrays.add(entity);
-//        }
-//        return mDataArrays;
-//    }
     //接受到新的消息 //参数为接收到的消息
     @Override
     public void handleChatMsgEvent(final IMsg msgRecv){
@@ -76,6 +44,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         Log.d("test" , "_________________________________________________________________");
         Log.d("Message" , msgRecv.getMessage());
         mDataArrays.add(msgRecv);
+        DBManager.InsertMsg(msgRecv);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -94,8 +63,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             entity.setMsgType(false);
             entity.setRight_ID(DstID);
 
-            entity.setLeft_name("abc");
-            //DBManager.InsertMsg(entity);
+            entity.setLeft_name("lzy");
+            DBManager.InsertMsg(entity);
             //发送数据到服务器
             //编码聊天消息帧
             final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(entity);

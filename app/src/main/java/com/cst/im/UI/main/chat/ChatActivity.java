@@ -3,6 +3,7 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -25,6 +26,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
     private EditText mEditTextContent;//输入消息的栏
+    private Button mBtnSend;//发送按钮
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
     private TextView opposite_name;     //显示聊天对象名字
@@ -59,21 +61,21 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
          * 发送消息
          */
 
-        mEditTextContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                //当actionId == XX_SEND 或者 XX_DONE时都触发
-                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
-                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
-                if (actionId == EditorInfo.IME_ACTION_SEND
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    //发送消息
-                    chatPresenter.SendMsg(mEditTextContent.getText().toString());
-                }
-                return false;
-            }
-        });
+//        mEditTextContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                //当actionId == XX_SEND 或者 XX_DONE时都触发
+//                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
+//                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
+//                if (actionId == EditorInfo.IME_ACTION_SEND
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
+//                    //发送消息
+//                    chatPresenter.SendMsg(mEditTextContent.getText().toString());
+//                }
+//                return false;
+//            }
+//        });
     }
     //接收到消息就会执行
     @Override
@@ -96,10 +98,13 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
     public void initView() {
         mListView = (ListView) findViewById(R.id.listview);
         mBtnBack = (Button) findViewById(R.id.btn_back);
+        mBtnSend = (Button)findViewById(R.id.btn_send);
         mBtnBack.setOnClickListener(this);
+        mBtnSend.setOnClickListener(this);
         mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
         opposite_name = (TextView)findViewById(R.id.opposite_name);
         opposite_name.setText("聊天对象ID");
+
     }
 
 
@@ -108,6 +113,10 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         switch (v.getId()) {
             case R.id.btn_back:// 返回按钮点击事件
                 finish();// 结束,实际开发中，可以返回主界面
+                break;
+            case R.id.btn_send://发送聊天信息
+                Log.d("Send","Send____________________________________________________");
+                chatPresenter.SendMsg(mEditTextContent.getText().toString());
                 break;
         }
     }

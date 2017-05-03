@@ -43,7 +43,7 @@ public class LoginPresenterCompl implements ILoginPresenter,ComService.MsgHandle
     }
 
 ////////////////////////////test
-    private int srcID = 2;
+    private int srcID = 1;
     @Override
     public void doLogin(String name, String passwd) {
         IUser userToLogin = new UserModel(name,passwd,srcID);
