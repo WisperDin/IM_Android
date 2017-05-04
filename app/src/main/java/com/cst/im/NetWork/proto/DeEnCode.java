@@ -28,8 +28,8 @@ public class DeEnCode {
     }*/
 
     //编码-登录帧
-   public static byte[] encodeLoginFrame(IUser userToLogin) {
-       Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
+    public static byte[] encodeLoginFrame(IUser userToLogin) {
+        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
@@ -77,5 +77,16 @@ public class DeEnCode {
             e.printStackTrace();
         }
         return frame;
+    }
+
+    //编码-注册帧
+    public static byte[] encodeRegisterFrame(IUser userToRegister){
+        Frame frame = new BuildFrame(BuildFrame.Register).GetRegisterFrame(userToRegister);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
     }
 }

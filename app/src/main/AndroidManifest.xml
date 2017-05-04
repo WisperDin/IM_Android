@@ -48,6 +48,8 @@
         </activity>
 
         <service android:name=".NetWork.ComService"/>
+        <activity android:name=".UI.main.friend.friendinformationActivity"/>
+        <activity android:name=".UI.main.friend.friendremarkActivity"/>
 
     </application>
 
