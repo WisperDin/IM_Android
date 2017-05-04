@@ -15,6 +15,7 @@
 
     <!--forMsgList-->
     <color name="Black">#000000</color>
-    <color name="Gray">#999999</color>
+    <color name="Gray">#666666</color>
+    <color name="LightGray">#DDDDDD</color>
 
 </resources>
