@@ -14,7 +14,7 @@
             android:layout_marginBottom="4dp"
             android:src="@drawable/msg_icon"/>
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/item_red"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_marginLeft="53dp"

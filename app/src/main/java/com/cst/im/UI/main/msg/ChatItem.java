@@ -9,13 +9,39 @@ public class ChatItem {
     private String LastTime;   //发送最后一条消息的时间
     private String Name;    //好友昵称
     private String LastMsg;   //用于显示最新的一条消息
+    private String ID;    //唯一标识用户的ID
+
+    public int getRedIcon() {
+        return RedIcon;
+    }
+
+    public void setRedIcon(int redIcon) {
+        RedIcon = redIcon;
+    }
+
+    private int RedIcon;
+    public boolean IsRead=false;  //消息是否已读
+    public String getID() {
+        return ID;
+    }
+    public boolean isRead() {
+        return IsRead;
+    }
+    public void setRead(boolean read) {
+        IsRead = read;
+    }
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
     //初始化所有数据
-    public ChatItem(int icon,String lastTime,String name,String lastMsg)
+    public ChatItem(int icon,String lastTime,String name,String lastMsg,int redicon)
     {
         Icon=icon;
         LastTime=lastTime;
         Name=name;
         LastMsg=lastMsg;
+        RedIcon=redicon;
     }
     public int getIcon() {
         return Icon;

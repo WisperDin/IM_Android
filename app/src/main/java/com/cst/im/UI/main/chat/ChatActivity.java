@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
@@ -43,8 +44,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //获取接收者的名称
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();//.getExtras()得到intent所附带的额外数据
-        String acceptName=bundle.getString("Accept");//getString()返回指定key的值
-        Toast.makeText(this, acceptName, Toast.LENGTH_LONG).show();
+        String acceptName=bundle.getString("AcceptName");//getString()返回指定key的值
+        String acceptID=bundle.getString("AcceptID");
+        Toast.makeText(this, "昵称："+acceptName+" ID："+acceptID, Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用
@@ -86,6 +88,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                 return false;
             }
         });
+
     }
     //接收到消息就会执行
     @Override
@@ -120,6 +123,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_back:// 返回按钮点击事件
                 finish();// 结束,实际开发中，可以返回主界面
+                //通知消息列表已读
+                MsgFragment.myAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -144,4 +149,10 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //通知消息列表已读
+        MsgFragment.myAdapter.notifyDataSetChanged();
+    }
 }
