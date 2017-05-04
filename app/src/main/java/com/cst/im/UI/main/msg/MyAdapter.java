@@ -69,6 +69,11 @@ public class MyAdapter extends BaseAdapter{
         }else {
             holder.red.setImageResource(0);
         }
+        if(!chatItems.get(i).isHasTop()){
+            view.setBackgroundResource(0);
+        }else{
+            view.setBackgroundResource(R.color.LightGray);
+        }
         return view;
     }
     static class ViewHolder{

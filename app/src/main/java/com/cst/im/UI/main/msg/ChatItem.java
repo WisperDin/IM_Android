@@ -10,29 +10,10 @@ public class ChatItem {
     private String Name;    //好友昵称
     private String LastMsg;   //用于显示最新的一条消息
     private String ID;    //唯一标识用户的ID
+    private int RedIcon;  //简单红色消息提示
 
-    public int getRedIcon() {
-        return RedIcon;
-    }
-
-    public void setRedIcon(int redIcon) {
-        RedIcon = redIcon;
-    }
-
-    private int RedIcon;
-    public boolean IsRead=false;  //消息是否已读
-    public String getID() {
-        return ID;
-    }
-    public boolean isRead() {
-        return IsRead;
-    }
-    public void setRead(boolean read) {
-        IsRead = read;
-    }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
+    private boolean hasTop=false;  //消息是否顶置
+    private boolean IsRead=false;  //消息是否已读
 
     //初始化所有数据
     public ChatItem(int icon,String lastTime,String name,String lastMsg,int redicon)
@@ -66,5 +47,30 @@ public class ChatItem {
     }
     public void setLastMsg(String lastMsg) {
         LastMsg = lastMsg;
+    }
+    public int getRedIcon() {
+        return RedIcon;
+    }
+    public void setRedIcon(int redIcon) {
+        RedIcon = redIcon;
+    }
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+    public String getID() {
+        return ID;
+    }
+    public boolean isRead() {
+        return IsRead;
+    }
+    public void setRead(boolean read) {
+        IsRead = read;
+    }
+
+    public boolean isHasTop() {
+        return hasTop;
+    }
+    public void setHasTop(boolean hasTop) {
+        this.hasTop = hasTop;
     }
 }
