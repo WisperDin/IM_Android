@@ -17,8 +17,6 @@ import android.widget.Toast;
 import com.cst.im.R;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -201,25 +199,12 @@ public class OpenFileDialog {
 
                     // 设置回调的返回值
                     Bundle bundle = new Bundle();
+
                     bundle.putString("path", pt);
                     bundle.putString("name", fn);
+
                     // 调用事先设置的回调函数
                     this.callback.callback(bundle);
-                    try {
-                        long longlength = fl.length();
-                        int length = (int) longlength;
-                        if (length != longlength)
-                            throw new IOException("File size >= 2 GB");
-                        // Read file and return data
-                        RandomAccessFile f = new RandomAccessFile(fl, "r");
-                        byte[] data = new byte[length];
-                        f.readFully(data);
-                        System.out.println(data);
-                    }
-                    catch (IOException IOE){
-
-
-                    }
                     return;
                 }
                 else if(fl.isDirectory()){

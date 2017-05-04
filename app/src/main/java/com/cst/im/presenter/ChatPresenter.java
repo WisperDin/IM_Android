@@ -13,7 +13,9 @@ import com.cst.im.model.MsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.view.IChatView;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +54,59 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }});
 
     }
+    //发送一般文件
+    @Override
+    public void SendFile(File fileToSend){
+        //获取文件二进制流
 
+        byte[] fileData=null;
+        try {
+            long longlength = fileToSend.length();
+            int length = (int) longlength;
+            if (length != longlength)
+                throw new IOException("File size >= 2 GB");
+            // Read file and return data
+            RandomAccessFile f = new RandomAccessFile(fileToSend, "r");
+            fileData = new byte[length];
+            f.readFully(fileData);
+            System.out.println(fileData);
+
+
+        }
+        catch (IOException IOE){
+            Log.w("file","file send failed");
+            System.out.println("file send failed");
+            return;
+
+        }
+        if(fileData!=null)
+        {
+            final byte[] fileDataToSend = fileData.clone();
+            //发送数据
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ComService.client.SendData(fileDataToSend);
+                    }
+                    catch (IOException ioe)
+                    {
+                        Log.w("send","send file []byte failed");
+                        System.out.println("send file []byte failed");
+                    }
+                }});
+        }
+        else
+        {
+            Log.w("file","fileData null");
+            System.out.println("fileData null");
+        }
+
+
+    }
+
+
+    //发送文字信息
     @Override
     public void SendMsg(String contString){
         if (contString.length() > 0) {

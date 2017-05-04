@@ -1,20 +1,10 @@
 package com.cst.im.UI.main.chat;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +23,7 @@ import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,8 +122,10 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
             Dialog dialog = OpenFileDialog.createDialog(id, this, "打开文件", new CallbackBundle() {
                         @Override
                         public void callback(Bundle bundle) {
-                            String filepath = bundle.getString("path");
-                            setTitle(filepath); // 把文件路径显示在标题上
+                            File file = new File(bundle.getString("path"));
+                            chatPresenter.SendFile(file);
+                            //String filepath = bundle.getString("path");
+                            //setTitle(filepath); // 把文件路径显示在标题上
                         }
                     },
                     "",//.wav;
@@ -154,7 +147,6 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
                 break;
             case R.id.btn_file://发送文件
                 Log.d("Viewing","File----");
-
                 showDialog(openfileDialogId);
                 break;
         }
