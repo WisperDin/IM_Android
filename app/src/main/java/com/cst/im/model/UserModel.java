@@ -4,7 +4,7 @@ package com.cst.im.model;
  * Created by ASUS on 2017/4/23.
  */
 
-public class UserModel implements IUser {
+public class UserModel implements IUser{
     String name;
     String passwd;
 
@@ -17,6 +17,7 @@ public class UserModel implements IUser {
     public String getName() {
         return name;
     }
+
 
     @Override
     public String getPasswd() {

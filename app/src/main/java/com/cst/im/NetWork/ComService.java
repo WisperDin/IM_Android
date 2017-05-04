@@ -7,9 +7,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
+import com.cst.im.model.IFriend;
+import com.cst.im.model.IFriendModel;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import protocol.Protocol.Action;
@@ -28,12 +31,16 @@ public class ComService extends TcpService {
         void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
     }
 
+    public interface FriendListHandler{
+        void handleFriendLisEvent(IFriend fl);//参数为接收到的消息
+    }
 
 
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
     static MsgHandler registerEvent;
     static MsgHandler loginFbEvent;
     static ChatMsgHandler chatMsgEvent;
+    static FriendListHandler FriendListEvent;
 
 
     public static void setRegisterCallback(MsgHandler registerCallback){
@@ -47,6 +54,9 @@ public class ComService extends TcpService {
         chatMsgEvent=chatMsgCallback;
     }
 
+    public static void setFriendListCallback(FriendListHandler FriendListCallback){
+        FriendListEvent=FriendListCallback;
+    }
     @Override
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
@@ -88,7 +98,19 @@ public class ComService extends TcpService {
                     System.out.println("ConService,OnMessageCome ChatMsg bad value");
                 }
                 break;
+            }
 
+            case BuildFrame.GetFriend://好友列表信息
+            {
+
+                Log.d("OnMessage", "feedbackofFriendlist");
+                ArrayList<String> list = new ArrayList<String>();
+                for (int i = 0; i < frame.getDst().getDstCount(); i++) {
+                    list.add(frame.getDst().getDst(i).getUserName());
+                }
+                IFriend myfriend = new IFriendModel(list);
+                FriendListEvent.handleFriendLisEvent(myfriend);
+                break;
             }
 
 
@@ -99,8 +121,8 @@ public class ComService extends TcpService {
             case 3://消息事件
                 handlerMsg(msg);
                 break;*/
-            default:
-                break;
+        default:
+        break;
         }
     }
     /*

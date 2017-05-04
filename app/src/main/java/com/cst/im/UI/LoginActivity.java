@@ -21,12 +21,17 @@ import android.widget.Toast;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
+import com.cst.im.presenter.IFriendPresenter;
+import com.cst.im.presenter.IFriendPresenterCompl;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.presenter.Status;
+import com.cst.im.view.IFriendView;
 import com.cst.im.view.ILoginView;
 
-public class LoginActivity extends AppCompatActivity implements ILoginView,View.OnClickListener,View.OnFocusChangeListener{
+import java.util.ArrayList;
+
+public class LoginActivity extends AppCompatActivity implements ILoginView,IFriendView,View.OnClickListener,View.OnFocusChangeListener{
     //显示动画
     final TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
@@ -44,6 +49,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private LinearLayout activityMain ;
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
+
+
+    public static ArrayList<String> friendlist=new ArrayList<String>();//储存好友列表的名字（服务器获取）
+    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);//用于获取好友列表名字
 
     // 注册按钮
     Button btnRegister;
@@ -118,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
         if (rslCode==Status.Login.LOGINSUCCESS){
             //页面跳转
+            myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
@@ -229,5 +239,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     }
 
 
+
+    @Override
+    public void onRecvMsg(ArrayList<String> list){
+        this.friendlist=list;
+        System.out.println("运行");
+    }
 
 }

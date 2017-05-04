@@ -1,5 +1,6 @@
 package com.cst.im.NetWork.proto;
 
+import com.cst.im.model.IFriend;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -39,6 +40,17 @@ public class DeEnCode {
     //编码-聊天消息帧
     public static byte[] encodeChatMsgFrame(IMsg chatMsg) {
         Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(chatMsg);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
+
+    //编码-获取好友列表帧
+    public static byte[] encodeGetFriendListFrame(IFriend friendL) {
+        Frame frame = new BuildFrame(BuildFrame.GetFriend).GetFriendList(friendL);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);

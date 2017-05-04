@@ -12,11 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.cst.im.R;
+import com.cst.im.presenter.IFriendPresenter;
+import com.cst.im.presenter.IFriendPresenterCompl;
+import com.cst.im.view.IFriendView;
+
+import java.util.ArrayList;
+
+import static com.cst.im.UI.LoginActivity.friendlist;
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
+//    private static ArrayList <String> friendlist=new ArrayList<String>();
+//    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -24,16 +33,15 @@ public class FriendViewFragment extends Fragment implements
         //TextView textView = (TextView) view.findViewById(R.id.fragment_text_view);
         //textView.setText("ok");
 
-
+        //myfriend=new IFriendPresenterCompl(this);
+//        myfriend.Getfriendlist("lzy");
         ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
-
         AddFriendName addfriend=new AddFriendName();
-        addfriend.SortAndAdd("suruijia");
-        addfriend.SortAndAdd("苏锐佳");
-        addfriend.SortAndAdd("ray");
-        addfriend.SortAndAdd("ah啊");
-        addfriend.SortAndAdd("张");
+        System.out.println("获取list："+friendlist.toString());
+        for(int i=0;i<friendlist.size();i++){
+            addfriend.SortAndAdd(friendlist.get(i));
+        }
         for (int i = 0; i < addfriend.getTittle().length; i++) {
             //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
             if (addfriend.getFriendname().get(addfriend.getTittle()[i]).size() != 0) {
@@ -46,7 +54,6 @@ public class FriendViewFragment extends Fragment implements
         Friendlistview.setAdapter(adapter);
         Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
         Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
-
         return view;
     }
 
@@ -76,4 +83,9 @@ public class FriendViewFragment extends Fragment implements
         });
         return true;
     }
+//    @Override
+//    public void onRecvMsg(ArrayList<String> list){
+//        this.friendlist=list;
+//        System.out.println("运行");
+//    }
 }
