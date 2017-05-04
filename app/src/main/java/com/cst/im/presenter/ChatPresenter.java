@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
@@ -25,7 +26,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private IChatView iChatView;
     private  Handler handler;
     private IUser localUser;//假设这个是登录这个客户端的用户
-    private int DstID = 1;
+    private int DstID = 2;
     public ChatPresenter(IChatView chatView , List<IMsg> msg) {
         this.iChatView =  chatView;
         this.mDataArrays = msg;

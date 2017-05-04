@@ -39,16 +39,26 @@
         android:layout_alignParentBottom="true"
         android:background="#ffffff" >
 
+        <Button
+            android:id="@+id/btn_file"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="文件"
+            />
+
         <EditText
             android:id="@+id/et_sendmessage"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="70dp"
             android:background="@drawable/chat_edittext"
             android:singleLine="true"
-            android:textSize="20dp"
-            android:layout_toStartOf="@+id/btn_send" />
+            android:textSize="20dp" />
         <!--android:layout_toLeftOf="@id/btn_send"android:layout_marginRight="10dp"-->
 
         <Button

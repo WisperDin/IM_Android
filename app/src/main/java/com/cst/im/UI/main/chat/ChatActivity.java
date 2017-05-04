@@ -1,13 +1,22 @@
 package com.cst.im.UI.main.chat;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -15,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.UI.main.chat.file.CallbackBundle;
+import com.cst.im.UI.main.chat.file.OpenFileDialog;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
@@ -22,11 +33,14 @@ import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends Activity implements View.OnClickListener ,IChatView {
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
+    private Button mBtnFile;//发送文件按钮
     private EditText mEditTextContent;//输入消息的栏
     private Button mBtnSend;//发送按钮
     private ListView mListView;//消息列表
@@ -34,6 +48,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
     private TextView opposite_name;     //显示聊天对象名字
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,26 +81,7 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         //消息列表选择到最后一行
         mListView.setSelection(mAdapter.getCount() - 1);
 
-        /**
-         * 监听EditText的回车事件
-         * 发送消息
-         */
 
-//        mEditTextContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                //当actionId == XX_SEND 或者 XX_DONE时都触发
-//                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
-//                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
-//                if (actionId == EditorInfo.IME_ACTION_SEND
-//                        || actionId == EditorInfo.IME_ACTION_DONE
-//                        || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
-//                    //发送消息
-//                    chatPresenter.SendMsg(mEditTextContent.getText().toString());
-//                }
-//                return false;
-//            }
-//        });
     }
     //接收到消息就会执行
     @Override
@@ -109,14 +105,42 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
         mListView = (ListView) findViewById(R.id.listview);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mBtnSend = (Button)findViewById(R.id.btn_send);
+        mBtnFile=(Button) findViewById(R.id.btn_file);
         mBtnBack.setOnClickListener(this);
         mBtnSend.setOnClickListener(this);
+        mBtnFile.setOnClickListener(this);
         mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
         opposite_name = (TextView)findViewById(R.id.opposite_name);
         opposite_name.setText("聊天对象ID");
 
     }
 
+    static private int openfileDialogId = 0;
+    //创建文件对话框
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if(id==openfileDialogId){
+            Map<String, Integer> images = new HashMap<String, Integer>();
+            // 下面几句设置各文件类型的图标， 需要你先把图标添加到资源文件夹
+            images.put(OpenFileDialog.sRoot, R.drawable.filedialog_root);   // 根目录图标
+            images.put(OpenFileDialog.sParent, R.drawable.filedialog_folder_up);    //返回上一层的图标
+            images.put(OpenFileDialog.sFolder, R.drawable.filedialog_folder);   //文件夹图标
+            images.put("wav", R.drawable.filedialog_wavfile);   //wav文件图标
+            images.put("txt", R.drawable.filedialog_wavfile);   //wav文件图标
+            images.put(OpenFileDialog.sEmpty, R.drawable.filedialog_root);
+            Dialog dialog = OpenFileDialog.createDialog(id, this, "打开文件", new CallbackBundle() {
+                        @Override
+                        public void callback(Bundle bundle) {
+                            String filepath = bundle.getString("path");
+                            setTitle(filepath); // 把文件路径显示在标题上
+                        }
+                    },
+                    "",//.wav;
+                    images);
+            return dialog;
+        }
+        return null;
+    }
 
     @Override
     public void onClick(View v) {
@@ -127,6 +151,11 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
             case R.id.btn_send://发送聊天信息
                 Log.d("Send","Send____________________________________________________");
                 chatPresenter.SendMsg(mEditTextContent.getText().toString());
+                break;
+            case R.id.btn_file://发送文件
+                Log.d("Viewing","File----");
+
+                showDialog(openfileDialogId);
                 break;
         }
     }
