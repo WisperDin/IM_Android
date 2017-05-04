@@ -10,13 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.presenter.ChatListPresenter;
+import com.cst.im.view.IFragmentView;
 
 import java.util.LinkedList;
 
-public class MsgFragment extends Fragment implements
+public class MsgFragment extends Fragment implements IFragmentView,
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
@@ -28,18 +31,14 @@ public class MsgFragment extends Fragment implements
     //消息列表
     private ListView chat_lv;
 
+    ChatListPresenter chatListPresenter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msg, container, false);
         chatItems=new LinkedList<ChatItem>();
         chat_lv=(ListView)view.findViewById(R.id.chat_list);
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:55","小一","小一你好吗？"));
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:56","小二","小二你好吗？"));
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:57","小三","小三你好吗？"));
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:58","小四","小四你好吗？"));
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:59","小五","小五你好吗？"));
-        chatItems.add(new ChatItem(R.drawable.msg_icon,"22:00","小六","小六你好吗？"));
+        initData(chatItems);
 
         myAdapter=new MyAdapter(chatItems,getActivity());
         chat_lv.setAdapter(myAdapter);
@@ -48,12 +47,23 @@ public class MsgFragment extends Fragment implements
         chat_lv.setOnItemLongClickListener(this);  //设置长按监听，接口实现
         return view;
     }
-
-
+    public void initData(LinkedList<ChatItem> chatItems)
+    {
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:55","小一","小一你好吗？"));
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:56","小二","小二你好吗？"));
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:57","小三","小三你好吗？"));
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:58","小四","小四你好吗？"));
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"21:59","小五","小五你好吗？"));
+        chatItems.add(new ChatItem(R.drawable.msg_icon,"22:00","小六","小六你好吗？"));
+    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
         Intent it = new Intent(getActivity(), ChatActivity.class);
+        ChatItem accept = chatItems.get(position);
+        //传送接收者名称，“Accept”为key
+        it.putExtra("Accept",accept.getName());
+        //Toast.makeText(getActivity(), accept.getName(), Toast.LENGTH_LONG).show();
         startActivity(it);
     }
 
