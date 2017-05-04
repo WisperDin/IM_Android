@@ -4,16 +4,22 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.cst.im.NetWork.ComService;
+import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.model.IRegisterUser;
+import com.cst.im.model.IUser;
 import com.cst.im.model.RegisterUserModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.view.IRegisterView;
+
+import java.io.IOException;
 
 
 /**
  * Created by PolluxLee on 2017/4/25.
  */
 
-public class RegisterPresenterCompl implements IRegisterPresenter{
+public class RegisterPresenterCompl implements IRegisterPresenter,ComService.MsgHandler{
 
     private IRegisterView iRegisterView;
     private IRegisterUser registerUser;
@@ -23,6 +29,8 @@ public class RegisterPresenterCompl implements IRegisterPresenter{
         this.iRegisterView = iRegisterView;
         handler = new Handler(Looper.getMainLooper());
         registerUser = new RegisterUserModel();
+
+        ComService.setRegisterCallback(this);
     }
 
     @Override
@@ -39,15 +47,32 @@ public class RegisterPresenterCompl implements IRegisterPresenter{
                     /**
                      * 注册逻辑
                      */
-                    returnCode = Status.Register.REGISTER_SUCCESS;
-                    registerStatus = Status.Register.REGISTER_SUCCESS;
-                    handler.post(new Runnable() {
+                    IUser user = new UserModel(name,passwd);
+                    //编码注册帧
+                    final byte[] registerFrame = DeEnCode.encodeRegisterFrame(user);
+
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                ComService.client.SendData(registerFrame);
+//                            } catch (IOException ioe) {
+//                                Log.w("send", "send data failed");
+//                            }
+//                        }
+//                    });
+
+                    new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("handler","1111111111");
-                            iRegisterView.onRegisterResult(registerStatus);
+                            try {
+                                ComService.client.SendData(registerFrame);
+                            } catch (IOException ioe) {
+                                Log.w("send", "send data failed");
+                            }
                         }
-                    });
+                    }).start();
+
                 }
                 break;
             case Status.Register.USERNAME_PHONE:
@@ -69,5 +94,15 @@ public class RegisterPresenterCompl implements IRegisterPresenter{
     @Override
     public boolean judgePassword(String password) {
         return registerUser.checkPasswordValidity(password);
+    }
+
+    @Override
+    public void handleFbEvent(final int rslCode) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iRegisterView.onRegisterResult(rslCode);
+            }
+        });
     }
 }

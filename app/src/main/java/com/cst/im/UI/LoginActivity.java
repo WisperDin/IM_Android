@@ -63,8 +63,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
     ComService comService;
     ServiceConnection serviceConn;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
                 drawable.setBounds(0,0,56,56);
                 switch (loginPresenter.judgeUsername(editUser.getText().toString())){
                     case Status.Login.USERNAME_INVALID:
-                        editUser.setError("=.=",drawable);
+                        editUser.setError("不合法",drawable);
                         break;
                     case Status.Login.USERNAME_PHONE:
                         editUser.setError("手机号",drawable);
