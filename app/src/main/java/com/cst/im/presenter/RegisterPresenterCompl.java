@@ -51,7 +51,18 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
                     //编码注册帧
                     final byte[] registerFrame = DeEnCode.encodeRegisterFrame(user);
 
-                    handler.post(new Runnable() {
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                ComService.client.SendData(registerFrame);
+//                            } catch (IOException ioe) {
+//                                Log.w("send", "send data failed");
+//                            }
+//                        }
+//                    });
+
+                    new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -60,16 +71,8 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
                                 Log.w("send", "send data failed");
                             }
                         }
-                    });
+                    }).start();
 
-                    returnCode = Status.Register.REGISTER_SUCCESS;
-                    registerStatus = Status.Register.REGISTER_SUCCESS;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            iRegisterView.onRegisterResult(registerStatus);
-                        }
-                    });
                 }
                 break;
             case Status.Register.USERNAME_PHONE:
@@ -94,7 +97,12 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
     }
 
     @Override
-    public void handleFbEvent(int rslCode) {
-
+    public void handleFbEvent(final int rslCode) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iRegisterView.onRegisterResult(rslCode);
+            }
+        });
     }
 }

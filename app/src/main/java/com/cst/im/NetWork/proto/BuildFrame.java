@@ -1,5 +1,8 @@
 package com.cst.im.NetWork.proto;
 
+import android.util.Log;
+
+import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
 import protocol.Protocol.DstUser;

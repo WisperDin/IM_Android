@@ -21,7 +21,7 @@ public final class Status {
         public static final int USERNAME_EMAIL = 2; // 用户名为邮箱
         public static final int USERNAME_ACCOUNT = 3; // 用户名为普通账号
 
-        public static final int REGISTER_SUCCESS = 4; // 注册成功
-        public static final int REGISTER_FAIL = 5; // 注册失败
+        public static final int REGISTER_SUCCESS = 200; // 注册成功
+        public static final int REGISTER_FAIL = 201; // 注册失败
     }
 }

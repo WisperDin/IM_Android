@@ -111,6 +111,4 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
             return true;
         return false;
     }
-
-
 }
