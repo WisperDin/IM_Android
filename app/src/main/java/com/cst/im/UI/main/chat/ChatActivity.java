@@ -123,7 +123,8 @@ public class ChatActivity extends Activity implements View.OnClickListener ,ICha
                         @Override
                         public void callback(Bundle bundle) {
                             File file = new File(bundle.getString("path"));
-                            chatPresenter.SendFile(file);
+
+                            chatPresenter.SendFile(file,1,new int[]{2});
                             //String filepath = bundle.getString("path");
                             //setTitle(filepath); // 把文件路径显示在标题上
                         }

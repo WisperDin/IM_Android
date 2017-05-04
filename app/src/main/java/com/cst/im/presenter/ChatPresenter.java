@@ -7,6 +7,8 @@ import android.util.Log;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.dataBase.DBManager;
+import com.cst.im.model.FileMsgModel;
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
@@ -15,7 +17,6 @@ import com.cst.im.view.IChatView;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,32 +57,16 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //发送一般文件
     @Override
-    public void SendFile(File fileToSend){
-        //获取文件二进制流
-
-        byte[] fileData=null;
-        try {
-            long longlength = fileToSend.length();
-            int length = (int) longlength;
-            if (length != longlength)
-                throw new IOException("File size >= 2 GB");
-            // Read file and return data
-            RandomAccessFile f = new RandomAccessFile(fileToSend, "r");
-            fileData = new byte[length];
-            f.readFully(fileData);
-            System.out.println(fileData);
-
-
-        }
-        catch (IOException IOE){
-            Log.w("file","file send failed");
-            System.out.println("file send failed");
-            return;
-
-        }
-        if(fileData!=null)
+    public void SendFile(File file, int srcID, int[] dstID){
+        IFileMsg fileMsg = new FileMsgModel();
+        fileMsg.setFile(file);
+        fileMsg.setSrc_ID(srcID);
+        fileMsg.setDst_ID(dstID);
+        //TODO: 断线续传
+        //编码（proto头+文件）
+        final byte[] fileDataToSend = DeEnCode.encodeFileMsgFrame(fileMsg);
+        if(fileDataToSend!=null)
         {
-            final byte[] fileDataToSend = fileData.clone();
             //发送数据
             handler.post(new Runnable() {
                 @Override
@@ -98,8 +83,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         else
         {
-            Log.w("file","fileData null");
-            System.out.println("fileData null");
+            Log.w("file","fileDataToSend null");
+            System.out.println("fileDataToSend null");
         }
 
 

@@ -9,6 +9,6 @@ public interface IChatPresenter {
     void  SendMsg(String contString);
 
     //发送一般文件
-    void SendFile(File fileToSend);
+    void SendFile(File file, int srcID, int[] dstID);
 
 }

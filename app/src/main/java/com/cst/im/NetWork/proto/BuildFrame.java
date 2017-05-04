@@ -2,6 +2,7 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -17,6 +18,7 @@ public class BuildFrame {
     public static final int Register  = 1;
     public static final int FeedBack  = 2;
     public static final int ChatMsg  = 4;
+    public static final int FileSend = 5;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
 
@@ -69,5 +71,23 @@ public class BuildFrame {
         Log.e(" bad value", "BuildFrame,GetLoginFrame");
         System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
+    }
+    //获得文件消息发送头
+    public Frame GetFileMsgFrame(IBaseMsg fileMsg){
+        //发送源
+        User.Builder src = User.newBuilder();
+        src.setUserID(fileMsg.getSrc_ID());
+        //接收者
+        User.Builder dst = User.newBuilder();
+        dst.setUserID(fileMsg.getDst_IDAt(0));
+        DstUser.Builder dstGroup = DstUser.newBuilder();
+        dstGroup.addDst(dst);
+
+        frame.setSrc(src.build());
+        frame.setDst(dstGroup.build());
+        return frame.build();
+        //Log.e(" bad value", "BuildFrame,GetLoginFrame");
+        //System.out.println("BuildFrame,GetLoginFrame bad value");
+        //return null;
     }
 }

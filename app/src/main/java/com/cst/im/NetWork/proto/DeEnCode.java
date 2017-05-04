@@ -1,10 +1,15 @@
 package com.cst.im.NetWork.proto;
 
+import android.util.Log;
+
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import protocol.Protocol.Frame;
 /**
@@ -45,6 +50,50 @@ public class DeEnCode {
         } catch (IOException e) {
         }
         return baos.toByteArray();
+    }
+    //字节数组合并
+    private static synchronized byte[] mergerByte(byte[] bytes_1, byte[] bytes_2) {
+        byte[] bytes = new byte[bytes_1.length + bytes_2.length];
+        System.arraycopy(bytes_1, 0, bytes, 0, bytes_1.length);
+        System.arraycopy(bytes_2, 0, bytes, bytes_1.length, bytes_2.length);
+        return bytes;
+    }
+    //文件流转字节流
+    public static byte[] encodeFileToByte(File file){
+        try {
+            long longlength = file.length();
+            int length = (int) longlength;
+            if (length != longlength)
+                throw new IOException("File size >= 2 GB");
+            // Read file and return data
+            RandomAccessFile f = new RandomAccessFile(file, "r");
+            byte[] fileData = new byte[length];
+            f.readFully(fileData);
+            //System.out.println(fileData);
+            return fileData;
+        }
+        catch (IOException IOE){
+            Log.w("file","file send failed");
+            System.out.println("file send failed");
+
+        }
+        return null;
+    }
+    public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
+        Frame head = new BuildFrame(BuildFrame.FileSend).GetFileMsgFrame(fileMsg);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            head.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
+    //编码-文件发送帧（proto帧头+文件）
+    public static byte[] encodeFileMsgFrame(IFileMsg fileMsg) {
+        byte[] fileMsgHead = encodeFileMsgFrameHead(fileMsg);
+        byte[] fileData = encodeFileToByte(fileMsg.getFile());
+
+        return mergerByte(fileMsgHead,fileData);
     }
     /*//解码
     public static tutorial.Example.AddressBook decodeTest(InputStream is) {
