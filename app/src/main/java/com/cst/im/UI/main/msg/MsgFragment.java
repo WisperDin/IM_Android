@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.presenter.ChatListPresenter;
 import com.cst.im.view.IFragmentView;
 
 import java.util.LinkedList;
@@ -29,6 +31,7 @@ public class MsgFragment extends Fragment implements IFragmentView,
     //消息列表
     private ListView chat_lv;
 
+    ChatListPresenter chatListPresenter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +60,10 @@ public class MsgFragment extends Fragment implements IFragmentView,
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
         Intent it = new Intent(getActivity(), ChatActivity.class);
+        ChatItem accept = chatItems.get(position);
+        //传送接收者名称，“Accept”为key
+        it.putExtra("Accept",accept.getName());
+        //Toast.makeText(getActivity(), accept.getName(), Toast.LENGTH_LONG).show();
         startActivity(it);
     }
 
