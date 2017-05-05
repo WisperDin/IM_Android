@@ -16,4 +16,5 @@ public interface IChatList {
     boolean checkChatItem(ChatItem chatItem);
     void setTop(ChatItem chatItem);
     void offsetTop(ChatItem chatItem);
+    void newChatItem(ChatItem chatItem);
 }

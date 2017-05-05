@@ -14,6 +14,8 @@ public class ChatListModel implements IChatList {
     private LinkedList<ChatItem> MsgList=null;
     //存储消息顶置之前的位置
     private HashMap<ChatItem,Integer> preAddress;
+
+
     public ChatListModel(){
         MsgList=new LinkedList<ChatItem>();
         preAddress= new HashMap<ChatItem,Integer>();
@@ -23,6 +25,12 @@ public class ChatListModel implements IChatList {
         MsgList=msglist;
         preAddress= new HashMap<ChatItem,Integer>();
     }
+
+    @Override
+    public void newChatItem(ChatItem chatItem) {
+
+    }
+
     //新增一个消息对象
     @Override
     public void addChatItem(ChatItem chatItem) {
