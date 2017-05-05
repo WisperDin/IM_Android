@@ -40,7 +40,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     public void Getfriendlist(String name) {
         IFriend friendget=new IFriendModel(name);
         final byte[] GetFriendFrame = DeEnCode.encodeGetFriendListFrame(friendget);
-        handler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -51,7 +51,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
                 {
                     Log.w("send","send data failed");
                 }
-            }});
+            }}).start();
     }
 
 

@@ -58,7 +58,7 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
         //编码登录帧
         final byte[] loginFrame = DeEnCode.encodeLoginFrame(loginUser);
 
-        handler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -67,7 +67,7 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
                     Log.w("send", "send data failed");
                 }
             }
-        });
+        }).start();
 
         //测试中，现在一启动程序就自动发一条登录帧到服务器
 /*        Boolean isLoginSuccess = true;
