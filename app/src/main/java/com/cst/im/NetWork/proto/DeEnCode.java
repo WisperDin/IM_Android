@@ -79,16 +79,29 @@ public class DeEnCode {
         }
         return null;
     }
+    //short转byte数组
+    public static byte[] shortToByteArray(short s) {
+        //java 里面的short是大端存储方式，数据的高位存放在低地址位
+        byte[] targets = new byte[2];
+        targets[1] = (byte) ((s >> 8) & 0xff);
+        targets[0] = (byte) (s & 0xff);
+        return targets;
+    }
+    //编码文件头 包含帧头，帧类型，源，目的
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
-        Frame head = new BuildFrame(BuildFrame.FileSend).GetFileMsgFrame(fileMsg);
+/*        Frame head = new BuildFrame(BuildFrame.FileSend).GetFileMsgFrame(fileMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             head.writeTo(baos);
         } catch (IOException e) {
         }
-        return baos.toByteArray();
+        return baos.toByteArray();*/
+        byte[] srcID = shortToByteArray((short)fileMsg.getSrc_ID());
+        byte[] dstID = shortToByteArray((short)fileMsg.getDst_IDAt(0));
+        byte[] fileHead = new byte[]{(byte)0xaa,(byte) BuildFrame.FileSend,srcID[0],srcID[1],dstID[0],dstID[1]};
+        return fileHead;
     }
-    //编码-文件发送帧（proto帧头+文件）
+    //编码-文件发送帧（固定标志头+文件）
     public static byte[] encodeFileMsgFrame(IFileMsg fileMsg) {
         byte[] fileMsgHead = encodeFileMsgFrameHead(fileMsg);
         byte[] fileData = encodeFileToByte(fileMsg.getFile());

@@ -2,7 +2,6 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
-import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -72,7 +71,8 @@ public class BuildFrame {
         System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
     }
-    //获得文件消息发送头
+    //用固定标志代替
+ /*   //获得文件消息发送头
     public Frame GetFileMsgFrame(IBaseMsg fileMsg){
         //发送源
         User.Builder src = User.newBuilder();
@@ -89,5 +89,5 @@ public class BuildFrame {
         //Log.e(" bad value", "BuildFrame,GetLoginFrame");
         //System.out.println("BuildFrame,GetLoginFrame bad value");
         //return null;
-    }
+    }*/
 }
