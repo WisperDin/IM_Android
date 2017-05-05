@@ -2,8 +2,6 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
-import com.cst.im.model.IFriend;
-import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -18,8 +16,8 @@ public class BuildFrame {
     public static final int Login  = 0;
     public static final int Register  = 1;
     public static final int FeedBack  = 2;
-
     public static final int ChatMsg  = 4;
+    public static final int FileSend = 5;
     public static final int GetFriend  = 6;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
@@ -29,7 +27,6 @@ public class BuildFrame {
         frame.setMsgType(msgType);
         frame.setSenderTime(10000);
     }
-
     //获得原始的帧
     public Frame.Builder GetOriginFrameBuilder(){
         return frame;

@@ -38,7 +38,7 @@ public class DBManager {
      * localUert表示用户自身
      * status 表示发送或者接收的状态，在Constant类中有SEND和RECEIVE两个常量表示两种状态
      * */
-    public static void InsertMsg(MsgModel msg){
+    public static void InsertMsg(IMsg msg){
         //判断接受/发送状态
         String status;
         if(!msg.getMsgType()){

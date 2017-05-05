@@ -1,10 +1,20 @@
 package com.cst.im.UI;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
@@ -62,6 +73,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
 
     ComService comService;
     ServiceConnection serviceConn;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +144,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
             startActivity(it);
             LoginActivity.this.finish();
             Toast.makeText(this,"登录成功", Toast.LENGTH_SHORT).show();
+
+            //TODO 不知道放哪好，暂时放这里，访问应用程序cache需要上下文
+            FileAccess.InitContext(this);
         }
         else if(rslCode == Status.Login.LOGINFAILED)
             Toast.makeText(this,"用户名或密码不正确",Toast.LENGTH_SHORT).show();
