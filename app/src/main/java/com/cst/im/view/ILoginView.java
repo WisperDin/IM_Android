@@ -5,7 +5,7 @@ package com.cst.im.view;
  */
 public interface ILoginView {
     //参数为状态码与状态信息
-    public void onLoginResult(int rslCode);
+    public void onLoginResult(final int rslCode,final int id);
     void onNetworkError();
     void onEditTip();
 }

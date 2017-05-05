@@ -13,6 +13,8 @@ import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
+import com.cst.im.model.ILoginUser;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.IFriendPresenter;
 import com.cst.im.presenter.IFriendPresenterCompl;
 import com.cst.im.view.IFriendView;
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ILoginUser loginUser = DBManager.queryLoginUser();
+        UserModel.InitLocalUser(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId());
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字

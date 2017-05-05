@@ -22,15 +22,11 @@ import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
-import com.cst.im.presenter.IFriendPresenter;
-import com.cst.im.presenter.IFriendPresenterCompl;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.presenter.Status;
-import com.cst.im.view.IFriendView;
 import com.cst.im.view.ILoginView;
-
-import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity implements ILoginView,View.OnClickListener,View.OnFocusChangeListener{
     //显示动画
@@ -121,12 +117,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
     //处理登录事件的UI提示
     @Override
-    public void onLoginResult(int rslCode){
+    public void onLoginResult(final int rslCode,final int id){
 
         if (rslCode==Status.Login.LOGINSUCCESS){
-            //loginPresenter.saveLoginInf();
+            loginPresenter.saveLoginInf();
             //页面跳转
-
+            //TODO
+            UserModel.InitLocalUser("abc","123",id);
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();

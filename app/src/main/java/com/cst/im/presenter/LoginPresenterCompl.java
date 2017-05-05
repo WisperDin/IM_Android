@@ -47,7 +47,7 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
             @Override
             public void run() {
                 loginUser.setId(id);
-                iLoginView.onLoginResult(rslCode);
+                iLoginView.onLoginResult(rslCode,id);
             }
         });
     }
