@@ -12,9 +12,16 @@ import com.cst.im.UI.main.discovery.DiscoveryFragment;
 import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
 import com.cst.im.UI.main.msg.MsgFragment;
+import com.cst.im.dataBase.DBManager;
+import com.cst.im.presenter.IFriendPresenter;
+import com.cst.im.presenter.IFriendPresenterCompl;
+import com.cst.im.view.IFriendView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class MainActivity extends AppCompatActivity implements IFriendView{
+    public static ArrayList<String> friendlist=new ArrayList<String>();//储存好友列表的名字（服务器获取）
+    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);//用于获取好友列表名字
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -46,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();
@@ -58,5 +65,10 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.content, msgFragment).commit();
     }
 
+    @Override
+    public void onRecvMsg(ArrayList<String> list){
+        this.friendlist=list;
+        System.out.println("运行");
+    }
 
 }

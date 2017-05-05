@@ -48,10 +48,10 @@ public class BuildFrame {
         return null;
     }
 
-    public Frame GetRegisterFrame(IUser userToRegister){
+    public Frame GetRegisterFrame(ILoginUser userToRegister){
         User.Builder src = User.newBuilder();
-        src.setUserName(userToRegister.getName());
-        src.setUserPwd(userToRegister.getPasswd());
+        src.setUserName(userToRegister.getUsername());
+        src.setUserPwd(userToRegister.getPassword());
         frame.setSrc(src.build());
         return frame.build();
     }

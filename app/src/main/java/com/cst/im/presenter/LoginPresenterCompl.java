@@ -42,10 +42,11 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
 
     //参数为反馈的状态码与状态信息
     @Override
-    public void handleFbEvent(final int rslCode) {
+    public void handleFbEvent(final int rslCode,final int id) {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                loginUser.setId(id);
                 iLoginView.onLoginResult(rslCode);
             }
         });

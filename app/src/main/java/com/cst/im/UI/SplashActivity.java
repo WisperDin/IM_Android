@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
 import com.cst.im.dataBase.DBManager;
@@ -26,13 +27,18 @@ public class SplashActivity extends AppCompatActivity {
         databaseHelper = DBManager.getIntance(this);
         databaseHelper.getWritableDatabase();
 
+        //启动服务
+        // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
+        Intent startIntent = new Intent(this, ComService.class);
+        startService(startIntent);//记得最后结束
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 ILoginUser loginUser = DBManager.queryLoginUser();
 
 
-                if(loginUser.getId().equals("")){
+                if(loginUser.getId() == 0){
                     Log.d("Splash","need Login");
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);

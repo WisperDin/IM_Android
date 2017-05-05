@@ -32,7 +32,7 @@ import com.cst.im.view.ILoginView;
 
 import java.util.ArrayList;
 
-public class LoginActivity extends AppCompatActivity implements ILoginView,IFriendView,View.OnClickListener,View.OnFocusChangeListener{
+public class LoginActivity extends AppCompatActivity implements ILoginView,View.OnClickListener,View.OnFocusChangeListener{
     //显示动画
     final TranslateAnimation mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
             Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
@@ -52,8 +52,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
     private TextInputLayout tilPassword;
 
 
-    public static ArrayList<String> friendlist=new ArrayList<String>();//储存好友列表的名字（服务器获取）
-    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);//用于获取好友列表名字
+
+
 
     // 注册按钮
     Button btnRegister;
@@ -98,10 +98,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
         };
         bindService(new Intent(this, ComService.class), serviceConn, BIND_AUTO_CREATE);
         */
-        //启动服务
-        Intent startIntent = new Intent(this, ComService.class);
-        startService(startIntent);//记得最后结束
-        // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
+
 //////////////////////////////////////////////////////////////////////////////
 
     }
@@ -129,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
         if (rslCode==Status.Login.LOGINSUCCESS){
             //loginPresenter.saveLoginInf();
             //页面跳转
-            myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
+
             Intent it = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(it);
             LoginActivity.this.finish();
@@ -220,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
                 String user = editUser.getText().toString();
                 String pwd = editPwd.getText().toString();
                 //TODO: 暂时版本
-                loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
+                loginPresenter.doLogin(user,pwd);
                 /*if(loginPresenter.canLogin(user,pwd)) //判断是否符合登录条件
                     loginPresenter.doLogin(editUser.getText().toString(),editPwd.getText().toString());
                 else
@@ -245,10 +242,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
 
 
 
-    @Override
-    public void onRecvMsg(ArrayList<String> list){
-        this.friendlist=list;
-        System.out.println("运行");
-    }
+
 
 }

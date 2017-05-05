@@ -5,8 +5,8 @@ package com.cst.im.model;
  */
 
 public interface ILoginUser {
-    String getId();
-    void setId(String id);
+    int getId();
+    void setId(int id);
     String getUsername();
     void setUsername(String username);
     String getPassword();

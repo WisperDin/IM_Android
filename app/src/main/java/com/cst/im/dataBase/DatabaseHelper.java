@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ""+Constant.Chat.TIME+" text，)";
 
     public static final String CREATE_LOGININF = String.format("CREATE TABLE IF NOT EXISTS %s " +
-            "(%s VARCHAR(30) NOT NULL," +
+            "(%s INT32 ," +
             " %s VARCHAR(30), " +
             " %s VARCHAR(30))",
             Constant.Login.TABLE_NAME,
@@ -72,8 +72,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //三个参数，一个 SQLiteDatabase 对象，一个旧的版本号和一个新的版本号
         if(newVersion>oldVersion)
         {
-            String sql1 = "drop table if exists" + CREATE_MESSAGE;
+            String sql1 = "drop table if exists " + Constant.Login.TABLE_NAME;
             db.execSQL(sql1);
+            String sql2 = "drop table if exists " + Constant.Chat.TABLE_NAME;
+            db.execSQL(sql2);
             this.onCreate(db);
         }
     }

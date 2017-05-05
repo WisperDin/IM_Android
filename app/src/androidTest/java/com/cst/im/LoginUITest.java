@@ -5,6 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.cst.im.UI.LoginActivity;
+import com.cst.im.dataBase.Constant;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -77,4 +78,6 @@ public class LoginUITest {
 
         assertEquals("com.cst.im", appContext.getPackageName());
     }
+
+
 }

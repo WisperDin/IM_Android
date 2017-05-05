@@ -118,13 +118,15 @@ public class DBManager {
     保存用户登陆信息到本地
      */
     public static void saveLoginUser(ILoginUser loginUser){
-        String id = loginUser.getId();
+        int id = loginUser.getId();
         String username = loginUser.getUsername();
         String password = loginUser.getPassword();
         SQLiteDatabase sdb = helper.getReadableDatabase();
-        sdb.execSQL(String.format("INSERT INTO %s (%s,%s,%s)VALUES(%s,%s,%s)",Constant.Login.TABLE_NAME,
+        String sql = String.format("INSERT INTO %s (%s,%s,%s)VALUES(%s,'%s','%s')",Constant.Login.TABLE_NAME,
                 Constant.Login.ID,Constant.Login.USERNAME,Constant.Login.PASSWORD,
-                id,username,password));
+                id,username,password);
+
+        sdb.execSQL(sql);
         sdb.close();
     }
 
@@ -132,14 +134,14 @@ public class DBManager {
     //下次打开软件检查是否已经登陆过，若有，直接跳过登录界面
     public static ILoginUser queryLoginUser(){
         ILoginUser loginUserModel = new LoginUserModel();
-        String id = "";
+        int id = 0;
         String username = "";
         String password = "";
         SQLiteDatabase sdb = helper.getReadableDatabase();
         Cursor cursor = sdb.rawQuery("SELECT * FROM " + Constant.Login.TABLE_NAME,null);
 
         if(cursor.moveToFirst()){
-            id = cursor.getString(cursor.getColumnIndex(Constant.Login.ID));
+            id = cursor.getInt(cursor.getColumnIndex(Constant.Login.ID));
             username = cursor.getString(cursor.getColumnIndex(Constant.Login.USERNAME));
             password = cursor.getString(cursor.getColumnIndex(Constant.Login.PASSWORD));
 
@@ -154,7 +156,9 @@ public class DBManager {
 
     public static void deleteLoginUser(String username){
         SQLiteDatabase sdb = helper.getWritableDatabase();
-        String sql = "DELETE * FROM " + Constant.Login.TABLE_NAME + "WHERE "+ Constant.Login.USERNAME  + " = "+ username;
+
+        String sql = String.format("DELETE  FROM %s WHERE %s = '%s'",Constant.Login.TABLE_NAME,Constant.Login.USERNAME,username);
+        //"DELETE * FROM " + Constant.Login.TABLE_NAME + " WHERE "+ Constant.Login.USERNAME  + " = "+ username;
         sdb.execSQL(sql);
     }
 

@@ -155,7 +155,7 @@ public class DeEnCode {
     }
 
     //编码-注册帧
-    public static byte[] encodeRegisterFrame(IUser userToRegister){
+    public static byte[] encodeRegisterFrame(ILoginUser userToRegister){
         Frame frame = new BuildFrame(BuildFrame.Register).GetRegisterFrame(userToRegister);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
