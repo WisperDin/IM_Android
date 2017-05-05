@@ -1,5 +1,7 @@
 package com.cst.im.presenter;
 
+import android.util.Log;
+
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.ChatItem;
@@ -60,9 +62,18 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatMsgH
         return iChatList.getMsgList();
     }
 
+    //接收到服务端转发消息
     @Override
     public void handleChatMsgEvent(IMsg msgRecv) {
+        String user=msgRecv.getLeft_name();
+        Log.d("消息列表",user+"给你发过来消息");
+        //从数据库中找该消息
+        ChatItem chatItem=new ChatItem(R.drawable.msg_icon,"21:55",user,"小一你好吗？",R.drawable.msg_item_redpoint);
 
+        //进行该消息的处理，若列表中不存在则添加，反之则添加到列表中
+        iChatList.newChatItem(chatItem);
+        chatItem.setRead(false);
+        MsgFragment.myAdapter.notifyDataSetChanged();
     }
     public IChatList getiChatList() {
         return iChatList;
