@@ -112,14 +112,22 @@ public abstract class TcpService extends Service {
                             //TODO:以后要注意粘帧的情况
                             byte[] frameData = new byte[count];
                             System.arraycopy(buffer, 0, frameData, 0, count);
-                            //解码
-                            final Frame frame =  DeEnCode.decodeFrame(frameData);
-                            //放到线程池执行
-                            msgPool.execute(new Runnable() {
+                            if (frameData[0]==DeEnCode.SpecialFrameHead)//如果遇到特殊帧
+                            {
+                                DeEnCode.decodeSpFrame(frameData);
+                            }
+                            else
+                            {
+                                //解码
+                                final Frame frame =  DeEnCode.decodeFrame(frameData);
+                                //放到线程池执行
+                                msgPool.execute(new Runnable() {
                                     @Override
                                     public void run() {OnMessageCome(frame);
                                     }
                                 });
+                            }
+
                             }
                         else{
                             Thread.sleep(10);

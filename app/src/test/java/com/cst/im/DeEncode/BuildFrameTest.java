@@ -78,7 +78,18 @@ public class BuildFrameTest {
         System.out.println(frame.getDst().getDst(0).getUserName());
         System.out.println(frame.getMsg());
     }
+    @Test
+    public void byteArrayToShortTest(){
+        //模拟出大端方式的int16字节数组情况
+        //模拟1
+        byte[] test = new byte[]{(byte)(0x01),(byte)(0x00)};
+        System.out.println(test[0]);
+        System.out.println(test[1]);
+        short s = DeEnCode.byteArrayToShort(test[1],test[0]);
+        System.out.println(s);
+        assertEquals(1,s);
 
+    }
 
     @Test
     public void encoeFileMsgTest(){
