@@ -18,7 +18,7 @@ import com.cst.im.view.IFriendView;
 
 import java.util.ArrayList;
 
-import static com.cst.im.UI.LoginActivity.friendlist;
+import static com.cst.im.UI.main.MainActivity.friendlist;
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
