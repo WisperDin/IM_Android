@@ -47,7 +47,7 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
                     /**
                      * 注册逻辑
                      */
-                    IUser user = new UserModel(name,passwd);
+                    IUser user = new UserModel(name,passwd,1);
                     //编码注册帧
                     final byte[] registerFrame = DeEnCode.encodeRegisterFrame(user);
 

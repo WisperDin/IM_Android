@@ -1,12 +1,13 @@
 package com.cst.im.UI.main.chat;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -14,9 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.UI.main.chat.file.CallbackBundle;
 import com.cst.im.UI.main.chat.file.OpenFileDialog;
+import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;

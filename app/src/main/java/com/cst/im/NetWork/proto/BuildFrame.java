@@ -2,6 +2,8 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
+import com.cst.im.model.IFriend;
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 

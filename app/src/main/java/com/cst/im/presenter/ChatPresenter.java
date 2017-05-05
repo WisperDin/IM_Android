@@ -6,10 +6,8 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IFileMsg;
-import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.MsgModel;
@@ -34,7 +32,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         this.iChatView =  chatView;
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
-        localUser=new UserModel("lzy","123");
+        localUser=new UserModel("lzy","123",1);
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
     }
@@ -60,7 +58,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setSrc_ID(srcID);
         fileMsg.setDst_ID(dstID);
         //TODO: 断线续传
-        //编码（proto头+文件）
+        //编码（固定帧头+文件）
         final byte[] fileDataToSend = DeEnCode.encodeFileMsgFrame(fileMsg);
         if(fileDataToSend!=null)
         {
