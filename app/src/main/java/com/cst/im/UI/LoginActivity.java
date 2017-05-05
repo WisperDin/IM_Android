@@ -1,20 +1,10 @@
 package com.cst.im.UI;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -137,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
     public void onLoginResult(int rslCode){
 
         if (rslCode==Status.Login.LOGINSUCCESS){
-            loginPresenter.saveLoginInf();
+            //loginPresenter.saveLoginInf();
             //页面跳转
             myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
             Intent it = new Intent(LoginActivity.this, MainActivity.class);

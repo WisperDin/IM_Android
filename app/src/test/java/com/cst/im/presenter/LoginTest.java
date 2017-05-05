@@ -3,10 +3,7 @@ package com.cst.im.presenter;
 import com.cst.im.view.ILoginView;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import static org.junit.Assert.assertEquals;
+//import org.mockito.Mock;
 
 /**
  * Created by ASUS on 2017/4/23.
@@ -15,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class LoginTest {
     //登录业务逻辑
     private LoginPresenterCompl loginPresenter;
-    @Mock
+    //@Mock
     private ILoginView iLoginView;
 
     @Before
