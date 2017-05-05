@@ -6,12 +6,9 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.dataBase.Constant;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.ILoginUser;
-import com.cst.im.model.IUser;
 import com.cst.im.model.LoginUserModel;
-import com.cst.im.model.UserModel;
 import com.cst.im.view.ILoginView;
 
 import java.io.IOException;
@@ -45,11 +42,12 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
 
     //参数为反馈的状态码与状态信息
     @Override
-    public void handleFbEvent(final int rslCode) {
+    public void handleFbEvent(final int rslCode,final int id) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                iLoginView.onLoginResult(rslCode);
+                loginUser.setId(id);
+                iLoginView.onLoginResult(rslCode,id);
             }
         });
     }
@@ -120,4 +118,6 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
             return true;
         return false;
     }
+
+
 }

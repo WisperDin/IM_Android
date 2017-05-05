@@ -27,7 +27,10 @@ public abstract class TcpService extends Service {
         super.onCreate();
         //这里是设置服务器的ip地址和端口
         //client = new TcpClient("192.168.1.106",6666);
-        client = new TcpClient("192.168.43.134",6666);
+        //client = new TcpClient("172.18.149.95",6666);
+       // client = new TcpClient("192.168.155.1",6666);
+       //client = new TcpClient("192.168.191.1",6666);
+        client = new TcpClient("172.18.7.173",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,14 +115,22 @@ public abstract class TcpService extends Service {
                             //TODO:以后要注意粘帧的情况
                             byte[] frameData = new byte[count];
                             System.arraycopy(buffer, 0, frameData, 0, count);
-                            //解码
-                            final Frame frame =  DeEnCode.decodeFrame(frameData);
-                            //放到线程池执行
-                            msgPool.execute(new Runnable() {
+                            if (frameData[0]==DeEnCode.SpecialFrameHead)//如果遇到特殊帧
+                            {
+                                DeEnCode.decodeSpFrame(frameData);
+                            }
+                            else
+                            {
+                                //解码
+                                final Frame frame =  DeEnCode.decodeFrame(frameData);
+                                //放到线程池执行
+                                msgPool.execute(new Runnable() {
                                     @Override
                                     public void run() {OnMessageCome(frame);
                                     }
                                 });
+                            }
+
                             }
                         else{
                             Thread.sleep(10);

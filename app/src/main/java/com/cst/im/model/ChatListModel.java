@@ -26,9 +26,18 @@ public class ChatListModel implements IChatList {
         preAddress= new HashMap<ChatItem,Integer>();
     }
 
+    //接收到消息或发送消息时，消息顶置，若不存在该消息则添加该消息
     @Override
     public void newChatItem(ChatItem chatItem) {
-
+        if(!MsgList.contains(chatItem)){
+            MsgList.add(chatItem);
+        }
+        for(int i=0;i<MsgList.size();i++){
+            if(!MsgList.get(i).isHasTop()){
+                MsgList.add(i,chatItem);
+                break;
+            }
+        }
     }
 
     //新增一个消息对象

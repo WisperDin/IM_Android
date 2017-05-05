@@ -18,8 +18,8 @@ public class BuildFrame {
     public static final int Login  = 0;
     public static final int Register  = 1;
     public static final int FeedBack  = 2;
-
     public static final int ChatMsg  = 4;
+    public static final int FileSend = 5;
     public static final int GetFriend  = 6;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
@@ -29,7 +29,6 @@ public class BuildFrame {
         frame.setMsgType(msgType);
         frame.setSenderTime(10000);
     }
-
     //获得原始的帧
     public Frame.Builder GetOriginFrameBuilder(){
         return frame;
@@ -49,10 +48,10 @@ public class BuildFrame {
         return null;
     }
 
-    public Frame GetRegisterFrame(IUser userToRegister){
+    public Frame GetRegisterFrame(ILoginUser userToRegister){
         User.Builder src = User.newBuilder();
-        src.setUserName(userToRegister.getName());
-        src.setUserPwd(userToRegister.getPasswd());
+        src.setUserName(userToRegister.getUsername());
+        src.setUserPwd(userToRegister.getPassword());
         frame.setSrc(src.build());
         return frame.build();
     }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.cst.im.R;
 import com.cst.im.presenter.IFriendPresenter;
@@ -18,23 +19,17 @@ import com.cst.im.view.IFriendView;
 
 import java.util.ArrayList;
 
-import static com.cst.im.UI.LoginActivity.friendlist;
+import static com.cst.im.UI.main.MainActivity.friendlist;
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
-//    private static ArrayList <String> friendlist=new ArrayList<String>();
-//    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
-        //TextView textView = (TextView) view.findViewById(R.id.fragment_text_view);
-        //textView.setText("ok");
-
-        //myfriend=new IFriendPresenterCompl(this);
-//        myfriend.Getfriendlist("lzy");
         ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
@@ -83,9 +78,5 @@ public class FriendViewFragment extends Fragment implements
         });
         return true;
     }
-//    @Override
-//    public void onRecvMsg(ArrayList<String> list){
-//        this.friendlist=list;
-//        System.out.println("运行");
-//    }
+
 }

@@ -6,8 +6,10 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IRegisterUser;
 import com.cst.im.model.IUser;
+import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.RegisterUserModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.view.IRegisterView;
@@ -47,7 +49,7 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
                     /**
                      * 注册逻辑
                      */
-                    IUser user = new UserModel(name,passwd);
+                    ILoginUser user = new LoginUserModel(name,passwd);
                     //编码注册帧
                     final byte[] registerFrame = DeEnCode.encodeRegisterFrame(user);
 
@@ -97,7 +99,7 @@ public class RegisterPresenterCompl implements IRegisterPresenter,ComService.Msg
     }
 
     @Override
-    public void handleFbEvent(final int rslCode) {
+    public void handleFbEvent(final int rslCode,final int id) {
         handler.post(new Runnable() {
             @Override
             public void run() {

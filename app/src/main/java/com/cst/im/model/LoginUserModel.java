@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class LoginUserModel implements ILoginUser {
 
-    String id;
+    int id;
     String username;
     String password;
 
@@ -73,11 +73,11 @@ public class LoginUserModel implements ILoginUser {
 
 
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

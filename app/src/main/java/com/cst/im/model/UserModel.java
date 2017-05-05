@@ -7,10 +7,20 @@ package com.cst.im.model;
 public class UserModel implements IUser{
     String name;
     String passwd;
+    int id;
+    //本地用户
+    public static UserModel localUser;
+    public static void InitLocalUser(String UserName,String UserPwd,int UserID){
+        localUser=new UserModel(UserName,UserPwd,UserID);
+        //TODO 用户其他信息的初始
+    }
 
-    public UserModel(String name, String passwd) {
+
+
+    public UserModel(String name, String passwd,int id) {
         this.name = name;
         this.passwd = passwd;
+        this.id=id;
     }
 
     @Override
@@ -22,6 +32,11 @@ public class UserModel implements IUser{
     @Override
     public String getPasswd() {
         return passwd;
+    }
+
+    @Override
+    public int getID() {
+        return id;
     }
 
     @Override

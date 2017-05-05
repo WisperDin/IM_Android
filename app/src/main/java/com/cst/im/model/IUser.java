@@ -9,5 +9,7 @@ public interface IUser {
 
     String getPasswd();
 
+    int getID();
+
     int checkUserValidity(String name, String passwd);
 }

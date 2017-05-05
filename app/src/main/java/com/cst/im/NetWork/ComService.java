@@ -9,14 +9,17 @@ import android.util.Log;
 import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import protocol.Protocol;
 import protocol.Protocol.Action;
 import protocol.Protocol.Frame;
+import protocol.Protocol.User;
 
 /**
  * Created by cjwddz on 2017/4/23.
@@ -25,7 +28,7 @@ import protocol.Protocol.Frame;
 public class ComService extends TcpService {
     public interface MsgHandler{
         //void handleEvent(Frame frame);
-        void handleFbEvent(int rslCode);//参数为反馈的状态码与状态信息
+        void handleFbEvent(int rslCode,int id);//参数为反馈的状态码与状态信息
     }
     public interface ChatMsgHandler{
         void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
@@ -69,12 +72,13 @@ public class ComService extends TcpService {
             {
                 Log.d("OnMessage","feedback");
                 Action action =  frame.getFbAction();
+                User user = frame.getSrc();
                 //选择反馈信息的类型
                 switch (action.getActionType()){
                     case BuildFrame.Login://登录反馈信息
                         Log.d("OnMessageCome","登录反馈");
                         if(loginFbEvent!=null)//执行登录反馈事件
-                            loginFbEvent.handleFbEvent(action.getRslCode());
+                            loginFbEvent.handleFbEvent(action.getRslCode(),user.getUserID());
                         break;
                     case BuildFrame.Register://注册反馈信息
                         Log.d("OnMessageCome","注册反馈");
