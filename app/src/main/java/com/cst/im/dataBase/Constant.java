@@ -8,12 +8,21 @@ package com.cst.im.dataBase;
 public class Constant {
     public static final String DATABASE_NAME = "Info.db";//数据库名
     public static final int DATABASE_VERSION = 1;//数据库版本名
-    public static final String TABLE_NAME = "LocalMessage"; //数据库表名
-    public static final String LEFT_NAME = "left_name";
-    public static final String RIGHT_NAME = "right_name";
-    public static final String MSG = "msg";
-    public static final String TIME = "time";
-    public static final String FLAG = "flag";//用于标志是收到的信息还是发送的信息
+    public class Chat{
+        public static final String TABLE_NAME = "LocalMessage"; //数据库表名
+        public static final String LEFT_NAME = "left_name";
+        public static final String RIGHT_NAME = "right_name";
+        public static final String MSG = "msg";
+        public static final String TIME = "time";
+        public static final String FLAG = "flag";//用于标志是收到的信息还是发送的信息
+    }
+    public class Login{
+        public static final String TABLE_NAME = "LocalUser";
+        public static final String ID = "id";
+        public static final String USERNAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String LOGINTYPE = "login_type";
+    }
 
 
     //接收状态/发送状态

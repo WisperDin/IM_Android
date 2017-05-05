@@ -3,12 +3,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
+import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.MsgModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -20,6 +25,7 @@ public class DBManager {
     private static DatabaseHelper helper;
 
     public static DatabaseHelper getIntance(Context context){
+        Log.d("DBManager","getIntance");
         if(helper == null){
             helper = new DatabaseHelper(context);
         }
@@ -43,12 +49,12 @@ public class DBManager {
         }
         SQLiteDatabase sdb = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(""+Constant.LEFT_NAME+"", msg.getLeft_name());
-        values.put(""+Constant.RIGHT_NAME+"",msg.getRight_name());
-        values.put(""+Constant.MSG+"", msg.getMessage());
-        values.put(""+Constant.TIME+"", msg.getDate());
-        values.put(""+Constant.FLAG+"" , status);
-        sdb.insert(""+Constant.TABLE_NAME+"", null, values);
+        values.put(""+Constant.Chat.LEFT_NAME+"", msg.getLeft_name());
+        values.put(""+Constant.Chat.RIGHT_NAME+"",msg.getRight_name());
+        values.put(""+Constant.Chat.MSG+"", msg.getMessage());
+        values.put(""+Constant.Chat.TIME+"", msg.getDate());
+        values.put(""+Constant.Chat.FLAG+"" , status);
+        sdb.insert(""+Constant.Chat.TABLE_NAME+"", null, values);
         sdb.close();
     }
 
@@ -63,23 +69,23 @@ public class DBManager {
         List<IMsg> mDataArrays = new ArrayList<IMsg>();// 消息对象数组
         SQLiteDatabase sdb = helper.getReadableDatabase();
         //查询获得游标
-        Cursor cursor = sdb.query (""+Constant.TABLE_NAME+"",null,null,null,null,null,null);
+        Cursor cursor = sdb.query (""+Constant.Chat.TABLE_NAME+"",null,null,null,null,null,null);
 
         //判断游标是否为空
         if(cursor.moveToFirst()) {
         //遍历游标
             while(!cursor.isAfterLast()){
-                int l_nameColumnIndex = cursor.getColumnIndex(Constant.LEFT_NAME);
+                int l_nameColumnIndex = cursor.getColumnIndex(Constant.Chat.LEFT_NAME);
                 String l_name = cursor.getString(l_nameColumnIndex);
-                int r_nameColumnIndex = cursor.getColumnIndex(Constant.RIGHT_NAME);
+                int r_nameColumnIndex = cursor.getColumnIndex(Constant.Chat.RIGHT_NAME);
                 String r_name = cursor.getString(r_nameColumnIndex);
                 if(l_name.equals(left_name)  ){
-                    int i_status = cursor.getColumnIndex(Constant.FLAG);
+                    int i_status = cursor.getColumnIndex(Constant.Chat.FLAG);
                     String i_flag = cursor.getString(i_status);
                     //执行取出聊天记录的操作
-                    int i_time = cursor.getColumnIndex(Constant.TIME);
+                    int i_time = cursor.getColumnIndex(Constant.Chat.TIME);
                     String time = cursor.getString(i_time);
-                    int i_msg = cursor.getColumnIndex(Constant.MSG);
+                    int i_msg = cursor.getColumnIndex(Constant.Chat.MSG);
                     String msg = cursor.getString(i_msg);
                     if(i_flag.equals(Constant.SEND)){
                         //加载发出去的信息
@@ -108,4 +114,48 @@ public class DBManager {
         sdb.close();
         return mDataArrays;
     }
+    /*
+    保存用户登陆信息到本地
+     */
+    public static void saveLoginUser(ILoginUser loginUser){
+        String id = loginUser.getId();
+        String username = loginUser.getUsername();
+        String password = loginUser.getPassword();
+        SQLiteDatabase sdb = helper.getReadableDatabase();
+        sdb.execSQL(String.format("INSERT INTO %s (%s,%s,%s)VALUES(%s,%s,%s)",Constant.Login.TABLE_NAME,
+                Constant.Login.ID,Constant.Login.USERNAME,Constant.Login.PASSWORD,
+                id,username,password));
+        sdb.close();
+    }
+
+
+    //下次打开软件检查是否已经登陆过，若有，直接跳过登录界面
+    public static ILoginUser queryLoginUser(){
+        ILoginUser loginUserModel = new LoginUserModel();
+        String id = "";
+        String username = "";
+        String password = "";
+        SQLiteDatabase sdb = helper.getReadableDatabase();
+        Cursor cursor = sdb.rawQuery("SELECT * FROM " + Constant.Login.TABLE_NAME,null);
+
+        if(cursor.moveToFirst()){
+            id = cursor.getString(cursor.getColumnIndex(Constant.Login.ID));
+            username = cursor.getString(cursor.getColumnIndex(Constant.Login.USERNAME));
+            password = cursor.getString(cursor.getColumnIndex(Constant.Login.PASSWORD));
+
+        }
+        loginUserModel.setId(id);
+        loginUserModel.setUsername(username);
+        loginUserModel.setPassword(password);
+        cursor.close();
+        sdb.close();
+        return loginUserModel;
+    }
+
+    public static void deleteLoginUser(String username){
+        SQLiteDatabase sdb = helper.getWritableDatabase();
+        String sql = "DELETE * FROM " + Constant.Login.TABLE_NAME + "WHERE "+ Constant.Login.USERNAME  + " = "+ username;
+        sdb.execSQL(sql);
+    }
+
 }

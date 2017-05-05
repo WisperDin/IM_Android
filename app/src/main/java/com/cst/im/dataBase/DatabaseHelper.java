@@ -3,6 +3,7 @@ package com.cst.im.dataBase;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by wzb on 2017/4/27.
@@ -16,14 +17,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * left_name 表示与本机用户聊天的姓名
      * */
 
-    public static final String CREATE_MESSAGE = "create table "+Constant.TABLE_NAME+" ("
+    public static final String CREATE_MESSAGE = "create table "+Constant.Chat.TABLE_NAME+" ("
             + "id integer primary key autoincrement, "
-            + ""+Constant.FLAG+" text,"
-            + ""+Constant.LEFT_NAME+" text, "
-            + ""+Constant.RIGHT_NAME+" text,"
-            + ""+Constant.MSG+" text, "
-            + ""+Constant.TIME+" text，)";
+            + ""+Constant.Chat.FLAG+" text,"
+            + ""+Constant.Chat.LEFT_NAME+" text, "
+            + ""+Constant.Chat.RIGHT_NAME+" text,"
+            + ""+Constant.Chat.MSG+" text, "
+            + ""+Constant.Chat.TIME+" text，)";
 
+    public static final String CREATE_LOGININF = String.format("CREATE TABLE IF NOT EXISTS %s " +
+            "(%s VARCHAR(30) NOT NULL," +
+            " %s VARCHAR(30), " +
+            " %s VARCHAR(30))",
+            Constant.Login.TABLE_NAME,
+            Constant.Login.USERNAME,
+            Constant.Login.PASSWORD,
+            Constant.Login.ID);
     /**
      * @param context  上下文环境（例如，一个 Activity）
      * @param name   数据库名字
@@ -48,7 +57,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("Database","onCreate");
         db.execSQL(CREATE_MESSAGE);
+        db.execSQL(CREATE_LOGININF);
     }
 
     /**

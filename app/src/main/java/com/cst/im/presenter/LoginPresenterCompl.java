@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.dataBase.Constant;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IUser;
 import com.cst.im.model.LoginUserModel;
@@ -18,21 +20,28 @@ import java.io.IOException;
  */
 
 public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandler {
+    ILoginUser loginUser ;
     ILoginView iLoginView;
-    ILoginUser user;
+
     Handler handler;
 
     public LoginPresenterCompl(ILoginView iLoginView) {
         this.iLoginView = iLoginView;
-        initUser();
+
         handler = new Handler(Looper.getMainLooper());
         ComService.setLoginCallback(this);
     }
 
+    /*
+    保存登录信息到本地数据库
+    用户名则保存登录名和登录密码
+     */
     @Override
     public void saveLoginInf() {
-
+        DBManager.saveLoginUser(loginUser);
     }
+
+
 
     //参数为反馈的状态码与状态信息
     @Override
@@ -47,9 +56,9 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
 
     @Override
     public void doLogin(String name, String passwd) {
-        IUser userToLogin = new UserModel(name, passwd);
+        loginUser = new LoginUserModel(name, passwd);
         //编码登录帧
-        final byte[] loginFrame = DeEnCode.encodeLoginFrame(userToLogin);
+        final byte[] loginFrame = DeEnCode.encodeLoginFrame(loginUser);
 
         handler.post(new Runnable() {
             @Override
@@ -76,9 +85,9 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
         //return 1;
     }
 
-    private void initUser() {
-        user = new LoginUserModel("mvp", "mvp");
-    }
+//    private void initUser() {
+//        loginUser = new LoginUserModel("mvp", "mvp");
+//    }
 
     @Override
     public boolean doOtherLogin() {
@@ -97,12 +106,12 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
 
     @Override
     public short judgeUsername(String username) {
-        return user.checkTypeOfUsername(username);
+        return LoginUserModel.checkTypeOfUsername(username);
     }
 
     @Override
     public boolean judgePassword(String password) {
-        return user.checkPasswordValidity(password);
+        return LoginUserModel.checkPasswordValidity(password);
     }
 
     @Override

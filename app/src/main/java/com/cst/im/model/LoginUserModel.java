@@ -1,5 +1,7 @@
 package com.cst.im.model;
 
+import android.util.Log;
+
 import com.cst.im.presenter.Status;
 
 import java.util.regex.Pattern;
@@ -10,14 +12,17 @@ import java.util.regex.Pattern;
 
 public class LoginUserModel implements ILoginUser {
 
-
+    String id;
     String username;
     String password;
+
     public LoginUserModel(String username, String password){
         this.username = username;
         this.password = password;
     }
+    public LoginUserModel(){
 
+    }
     public String getPassword() {
         return password;
     }
@@ -35,8 +40,7 @@ public class LoginUserModel implements ILoginUser {
         this.username = username;
     }
 
-    @Override
-    public short checkTypeOfUsername(String username){
+    public static short checkTypeOfUsername(String username){
 
         Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
         Pattern phonePattern = Pattern.compile("^1(3|4|5|7|8)[0-9]\\d{8}$");
@@ -58,8 +62,7 @@ public class LoginUserModel implements ILoginUser {
         }
     }
 
-    @Override
-    public boolean checkPasswordValidity(String password) {
+    public static boolean checkPasswordValidity(String password) {
         if(4 < password.length()&&password.length() < 22){
             return true;
         }
@@ -68,11 +71,13 @@ public class LoginUserModel implements ILoginUser {
         }
     }
 
-    @Override
-    public int checkUserValidity(String name, String passwd){
-        if (name==null||passwd==null||!name.equals(getUsername())||!passwd.equals(getPassword())){
-            return -1;
-        }
-        return 0;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
