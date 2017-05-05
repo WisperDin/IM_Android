@@ -2,6 +2,7 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
+import com.cst.im.model.IFriend;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -18,6 +19,7 @@ public class BuildFrame {
     public static final int FeedBack  = 2;
 
     public static final int ChatMsg  = 4;
+    public static final int GetFriend  = 6;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
 
@@ -79,4 +81,19 @@ public class BuildFrame {
         System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
     }
+
+    //获取好友列表帧
+    public Frame GetFriendList(IFriend GetFriendList){
+        if (GetFriendList.getname()!=null)
+        {
+            User.Builder src = User.newBuilder();
+            src.setUserName(GetFriendList.getname());
+            frame.setSrc(src.build());
+            return frame.build();
+        }
+        Log.e(" bad value", "BuildFrame,GetFriendListFrame");
+        System.out.println("BuildFrame,GetLoginFrame bad value");
+        return null;
+    }
+
 }
