@@ -76,6 +76,11 @@ public class ComService extends TcpService {
                         if(loginFbEvent!=null)//执行登录反馈事件
                             loginFbEvent.handleFbEvent(action.getRslCode());
                         break;
+                    case BuildFrame.Register://注册反馈信息
+                        Log.d("OnMessageCome","注册反馈");
+                        if(registerEvent!=null)//执行登录反馈事件
+                            registerEvent.handleFbEvent(action.getRslCode());
+                        break;
                 }
                 break;
             }
