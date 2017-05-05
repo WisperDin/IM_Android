@@ -48,7 +48,7 @@ public class Customdialog extends Dialog {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final Customdialog dialog = new Customdialog(context,R.style.Dialog);
             View layout = inflater.inflate(R.layout.frienddialog, null);
-
+            tv=(TextView)layout.findViewById(R.id.frienddialogitem);
             dialog.addContentView(layout, new LayoutParams(
                     LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
             dialog.setContentView(layout);
