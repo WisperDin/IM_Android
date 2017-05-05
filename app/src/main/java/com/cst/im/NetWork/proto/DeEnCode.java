@@ -1,6 +1,7 @@
 package com.cst.im.NetWork.proto;
 
 import com.cst.im.model.IFriend;
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -28,8 +29,8 @@ public class DeEnCode {
     }*/
 
     //编码-登录帧
-    public static byte[] encodeLoginFrame(IUser userToLogin) {
-        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(userToLogin);
+    public static byte[] encodeLoginFrame(ILoginUser loginUser) {
+        Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(loginUser);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);

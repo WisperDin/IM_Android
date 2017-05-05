@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,IFrie
     public void onLoginResult(int rslCode){
 
         if (rslCode==Status.Login.LOGINSUCCESS){
+            loginPresenter.saveLoginInf();
             //页面跳转
             myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
             Intent it = new Intent(LoginActivity.this, MainActivity.class);

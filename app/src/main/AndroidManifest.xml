@@ -11,8 +11,12 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UI.LoginActivity"
-            android:theme="@style/LoginTheme"
-            android:label="@string/app_name">
+            android:theme="@style/LoginTheme">
+        </activity>
+        <activity
+            android:name=".UI.SplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,8 +46,8 @@
 
         <activity
             android:name=".UI.RegisterActivity"
-            android:theme="@style/RegisterTheme"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/RegisterTheme">
 
         </activity>
 

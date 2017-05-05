@@ -3,6 +3,7 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.model.IFriend;
+import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.IUser;
 
@@ -34,12 +35,12 @@ public class BuildFrame {
         return frame;
     }
     //获得登录帧
-    public Frame GetLoginFrame(IUser userToLogin){
-        if (userToLogin.getName()!=null&&userToLogin.getPasswd()!=null&&userToLogin.getName()!="")
+    public Frame GetLoginFrame(ILoginUser loginUser){
+        if (loginUser.getUsername()!=null&&loginUser.getPassword()!=null&&loginUser.getUsername()!="")
         {
             User.Builder src = User.newBuilder();
-            src.setUserName(userToLogin.getName());
-            src.setUserPwd(userToLogin.getPasswd());
+            src.setUserName(loginUser.getUsername());
+            src.setUserPwd(loginUser.getPassword());
             frame.setSrc(src.build());
             return frame.build();
         }
