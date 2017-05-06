@@ -10,12 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.cst.im.R;
-import com.cst.im.presenter.IFriendPresenter;
-import com.cst.im.presenter.IFriendPresenterCompl;
-import com.cst.im.view.IFriendView;
 
 import java.util.ArrayList;
 
@@ -68,8 +64,8 @@ public class FriendViewFragment extends Fragment implements
         }
         Intent intent = new Intent(getActivity(), friendinformationActivity.class);
         Bundle bundle=new Bundle();
-        bundle.putString("username",NameSequencebylistview.get(position));
-        bundle.putInt("userid",friendlistNameAndID.get(NameSequencebylistview.get(position)));
+        bundle.putString("dstName",NameSequencebylistview.get(position));
+        bundle.putInt("dstId",friendlistNameAndID.get(NameSequencebylistview.get(position)));
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
 

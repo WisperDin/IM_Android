@@ -9,7 +9,7 @@ public class ChatItem {
     private String LastTime;   //发送最后一条消息的时间
     private String Name;    //好友昵称
     private String LastMsg;   //用于显示最新的一条消息
-    private String ID;    //唯一标识用户的ID
+    private int ID;    //唯一标识用户的ID
     private int RedIcon;  //简单红色消息提示
 
     private boolean hasTop=false;  //消息是否顶置
@@ -54,10 +54,8 @@ public class ChatItem {
     public void setRedIcon(int redIcon) {
         RedIcon = redIcon;
     }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-    public String getID() {
+    public void setID(int ID) {this.ID = ID;}
+    public int getID() {
         return ID;
     }
     public boolean isRead() {

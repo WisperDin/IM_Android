@@ -70,14 +70,14 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        //新页面接收数据
+        Bundle bundle;
+        bundle = this.getIntent().getExtras();
+        //接收name值
+        String name = bundle.getString("dstName");
+        int id= bundle.getInt("dstId");
 
-
-        //by jijinping
-        //获取接收者的名称
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();//.getExtras()得到intent所附带的额外数据
-        String acceptName=bundle.getString("Accept");//getString()返回指定key的值
-        Toast.makeText(this, acceptName, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, name+" "+id, Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用

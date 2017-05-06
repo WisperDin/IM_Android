@@ -1,6 +1,5 @@
 package com.cst.im.UI.main.msg;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,8 +18,6 @@ import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.presenter.ChatListPresenter;
 import com.cst.im.presenter.IChatListPresenter;
 import com.cst.im.view.IFragmentView;
-
-import java.util.LinkedList;
 
 public class MsgFragment extends Fragment implements IFragmentView,
         AdapterView.OnItemClickListener,
@@ -56,8 +52,10 @@ public class MsgFragment extends Fragment implements IFragmentView,
         //用于设置消息已读
         accept.setRead(true);
         //传送接收者名称，“AcceptName”为key
-        it.putExtra("AcceptName",accept.getName());
-        it.putExtra("AcceptID",accept.getID());
+        Bundle bundle = new Bundle();
+        bundle.putString("dstName",accept.getName());
+        bundle.putInt("dstID",accept.getID());
+        it.putExtras(bundle);
         //Toast.makeText(getActivity(), accept.getName(), Toast.LENGTH_LONG).show();
         startActivity(it);
     }

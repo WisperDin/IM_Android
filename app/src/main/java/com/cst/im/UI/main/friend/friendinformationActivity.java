@@ -20,8 +20,8 @@ public class friendinformationActivity extends AppCompatActivity {
         //新页面接收数据
         bundle = this.getIntent().getExtras();
         //接收name值
-        String name = bundle.getString("username");
-        int id= bundle.getInt("userid");
+        String name = bundle.getString("dstName");
+        int id= bundle.getInt("dstId");
         TextView tvname=(TextView) findViewById(R.id.tv_friendinfo_name);
         TextView tvid=(TextView) findViewById(R.id.tv_friendinfo_id);
         Button bt_msg=(Button)findViewById(R.id.bt_msg);
