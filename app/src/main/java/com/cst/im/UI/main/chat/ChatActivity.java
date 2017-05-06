@@ -1,10 +1,11 @@
 package com.cst.im.UI.main.chat;
 
-import android.app.Dialog;
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.chat.file.CallbackBundle;
-import com.cst.im.UI.main.chat.file.OpenFileDialog;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
@@ -28,9 +27,7 @@ import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
@@ -166,40 +163,71 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
-    static private int openfileDialogId = 0;
-    //创建文件对话框
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        if(id==openfileDialogId){
-            Map<String, Integer> images = new HashMap<String, Integer>();
-            // 下面几句设置各文件类型的图标， 需要你先把图标添加到资源文件夹
-            images.put(OpenFileDialog.sRoot, R.drawable.filedialog_root);   // 根目录图标
-            images.put(OpenFileDialog.sParent, R.drawable.filedialog_folder_up);    //返回上一层的图标
-            images.put(OpenFileDialog.sFolder, R.drawable.filedialog_folder);   //文件夹图标
-            images.put("wav", R.drawable.filedialog_wavfile);   //wav文件图标
-            images.put("txt", R.drawable.filedialog_wavfile);   //wav文件图标
-            images.put(OpenFileDialog.sEmpty, R.drawable.filedialog_root);
-            Dialog dialog = OpenFileDialog.createDialog(id, this, "打开文件", new CallbackBundle() {
-                        @Override
-                        public void callback(Bundle bundle) {
-                            File file = new File(bundle.getString("path"));
-                            //测试为1发到1
-                            chatPresenter.SendFile(file,1,new int[]{1});
-                            String filepath = bundle.getString("path");
-                            setTitle(filepath); // 把文件路径显示在标题上
-                        }
-                    },
-                    "",//.wav;
-                    images);
-            return dialog;
-        }
-        return null;
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         MsgFragment.myAdapter.notifyDataSetChanged();
+    }
+
+    /*
+     * 从相册获取
+      */
+    private void GetImgFromGallery() {
+        // 激活系统图库，选择一张图片
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        try {
+            // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
+            startActivityForResult(Intent.createChooser(intent, "选择图片"), PHOTO_REQUEST_GALLERY);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "抱歉,不存在图库", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //选择文件
+    private void GetFile(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "选择文件"), FILE_REQUEST);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "抱歉,不存在文件管理器", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //获取视频文件从摄像头
+    private void GetVideoFromCam(){
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.addCategory("android.intent.category.DEFAULT");
+        tempPhotoFile = new File(this.getCacheDir(), "testVideoFileFromCam.avi");
+        // 从文件中创建uri
+        Uri uri = Uri.fromFile(tempPhotoFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, VIDEO_REQUEST_CAREMA);
+
+
+    }
+    /*
+    * 判断sdcard是否被挂载
+    */
+ /*     private boolean hasSdcard() {
+          if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+              return true;
+          } else{
+              return false;
+          }
+      }*/
+    private void GetPhotoFromCamera() {
+        // 激活相机
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // 判断存储卡是否可以用，可用进行存储
+           /* tempFile = new File(Environment.getExternalStorageDirectory(),
+                    "test");*/
+        tempPhotoFile = new File("/", "testPhotoFileFromCam.jpg");
+        // 从文件中创建uri
+        Uri uri = Uri.fromFile(tempPhotoFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CAREMA
+        startActivityForResult(intent, PHOTO_REQUEST_CAREMA);
     }
 
     @Override
@@ -216,8 +244,33 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                 break;
             case R.id.btn_file://发送文件
                 Log.d("Viewing","File----");
-                showDialog(openfileDialogId);
+                GetImgFromGallery();
                 break;
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        if (requestCode == FILE_REQUEST) {//一般文件
+            Uri uri = data.getData();
+            Toast.makeText(this,uri.getPath(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
+            Uri uri = data.getData();
+            Toast.makeText(this,uri.getPath(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (requestCode == PHOTO_REQUEST_CAREMA) {// 从相机返回的图片
+            Toast.makeText(this,Uri.fromFile(tempPhotoFile).getPath(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (requestCode == VIDEO_REQUEST_CAREMA) {// 获取视频
+            Toast.makeText(this,Uri.fromFile(tempVideoFile).getPath(), Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 
