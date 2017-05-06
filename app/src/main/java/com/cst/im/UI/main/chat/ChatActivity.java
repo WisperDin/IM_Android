@@ -111,7 +111,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
                     //发送消息
-                    chatPresenter.SendMsg(((UserModel[]) dstUsers.toArray()),mEditTextContent.getText().toString());
+                    UserModel[] dst =new UserModel[dstUsers.size()];
+                    dstUsers.toArray(dst);
+                    chatPresenter.SendMsg(dst,mEditTextContent.getText().toString());
                 }
                 return false;
             }
@@ -240,7 +242,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
             case R.id.btn_send://发送聊天信息
                 Log.d("Send","Send____________________________________________________");
-                chatPresenter.SendMsg((UserModel[]) dstUsers.toArray(),mEditTextContent.getText().toString());
+                UserModel[] dst =new UserModel[dstUsers.size()];
+                dstUsers.toArray(dst);
+                chatPresenter.SendMsg(dst,mEditTextContent.getText().toString());
                 break;
             case R.id.btn_file://发送文件
                 Log.d("Viewing","File----");
