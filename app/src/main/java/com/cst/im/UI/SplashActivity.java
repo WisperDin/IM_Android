@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +30,21 @@ import com.cst.im.presenter.ILoginPresenter;
 public class SplashActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     ILoginPresenter loginPresenter;
+    int flagJumpToLogin = 0;
+    int flagJumpToMain = 1;
+    Handler myhandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            if(msg.what == flagJumpToLogin){
+                jumpToLogin();
+            }
+            else if(msg.what == flagJumpToMain){
+                jumpToMain();
+            }
+        }
+    };
+
+
     ////////////////////////////////////////////////////////////////////////////////获取权限
     // 要申请的权限
     private String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -68,10 +85,13 @@ public class SplashActivity extends AppCompatActivity {
                         // 用户还是想用我的 APP 的
                         // 提示用户去应用设置界面手动开启权限
                         showDialogTipUserGoToAppSettting();
-                    } //else
-                    //finish();
+                    } else
+                    finish();
                 } else {
                     Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    Message message = myhandler.obtainMessage();
+                    message.what = flagJumpToLogin;
+                    message.sendToTarget();
                 }
             }
         }
@@ -93,7 +113,7 @@ public class SplashActivity extends AppCompatActivity {
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //finish();
+                        finish();
                     }
                 }).setCancelable(false).show();
     }
@@ -127,18 +147,30 @@ public class SplashActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                     Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    // 
+
                 }
             }
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////获取权限内容
+    public void jumpToLogin(){
+        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-
+    public void jumpToMain(){
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         Handler handler = new Handler();
+
         databaseHelper = DBManager.getIntance(this);
         databaseHelper.getWritableDatabase();
 
@@ -152,34 +184,32 @@ public class SplashActivity extends AppCompatActivity {
             if (i != PackageManager.PERMISSION_GRANTED) {
                 // 如果没有授予该权限，就去提示用户请求
                 showDialogTipUserRequestPermission();
+            }else{
+                //启动服务
+                // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
+                Intent startIntent = new Intent(this, ComService.class);
+                startService(startIntent);//记得最后结束
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ILoginUser loginUser = DBManager.queryLoginUser();
+
+
+                        if(loginUser.getId() == 0){
+                            Log.d("Splash","need Login");
+                            jumpToLogin();
+                        }
+                        else{
+                            Log.d("Splash","don't need Login");
+                            jumpToMain();
+                        }
+                    }
+                }, 1500);
             }
         }
 
 
-        //启动服务
-        // TODO: 2017/4/30 service还未写结束，可以写一个Service管理类,现在会有个bug,就是关闭不了service
-        Intent startIntent = new Intent(this, ComService.class);
-        startService(startIntent);//记得最后结束
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ILoginUser loginUser = DBManager.queryLoginUser();
-
-
-                if(loginUser.getId() == 0){
-                    Log.d("Splash","need Login");
-                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-                else{
-                    Log.d("Splash","don't need Login");
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        }, 1500);
     }
 }
