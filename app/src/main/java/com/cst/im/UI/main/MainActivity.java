@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.cst.im.R;
+import com.cst.im.UI.main.chat.FaceConversionUtil;
 import com.cst.im.UI.main.discovery.DiscoveryFragment;
 import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
@@ -60,6 +62,14 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FaceConversionUtil.getInstace().getFileText(getApplication());
+            }
+        }).start();
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();

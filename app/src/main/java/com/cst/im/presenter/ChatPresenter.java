@@ -1,11 +1,10 @@
 package com.cst.im.presenter;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IMsg;
@@ -43,6 +42,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     public void handleChatMsgEvent(final IMsg msgRecv){
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
         mDataArrays.add(msgRecv);
+        DBManager.InsertMsg(msgRecv);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -95,8 +95,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             entity.setDate(Tools.getDate());
             entity.setMessage(contString);
             entity.setMsgType(false);
-
             entity.setLeft_name("abc");
+            DBManager.InsertMsg(entity);
             //发送数据到服务器
             //编码聊天消息帧
             final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(entity);

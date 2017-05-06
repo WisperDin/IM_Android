@@ -1,12 +1,14 @@
 package com.cst.im.UI.main.chat;
 
 import android.app.Dialog;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,23 +50,28 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
+
         //by jijinping
         //获取接收者的名称
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();//.getExtras()得到intent所附带的额外数据
-        String acceptName=bundle.getString("AcceptName");//getString()返回指定key的值
-        String acceptID=bundle.getString("AcceptID");
-        Toast.makeText(this, "昵称："+acceptName+" ID："+acceptID, Toast.LENGTH_LONG).show();
+        String acceptName=bundle.getString("Accept");//getString()返回指定key的值
+        Toast.makeText(this, acceptName, Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用
         helper = DBManager.getIntance(this);
         helper.getWritableDatabase();
 
-        InitData();//本地数据库测试
+        //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
         List<IMsg> msg_list =  DBManager.QueryMsg("lzy");
+
 
         initView();// 初始化view
 
@@ -120,14 +127,27 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mListView = (ListView) findViewById(R.id.listview);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mBtnSend = (Button)findViewById(R.id.btn_send);
+        mBtnSend = (Button)findViewById(R.id.btn_send);
         mBtnFile=(Button) findViewById(R.id.btn_file);
         mBtnBack.setOnClickListener(this);
+        mBtnSend.setOnClickListener(this);
+
         mBtnSend.setOnClickListener(this);
         mBtnFile.setOnClickListener(this);
         mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
         opposite_name = (TextView)findViewById(R.id.opposite_name);
         opposite_name.setText("聊天对象ID");
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && ((FaceRelativeLayout) findViewById(R.id.FaceRelativeLayout))
+                .hideFaceView()) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     static private int openfileDialogId = 0;
@@ -149,8 +169,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                             File file = new File(bundle.getString("path"));
                             //测试为1发到1
                             chatPresenter.SendFile(file,1,new int[]{1});
-                            //String filepath = bundle.getString("path");
-                            //setTitle(filepath); // 把文件路径显示在标题上
+                            String filepath = bundle.getString("path");
+                            setTitle(filepath); // 把文件路径显示在标题上
                         }
                     },
                     "",//.wav;
@@ -165,9 +185,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_back:// 返回按钮点击事件
                 finish();// 结束,实际开发中，可以返回主界面
-                //通知消息列表已读
-                MsgFragment.myAdapter.notifyDataSetChanged();
                 break;
+
             case R.id.btn_send://发送聊天信息
                 Log.d("Send","Send____________________________________________________");
                 chatPresenter.SendMsg(mEditTextContent.getText().toString());
@@ -199,10 +218,4 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //通知消息列表已读
-        MsgFragment.myAdapter.notifyDataSetChanged();
-    }
 }

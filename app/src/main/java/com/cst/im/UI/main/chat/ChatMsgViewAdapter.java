@@ -1,6 +1,7 @@
 package com.cst.im.UI.main.chat;
 
 import android.content.Context;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     private static final int ITEMCOUNT = 2;// 消息类型的总数
     private List<IMsg> coll;// 消息对象数组
     private LayoutInflater mInflater;
+    private Context context;
 
     public ChatMsgViewAdapter(Context context, List<IMsg> coll) {
         this.coll = coll;
         mInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
 
@@ -96,8 +99,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.tvSendTime.setText(entity.getDate());
-//        viewHolder.tvUserName.setText(entity.getName());
-        viewHolder.tvContent.setText(entity.getMessage());
+        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, entity.getMessage());
+        viewHolder.tvContent.setText(spannableString);
+        //        viewHolder.tvUserName.setText(entity.getName());
+        //viewHolder.tvContent.setText(entity.getMessage());
         return convertView;
     }
 
