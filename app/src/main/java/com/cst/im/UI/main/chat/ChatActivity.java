@@ -250,7 +250,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
            // 判断存储卡是否可以用，可用进行存储
            /* tempFile = new File(Environment.getExternalStorageDirectory(),
                     "test");*/
-           tempPhotoFile = new File(this.getCacheDir(), "testPhotoFileFromCam.jpg");
+           tempPhotoFile = new File("/", "testPhotoFileFromCam.jpg");
            // 从文件中创建uri
            Uri uri = Uri.fromFile(tempPhotoFile);
            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
@@ -314,7 +314,6 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
         MsgModel lzy_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:11:24" , "我也有" , true);
         DBManager.InsertMsg(lzy_2);
-
 
         MsgModel wzb_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:20:23" , "那上吧" , false);
         DBManager.InsertMsg(wzb_2);

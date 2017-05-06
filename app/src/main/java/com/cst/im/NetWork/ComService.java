@@ -9,7 +9,6 @@ import android.util.Log;
 import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
-import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import protocol.Protocol;
 import protocol.Protocol.Action;
 import protocol.Protocol.Frame;
 import protocol.Protocol.User;
@@ -112,7 +110,10 @@ public class ComService extends TcpService {
 
             case BuildFrame.GetFriend://好友列表信息
             {
-
+                if(frame.getSrc()==null||frame.getSrc().getUserID()==0||frame.getDst()==null||frame.getDst().getDstCount()<=0){
+                    Log.e(" bad value", "ComService,OnMessageCome GetFriend");
+                    return;
+                }
                 Log.d("OnMessage", "feedbackofFriendlist");
                 ArrayList<String> list = new ArrayList<String>();
                 HashMap<String ,Integer> NameAndID = new HashMap<String , Integer>();
@@ -122,7 +123,7 @@ public class ComService extends TcpService {
                 }
                 IFriend myfriend = new IFriendModel(list,NameAndID);
                 FriendListEvent.handleFriendLisEvent(myfriend);
-                break;
+                return;
             }
 
 
@@ -134,6 +135,7 @@ public class ComService extends TcpService {
                 handlerMsg(msg);
                 break;*/
             default:
+                Log.w("OnMessageCome","msgType异常");
                 break;
         }
     }
