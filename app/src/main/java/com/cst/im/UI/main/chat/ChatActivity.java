@@ -22,11 +22,13 @@ import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
@@ -57,7 +59,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private File tempPhotoFile;
     private File tempVideoFile;
 
-
+    private ArrayList<UserModel> dstUsers = new ArrayList<UserModel>() ;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,11 +71,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //新页面接收数据
         Bundle bundle;
         bundle = this.getIntent().getExtras();
-        //接收name值
-        String name = bundle.getString("dstName");
-        int id= bundle.getInt("dstId");
-
-        Toast.makeText(this, name+" "+id, Toast.LENGTH_LONG).show();
+        UserModel dstUser = new UserModel(bundle.getString("dstName"),"",bundle.getInt("dstId"));
+        dstUsers.add(dstUser);
+        Toast.makeText(this, dstUser.getName()+" "+dstUser.getID(), Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用
@@ -111,7 +111,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
                     //发送消息
-                    chatPresenter.SendMsg(mEditTextContent.getText().toString());
+                    chatPresenter.SendMsg(((UserModel[]) dstUsers.toArray()),mEditTextContent.getText().toString());
                 }
                 return false;
             }
@@ -240,7 +240,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
             case R.id.btn_send://发送聊天信息
                 Log.d("Send","Send____________________________________________________");
-                chatPresenter.SendMsg(mEditTextContent.getText().toString());
+                chatPresenter.SendMsg((UserModel[]) dstUsers.toArray(),mEditTextContent.getText().toString());
                 break;
             case R.id.btn_file://发送文件
                 Log.d("Viewing","File----");
