@@ -14,6 +14,7 @@ import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import protocol.Protocol;
@@ -114,10 +115,12 @@ public class ComService extends TcpService {
 
                 Log.d("OnMessage", "feedbackofFriendlist");
                 ArrayList<String> list = new ArrayList<String>();
+                HashMap<String ,Integer> NameAndID = new HashMap<String , Integer>();
                 for (int i = 0; i < frame.getDst().getDstCount(); i++) {
                     list.add(frame.getDst().getDst(i).getUserName());
+                    NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
-                IFriend myfriend = new IFriendModel(list);
+                IFriend myfriend = new IFriendModel(list,NameAndID);
                 FriendListEvent.handleFriendLisEvent(myfriend);
                 break;
             }

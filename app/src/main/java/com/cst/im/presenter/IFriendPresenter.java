@@ -7,5 +7,5 @@ import com.cst.im.model.IFriend;
  */
 
 public interface IFriendPresenter {
-    void Getfriendlist(String name);
+    void Getfriendlist(int id);
 }

@@ -20,12 +20,14 @@ import com.cst.im.view.IFriendView;
 import java.util.ArrayList;
 
 import static com.cst.im.UI.main.MainActivity.friendlist;
+import static com.cst.im.UI.main.MainActivity.friendlistNameAndID;
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
-
+    private  ArrayList<Integer> letter = new ArrayList<Integer>();//储存标题上的大写字母的位置
+     ArrayList<String> NameSequencebylistview= new ArrayList<String>();//记录item上的名字
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,11 +43,14 @@ public class FriendViewFragment extends Fragment implements
             //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
             if (addfriend.getFriendname().get(addfriend.getTittle()[i]).size() != 0) {
                 adapter.addSeparatorItem(addfriend.getTittle()[i], R.drawable.friend_icon);
+                NameSequencebylistview.add(addfriend.getTittle()[i]);
                 for (int k = 0; k <addfriend.getFriendname().get(addfriend.getTittle()[i]).size(); k++) {
                     adapter.addItem(addfriend.getFriendname().get(addfriend.getTittle()[i]).get(k), R.drawable.friend_icon);
+                    NameSequencebylistview.add(addfriend.getFriendname().get(addfriend.getTittle()[i]).get(k));
                 }
             }
         }
+        letter=adapter.letterList;
         Friendlistview.setAdapter(adapter);
         Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
         Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
@@ -56,7 +61,16 @@ public class FriendViewFragment extends Fragment implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
+        for (int i=0;i<letter.size();i++){
+            if(position==letter.get(i)){
+                return;
+            }
+        }
         Intent intent = new Intent(getActivity(), friendinformationActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("username",NameSequencebylistview.get(position));
+        bundle.putInt("userid",friendlistNameAndID.get(NameSequencebylistview.get(position)));
+        intent.putExtras(bundle);
         getActivity().startActivity(intent);
 
     }
@@ -64,6 +78,11 @@ public class FriendViewFragment extends Fragment implements
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view,
                                    int position, long id) {
+        for (int i=0;i<letter.size();i++){
+            if(position==letter.get(i)){
+                return false;
+            }
+        }
         final Customdialog.Builder builder = new Customdialog.Builder(getActivity());
         final Dialog dialog=builder.create();
         dialog.show();

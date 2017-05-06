@@ -25,6 +25,7 @@ public class MyCustomAdapter extends BaseAdapter {
     private static final int TYPE_SEPARATOR = 1;
     private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
     public List<Map<String, Object>> data=new ArrayList<Map<String, Object>>();
+    public  ArrayList<Integer> letterList = new ArrayList<Integer>();//储存标题上的大写字母的位置
     private LayoutInflater inflater;
     private TreeSet<Integer> set = new TreeSet<Integer>();
 
@@ -91,6 +92,7 @@ public class MyCustomAdapter extends BaseAdapter {
                     holder.icon=(ImageView)convertView.findViewById(R.id.icon);
                     holder.textView = (TextView) convertView
                             .findViewById(R.id.item2);
+                    letterList.add(position);
                     break;
             }
             convertView.setTag(holder);

@@ -14,6 +14,7 @@ import com.cst.im.view.IFriendView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -26,19 +27,20 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     IFriend ifriend;
     IFriendView ifriendview;
     ArrayList<String> friendlist=new ArrayList<String>();
+    HashMap<String ,Integer> friendNAndID = new HashMap<String , Integer>();
 
     public IFriendPresenterCompl(IFriendView friendview ) {
         this.ifriendview =  friendview;
         handler = new Handler(Looper.getMainLooper());
-        ifriend=new IFriendModel(friendlist);
+        ifriend=new IFriendModel(friendlist,friendNAndID);
         //监听收到消息的接口
         ComService.setFriendListCallback(this);
     }
 
     //发送请求获取好友列表
     @Override
-    public void Getfriendlist(String name) {
-        IFriend friendget=new IFriendModel(name);
+    public void Getfriendlist(int id) {
+        IFriend friendget=new IFriendModel(id);
         final byte[] GetFriendFrame = DeEnCode.encodeGetFriendListFrame(friendget);
         new Thread(new Runnable() {
             @Override
@@ -63,7 +65,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
                 Log.w("send","Get data success");
                 System.out.println(msgRecv.getfriendlist().toString());
                 //数据传输-》loginactivity用到
-                ifriendview.onRecvMsg(msgRecv.getfriendlist());
+                ifriendview.onRecvMsg(msgRecv.getfriendlist(),msgRecv.getFriendNameAndID());
             }});
 
         }

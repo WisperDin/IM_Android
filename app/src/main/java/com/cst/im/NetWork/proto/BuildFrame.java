@@ -84,10 +84,10 @@ public class BuildFrame {
 
     //获取好友列表帧
     public Frame GetFriendList(IFriend GetFriendList){
-        if (GetFriendList.getname()!=null)
+        if (GetFriendList.getId()!=0)
         {
             User.Builder src = User.newBuilder();
-            src.setUserName(GetFriendList.getname());
+            src.setUserID(GetFriendList.getId());
             frame.setSrc(src.build());
             return frame.build();
         }
