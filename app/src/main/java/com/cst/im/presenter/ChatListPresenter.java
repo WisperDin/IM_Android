@@ -17,7 +17,7 @@ import java.util.LinkedList;
  * Created by jijinping on 2017/5/3.
  */
 
-public class ChatListPresenter implements IChatListPresenter,ComService.ChatMsgHandler{
+public class ChatListPresenter implements IChatListPresenter,ComService.ChatListHandler{
 
     private IChatList iChatList;
     private IFragmentView iFragmentView;
@@ -27,7 +27,7 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatMsgH
         loadChatListLocal();
         iFragmentView=new MsgFragment();
         //监听收到消息的接口
-        ComService.setChatMsgCallback(this);
+        ComService.setChatListCallback(this);
     }
 
     @Override
@@ -64,16 +64,16 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatMsgH
 
     //接收到服务端转发消息
     @Override
-    public void handleChatMsgEvent(IMsg msgRecv) {
+    public void handleChatListEvent(IMsg msgRecv) {
         String user=msgRecv.getLeft_name();
+        String msg=msgRecv.getMessage();
         Log.d("消息列表",user+"给你发过来消息");
         //从数据库中找该消息
-        ChatItem chatItem=new ChatItem(R.drawable.msg_icon,"21:55",user,"小一你好吗？",R.drawable.msg_item_redpoint);
 
-        //进行该消息的处理，若列表中不存在则添加，反之则添加到列表中
+        ChatItem chatItem=new ChatItem(R.drawable.msg_icon,Tools.getDate().substring(11,16),user,msg,R.drawable.msg_item_redpoint);
+
+        //进行该消息的处理，若列表中不存在则添加，并顶置列表中
         iChatList.newChatItem(chatItem);
-        chatItem.setRead(false);
-        MsgFragment.myAdapter.notifyDataSetChanged();
     }
     public IChatList getiChatList() {
         return iChatList;
@@ -90,4 +90,6 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatMsgH
     public void setiFragmentView(IFragmentView iFragmentView) {
         this.iFragmentView = iFragmentView;
     }
+
+
 }
