@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.cst.im.R;
@@ -53,12 +52,13 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
 
     };
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ILoginUser loginUser = DBManager.queryLoginUser();
         UserModel.InitLocalUser(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId());
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myfriend.Getfriendlist("lzy");//登陆成功从服务器数据库获取所有好友的名字
@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();
+
+
     }
 
     private void setCurrentFragment() {

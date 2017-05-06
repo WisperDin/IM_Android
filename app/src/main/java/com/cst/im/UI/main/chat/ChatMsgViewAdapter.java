@@ -113,4 +113,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         public boolean isComMsg = true;
     }
 
+
+
 }

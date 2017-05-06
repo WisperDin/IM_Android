@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.cst.im.R;
 import com.cst.im.UI.main.chat.file.CallbackBundle;
 import com.cst.im.UI.main.chat.file.OpenFileDialog;
-import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
 import com.cst.im.model.MsgModel;
@@ -45,6 +44,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private TextView opposite_name;     //显示聊天对象名字
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
