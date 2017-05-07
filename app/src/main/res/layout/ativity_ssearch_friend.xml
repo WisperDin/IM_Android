@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+
+
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="285dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:background="@drawable/friend_searchbk"
+        android:hint="输入需要添加好友的ID"
+        android:gravity="center"
+        android:layout_weight="0.36" />
+
+        <Button
+            android:id="@+id/bt_search"
+            android:layout_width="27dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btsearch"
+            android:layout_weight="0.50" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_searchname"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center_vertical"
+        android:textSize="17dp"
+        android:text="TextView" />
+</LinearLayout>
