@@ -15,6 +15,18 @@ public class IFriendModel implements IFriend{
 
     private int id;
 
+    private int searchId;
+
+    public int getResultcode() {
+        return resultcode;
+    }
+
+    public void setResultcode(int resultcode) {
+        this.resultcode = resultcode;
+    }
+
+    private int resultcode;
+
     //好友姓名列表
     private ArrayList <String> friendlist=new ArrayList<String>();
 
@@ -26,6 +38,10 @@ public class IFriendModel implements IFriend{
         iFriendModel=new  IFriendModel(friendlist,NameAndID);
     }
 
+    public IFriendModel(int ownerid,int friendid){
+        this.id=ownerid;
+        this.searchId=friendid;
+    }
     public IFriendModel(String name){
         this.ownername = name;
     }
@@ -36,6 +52,7 @@ public class IFriendModel implements IFriend{
         this.friendlist = friendlist;
         this.friendNameAndID=NameAndID;
     }
+    public IFriendModel(){};
 
 
     //用于获取好友列表
@@ -52,6 +69,18 @@ public class IFriendModel implements IFriend{
     @Override
     public HashMap<String, Integer> getFriendNameAndID() {
         return friendNameAndID;
+    }
+    @Override
+    public int SearchId(){
+        return searchId;
+    }
+    @Override
+    public int ReaultCode(){
+        return resultcode;
+    }
+    @Override
+    public void SetRealtCode(int code){
+        this.resultcode=code;
     }
 
 }

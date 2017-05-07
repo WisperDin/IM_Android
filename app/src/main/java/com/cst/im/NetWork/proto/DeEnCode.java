@@ -71,6 +71,17 @@ public class DeEnCode {
         }
         return baos.toByteArray();
     }
+
+    //编码-判断是否为好友帧
+    public static byte[] encodeIsFriendFrame(IFriend Isfriend) {
+        Frame frame = new BuildFrame(BuildFrame.IsFriend).IsFriend(Isfriend);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
     //字节数组合并
     private static synchronized byte[] mergerByte(byte[] bytes_1, byte[] bytes_2) {
         byte[] bytes = new byte[bytes_1.length + bytes_2.length];

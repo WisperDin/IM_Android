@@ -21,6 +21,7 @@ public class BuildFrame {
     public static final int ChatMsg  = 4;
     public static final int FileSend = 5;
     public static final int GetFriend  = 6;
+    public static final int IsFriend=7;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
 
@@ -92,8 +93,28 @@ public class BuildFrame {
             return frame.build();
         }
         Log.e(" bad value", "BuildFrame,GetFriendListFrame");
-        System.out.println("BuildFrame,GetLoginFrame bad value");
+        System.out.println("BuildFrame,GetFriendListFrame bad value");
         return null;
     }
+
+    //获取判断是否为好友帧
+    public Frame IsFriend(IFriend IsFriend){
+        if (IsFriend.getId()!=0&&IsFriend.SearchId()!=0)
+        {
+            User.Builder src = User.newBuilder();
+            src.setUserID(IsFriend.getId());
+            DstUser.Builder dstGroup = DstUser.newBuilder();
+            User.Builder dst = User.newBuilder();
+            dst.setUserID(IsFriend.SearchId());
+            dstGroup.addDst(dst);
+            frame.setSrc(src.build());
+            frame.setDst(dstGroup);
+            return frame.build();
+        }
+        Log.e(" bad value", "BuildFrame,IsFriendFrame");
+        System.out.println("BuildFrame,IsFriendFrame bad value");
+        return null;
+    }
+
 
 }

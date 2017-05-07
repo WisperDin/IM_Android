@@ -8,4 +8,6 @@ import com.cst.im.model.IFriend;
 
 public interface IFriendPresenter {
     void Getfriendlist(int id);
+    void Isfriend(int ownerid,int IsFriendId);
+    void handleIsFriendEvent(final IFriend msgRecv);
 }

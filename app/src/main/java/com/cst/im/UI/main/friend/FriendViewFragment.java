@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.cst.im.R;
@@ -30,6 +32,26 @@ public class FriendViewFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
         ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
+        ImageView img_search=(ImageView)view.findViewById(R.id.img_search);
+        InitView(img_search,Friendlistview);
+        Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
+        Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
+        img_search.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchFriend.class);
+                Bundle bundle=new Bundle();
+                bundle.putInt("srcId",IFriendModel.iFriendModel.getId());
+                intent.putExtras(bundle);
+                getActivity().startActivity(intent);
+            }
+        });
+        return view;
+    }
+
+
+    public void InitView(ImageView img,ListView lv){
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
         for(int i = 0; i< IFriendModel.iFriendModel.getfriendlist().size(); i++){
@@ -47,11 +69,9 @@ public class FriendViewFragment extends Fragment implements
             }
         }
         letter=adapter.letterList;
-        Friendlistview.setAdapter(adapter);
-        Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
-        Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
-        return view;
+        lv.setAdapter(adapter);
     }
+
 
 
     @Override
@@ -64,8 +84,8 @@ public class FriendViewFragment extends Fragment implements
         }
         Intent intent = new Intent(getActivity(), friendinformationActivity.class);
         Bundle bundle=new Bundle();
-        bundle.putString("username",NameSequencebylistview.get(position));
-        bundle.putInt("userid",IFriendModel.iFriendModel.getFriendNameAndID().get(NameSequencebylistview.get(position)));
+        bundle.putString("dstName",NameSequencebylistview.get(position));
+        bundle.putInt("dstId",IFriendModel.iFriendModel.getFriendNameAndID().get(NameSequencebylistview.get(position)));
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
 

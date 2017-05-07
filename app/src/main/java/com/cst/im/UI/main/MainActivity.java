@@ -79,5 +79,8 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
         IFriendModel.InitFriendModel(list,NameAndID);
         System.out.println("运行");
     }
+    @Override
+    public void onReaultCode(int code,String name){}
+
 
 }

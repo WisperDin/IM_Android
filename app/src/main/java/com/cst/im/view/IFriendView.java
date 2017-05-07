@@ -8,5 +8,6 @@ import java.util.HashMap;
  */
 
 public interface IFriendView {
-    public void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID);
+    void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID);
+    void onReaultCode(int code,String name);
 }

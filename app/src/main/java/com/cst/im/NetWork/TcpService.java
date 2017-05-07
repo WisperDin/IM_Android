@@ -29,7 +29,7 @@ public abstract class TcpService extends Service {
 //        client = new TcpClient("192.168.1.106",6666);
 //        client = new TcpClient("172.18.149.95",6666);
         //client = new TcpClient("192.168.43.134",6666);
-        client = new TcpClient("192.168.191.1",6666);
+        client = new TcpClient("172.18.7.173",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
