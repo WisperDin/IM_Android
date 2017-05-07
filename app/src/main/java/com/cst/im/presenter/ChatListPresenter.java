@@ -7,8 +7,9 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.ChatItem;
 import com.cst.im.model.ChatListModel;
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IChatList;
-import com.cst.im.model.IMsg;
+import com.cst.im.model.ITextMsg;
 import com.cst.im.view.IMsgView;
 
 import java.util.LinkedList;
@@ -66,15 +67,18 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatList
 
     //接收到服务端转发消息
     @Override
-    public void handleChatListEvent(IMsg msgRecv) {
-        AddChatMsg(msgRecv.getLeft_name(),msgRecv.getMessage());
+    public void handleChatListEvent(IBaseMsg msgRecv) {
+        switch (msgRecv.getMsgType()) {
+            case TEXT:
+                ITextMsg textMsg = ((ITextMsg) msgRecv);
+            AddChatMsg(textMsg.getSrc_ID(), textMsg.getText());
+        }
     }
-
     //添加一条消息的接口
     @Override
-    public void AddChatMsg(final String userName,final  String message) {
+    public void AddChatMsg(final int id,final  String message) {
         //构造消息
-        ChatItem chatItem=new ChatItem(R.drawable.msg_icon, Tools.getDate().substring(11,16),userName,message,R.drawable.msg_item_redpoint);
+        ChatItem chatItem=new ChatItem(R.drawable.msg_icon, Tools.getDate().substring(11,16),id,message,R.drawable.msg_item_redpoint);
         //进行该消息的处理，若列表中不存在则添加，并顶置列表中
         ChatListPresenter.iChatList.newChatItem(chatItem);
         handler.post(new Runnable() {

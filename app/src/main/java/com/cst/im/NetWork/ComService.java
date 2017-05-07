@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.MsgModel;
+import com.cst.im.model.ITextMsg;
+import com.cst.im.model.TextMsgModel;
+import com.cst.im.presenter.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +32,10 @@ public class ComService extends TcpService {
         void handleFbEvent(int rslCode,int id);//参数为反馈的状态码与状态信息
     }
     public interface ChatMsgHandler{
-        void handleChatMsgEvent(IMsg msgRecv);//参数为接收到的消息
+        void handleChatMsgEvent(IBaseMsg msgRecv);//参数为接收到的消息
     }
     public interface ChatListHandler{
-        void handleChatListEvent(IMsg msgRecv);//参数为接收到的消息
+        void handleChatListEvent(IBaseMsg msgRecv);//参数为接收到的消息
     }
 
     public interface FriendListHandler{
@@ -100,15 +102,25 @@ public class ComService extends TcpService {
                 if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!="")
                 {
                     //模拟了一个date
-                    IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
-                            frame.getDst().getDst(0).getUserName(),
-                            "1000",
-                            frame.getMsg().getMsg(),
-                            true);
+                    int dst[] = new int[frame.getDst().getDstCount()+1];
+                    for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
+                        dst[i] = frame.getDst().getDst(i).getUserID();
+                    }
+                    ITextMsg textMsg = new TextMsgModel();
+                    textMsg.setSrc_ID(frame.getSrc().getUserID());
+                    textMsg.setDst_ID(dst);
+                    textMsg.setMsgDate(Tools.getDate());
+                    textMsg.setText(frame.getMsg().getMsg());
+                    textMsg.sendOrRecv(true);
+//                    IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
+//                            frame.getDst().getDst(0).getUserName(),
+//                            "1000",
+//                            frame.getMsg().getMsg(),
+//                            true);
                     if(chatMsgEvent!=null)//执行登录反馈事件
-                        chatMsgEvent.handleChatMsgEvent(msgRecv);
+                        chatMsgEvent.handleChatMsgEvent(textMsg);
                     if(chatListEvent!=null)
-                        chatListEvent.handleChatListEvent(msgRecv);
+                        chatListEvent.handleChatListEvent(textMsg);
                 }else{
                     Log.e(" bad value", "ConService,OnMessageCome ChatMsg");
                     System.out.println("ConService,OnMessageCome ChatMsg bad value");
@@ -134,27 +146,11 @@ public class ComService extends TcpService {
                 return;
             }
 
-
-            /*case 2://注册事件
-                if(registerEvent!=null)
-                    registerEvent.handleEvent(msg);
-                break;
-            case 3://消息事件
-                handlerMsg(msg);
-                break;*/
             default:
                 Log.w("OnMessageCome","msgType异常");
                 break;
         }
     }
-    /*
-    private void handlerMsg(JSONObject msg){
-        if(msgListeners==null || msgListeners.size()<=0)
-            return;
-        for (MsgHandler listener : msgListeners) {
-            listener.handleEvent(msg);
-        }
-    }*/
 
     @Nullable
     @Override

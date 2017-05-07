@@ -5,10 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.ILoginUser;
-import com.cst.im.model.IMsg;
+import com.cst.im.model.ITextMsg;
 import com.cst.im.model.LoginUserModel;
-import com.cst.im.model.MsgModel;
+import com.cst.im.model.TextMsgModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,21 +37,22 @@ public class DBManager {
      * localUert表示用户自身
      * status 表示发送或者接收的状态，在Constant类中有SEND和RECEIVE两个常量表示两种状态
      * */
-    public static void InsertMsg(IMsg msg){
+    public static void InsertMsg(IBaseMsg msg){
         //判断接受/发送状态
         String status;
-        if(!msg.getMsgType()){
+        if(!msg.sendOrRecv()){
              status = Constant.SEND;
         }
         else {
              status = Constant.RECEIVE;
         }
+        ITextMsg textMsg = ((ITextMsg) msg);
         SQLiteDatabase sdb = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(""+Constant.Chat.LEFT_NAME+"", msg.getLeft_name());
-        values.put(""+Constant.Chat.RIGHT_NAME+"",msg.getRight_name());
-        values.put(""+Constant.Chat.MSG+"", msg.getMessage());
-        values.put(""+Constant.Chat.TIME+"", msg.getDate());
+        values.put(""+Constant.Chat.LEFT_ID+"", textMsg.getDst_IDAt(0));
+        values.put(""+Constant.Chat.RIGHT_ID+"",textMsg.getSrc_ID());
+        values.put(""+Constant.Chat.MSG+"", textMsg.getText());
+        values.put(""+Constant.Chat.TIME+"", textMsg.getMsgDate());
         values.put(""+Constant.Chat.FLAG+"" , status);
         sdb.insert(""+Constant.Chat.TABLE_NAME+"", null, values);
         sdb.close();
@@ -63,8 +65,8 @@ public class DBManager {
      * right_name永远是使用者自身，因此不用查询
      * 将查询结果存在List<IMsg>中并返回
      * */
-    public static List<IMsg> QueryMsg(String left_name){
-        List<IMsg> mDataArrays = new ArrayList<IMsg>();// 消息对象数组
+    public static List<IBaseMsg> QueryMsg(int dst_ID){
+        List<IBaseMsg> mDataArrays = new ArrayList<IBaseMsg>();// 消息对象数组
         SQLiteDatabase sdb = helper.getReadableDatabase();
         //查询获得游标
         Cursor cursor = sdb.query (""+Constant.Chat.TABLE_NAME+"",null,null,null,null,null,null);
@@ -73,11 +75,9 @@ public class DBManager {
         if(cursor.moveToFirst()) {
         //遍历游标
             while(!cursor.isAfterLast()){
-                int l_nameColumnIndex = cursor.getColumnIndex(Constant.Chat.LEFT_NAME);
-                String l_name = cursor.getString(l_nameColumnIndex);
-                int r_nameColumnIndex = cursor.getColumnIndex(Constant.Chat.RIGHT_NAME);
-                String r_name = cursor.getString(r_nameColumnIndex);
-                if(l_name.equals(left_name)  ){
+                int leftID = cursor.getColumnIndex(Constant.Chat.LEFT_ID);
+                int l_ID = cursor.getInt(leftID);
+                if(dst_ID == l_ID){
                     int i_status = cursor.getColumnIndex(Constant.Chat.FLAG);
                     String i_flag = cursor.getString(i_status);
                     //执行取出聊天记录的操作
@@ -87,20 +87,21 @@ public class DBManager {
                     String msg = cursor.getString(i_msg);
                     if(i_flag.equals(Constant.SEND)){
                         //加载发出去的信息
-                        IMsg entity = new MsgModel();
-                        entity.setDate(time);
-                        entity.setMessage(msg);
+                        /**************先以文本信息为例******************/
+                        ITextMsg entity = new TextMsgModel();
+                        entity.setMsgDate(time);
+                        entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.setMsgType(false);// 自己发送的消息
+                        entity.sendOrRecv(false);// 自己发送的消息
                         cursor.moveToNext();
                     }
                     else{
                         //加载收到的信息
-                        IMsg entity = new MsgModel();
-                        entity.setDate(time);
-                        entity.setMessage(msg);
+                        ITextMsg entity = new TextMsgModel();
+                        entity.setMsgDate(time);
+                        entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.setMsgType(true);// 收到的消息
+                        entity.sendOrRecv(true);// 收到的消息
                         cursor.moveToNext();
                     }
 

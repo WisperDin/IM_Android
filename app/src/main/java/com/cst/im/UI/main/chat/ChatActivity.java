@@ -21,12 +21,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.MsgModel;
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
@@ -98,7 +96,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        List<IMsg> msg_list = DBManager.QueryMsg("lzy");
+        List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getID());
 
 
         initView();// 初始化view
@@ -371,25 +369,23 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         }
     }
 
-    public void InitData() {
-        MsgModel lzy_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:00:02", "有大吗", true);
-        DBManager.InsertMsg(lzy_1);
-
-        MsgModel wzb_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:10:22", "有！你呢？", false);
-        DBManager.InsertMsg(wzb_1);
-
-        MsgModel lzy_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:11:24", "我也有", true);
-        DBManager.InsertMsg(lzy_2);
-
-
-        MsgModel wzb_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:20:23", "那上吧", false);
-        DBManager.InsertMsg(wzb_2);
-
-        MsgModel wzb_3 = new MsgModel("lz", "wzb", "2015-09-22 18:10:22", "傻逼", false);
-        DBManager.InsertMsg(wzb_3);
-
-
-    }
+//    public void InitData() {
+//        MsgModel lzy_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:00:02", "有大吗", true);
+//        DBManager.InsertMsg(lzy_1);
+//
+//        MsgModel wzb_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:10:22", "有！你呢？", false);
+//        DBManager.InsertMsg(wzb_1);
+//
+//        MsgModel lzy_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:11:24", "我也有", true);
+//        DBManager.InsertMsg(lzy_2);
+//
+//
+//        MsgModel wzb_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:20:23", "那上吧", false);
+//        DBManager.InsertMsg(wzb_2);
+//
+//        MsgModel wzb_3 = new MsgModel("lz", "wzb", "2015-09-22 18:10:22", "傻逼", false);
+//        DBManager.InsertMsg(wzb_3);
+//    }
 
 
 }

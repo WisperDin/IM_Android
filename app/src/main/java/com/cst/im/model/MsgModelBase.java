@@ -10,7 +10,8 @@ public class MsgModelBase implements IBaseMsg {
     int srcID;//消息源
     int[] dstID;//消息目的
     String msgDate;//消息日期
-    IBaseMsg.MsgType msgType;// 是否为收到的消息
+    IBaseMsg.MsgType msgType;// 消息类型
+    boolean isComMeg = true;// 是否为收到的消息
 
     //发送源用户id
     public int getSrc_ID(){return srcID;}
@@ -38,5 +39,14 @@ public class MsgModelBase implements IBaseMsg {
     public IBaseMsg.MsgType getMsgType(){return  msgType;}
     public void setMsgType(IBaseMsg.MsgType msgType){
         this.msgType=msgType;
+    }
+
+    //判断消息操作：发送/接受
+    public boolean sendOrRecv() {
+        return isComMeg;
+    }
+
+    public void sendOrRecv(boolean isComMsg) {
+        isComMeg = isComMsg;
     }
 }

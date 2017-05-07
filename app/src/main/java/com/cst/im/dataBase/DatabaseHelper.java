@@ -20,8 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_MESSAGE = "create table "+Constant.Chat.TABLE_NAME+" ("
             + "id integer primary key autoincrement, "
             + ""+Constant.Chat.FLAG+" text,"
-            + ""+Constant.Chat.LEFT_NAME+" text, "
-            + ""+Constant.Chat.RIGHT_NAME+" text,"
+            + ""+Constant.Chat.LEFT_ID+" integer, "
+            + ""+Constant.Chat.RIGHT_ID+" integer,"
             + ""+Constant.Chat.MSG+" text, "
             + ""+Constant.Chat.TIME+" text，)  ";
 

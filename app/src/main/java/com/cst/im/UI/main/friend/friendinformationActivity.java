@@ -37,7 +37,7 @@ public class friendinformationActivity extends AppCompatActivity {
                 Intent intent =new Intent(friendinformationActivity.this,ChatActivity.class);
                 intent.putExtras(bundle);
                 //通知消息列表添加消息
-                ((ChatListPresenter)(MsgFragment.chatListPresenter)).AddChatMsg(dstName,"");
+                MsgFragment.chatListPresenter.AddChatMsg(dstId,"");
                 startActivity(intent);
             }
         });

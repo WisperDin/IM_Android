@@ -9,7 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.cst.im.R;
-import com.cst.im.model.IMsg;
+import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.ITextMsg;
 
 import java.util.List;
 
@@ -27,11 +28,11 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private static final int ITEMCOUNT = 2;// 消息类型的总数
-    private List<IMsg> coll;// 消息对象数组
+    private List<IBaseMsg> coll;// 消息对象数组
     private LayoutInflater mInflater;
     private Context context;
 
-    public ChatMsgViewAdapter(Context context, List<IMsg> coll) {
+    public ChatMsgViewAdapter(Context context, List<IBaseMsg> coll) {
         this.coll = coll;
         mInflater = LayoutInflater.from(context);
         this.context = context;
@@ -54,9 +55,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
      * 得到Item的类型，是对方发过来的消息，还是自己发送出去的
      */
     public int getItemViewType(int position) {
-        IMsg entity = coll.get(position);
+        IBaseMsg entity = coll.get(position);
 
-        if (entity.getMsgType()) {//收到的消息
+        if (entity.sendOrRecv()) {//收到的消息
             return IMsgViewType.IMVT_COM_MSG;
         } else {//自己发送的消息
             return IMsgViewType.IMVT_TO_MSG;
@@ -72,10 +73,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        IMsg entity = coll.get(position);
-        boolean isComMsg = entity.getMsgType();
-
+        IBaseMsg entity = coll.get(position);
+        boolean isComMsg = entity.sendOrRecv();
         ViewHolder viewHolder = null;
+
         if (convertView == null) {
             if (isComMsg) {
                 convertView = mInflater.inflate(
@@ -88,8 +89,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.tvSendTime = (TextView) convertView
                     .findViewById(R.id.tv_sendtime);
-           // viewHolder.tvUserName = (TextView) convertView
-            //        .findViewById(R.id.tv_username);
             viewHolder.tvContent = (TextView) convertView
                     .findViewById(R.id.tv_chatcontent);
             viewHolder.isComMsg = isComMsg;
@@ -98,11 +97,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.tvSendTime.setText(entity.getDate());
-        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, entity.getMessage());
+        viewHolder.tvSendTime.setText(entity.getMsgDate());
+        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, ((ITextMsg)entity).getText());
         viewHolder.tvContent.setText(spannableString);
-        //        viewHolder.tvUserName.setText(entity.getName());
-        //viewHolder.tvContent.setText(entity.getMessage());
         return convertView;
     }
 
@@ -112,7 +109,4 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         public TextView tvContent;
         public boolean isComMsg = true;
     }
-
-
-
 }

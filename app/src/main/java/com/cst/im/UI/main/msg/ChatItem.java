@@ -16,11 +16,11 @@ public class ChatItem {
     private boolean IsRead=false;  //消息是否已读
 
     //初始化所有数据
-    public ChatItem(int icon,String lastTime,String name,String lastMsg,int redicon)
+    public ChatItem(int icon,String lastTime,int id,String lastMsg,int redicon)
     {
         Icon=icon;
         LastTime=lastTime;
-        Name=name;
+        ID=id;
         LastMsg=lastMsg;
         RedIcon=redicon;
     }

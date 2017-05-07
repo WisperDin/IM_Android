@@ -10,8 +10,8 @@ public class Constant {
     public static final int DATABASE_VERSION = 2;//数据库版本名，如果修改或添加了本地数据库的表请加一
     public class Chat{
         public static final String TABLE_NAME = "LocalMessage"; //数据库表名
-        public static final String LEFT_NAME = "left_name";
-        public static final String RIGHT_NAME = "right_name";
+        public static final String LEFT_ID = "left_id";
+        public static final String RIGHT_ID = "right_id";
         public static final String MSG = "msg";
         public static final String TIME = "time";
         public static final String FLAG = "flag";//用于标志是收到的信息还是发送的信息

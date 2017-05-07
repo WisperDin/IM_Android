@@ -4,12 +4,13 @@ import android.util.Log;
 
 import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.model.FileMsgModel;
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.IUser;
-
+import com.cst.im.model.ITextMsg;
+import com.cst.im.model.MsgModelBase;
+import com.cst.im.model.TextMsgModel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -51,15 +52,22 @@ public class DeEnCode {
         return baos.toByteArray();
     }
     //编码-聊天消息帧
-    public static byte[] encodeChatMsgFrame(IMsg chatMsg) {
-        Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(chatMsg);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            frame.writeTo(baos);
-        } catch (IOException e) {
+        public static byte[] encodeChatMsgFrame(IBaseMsg chatMsg) {
+            switch (chatMsg.getMsgType()) {
+                case TEXT:
+                    //强制类型转换
+                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
+                    Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(txtMsg);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        frame.writeTo(baos);
+                    } catch (IOException e) {
+                    }
+                    return baos.toByteArray();
+            }
+            //若各个路径都无信息，返回NULL
+            return null;
         }
-        return baos.toByteArray();
-    }
 
     //编码-获取好友列表帧
     public static byte[] encodeGetFriendListFrame(IFriend friendL) {
