@@ -23,16 +23,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ""+Constant.Chat.LEFT_NAME+" text, "
             + ""+Constant.Chat.RIGHT_NAME+" text,"
             + ""+Constant.Chat.MSG+" text, "
-            + ""+Constant.Chat.TIME+" text，)";
+            + ""+Constant.Chat.TIME+" text，)  ";
 
     public static final String CREATE_LOGININF = String.format("CREATE TABLE IF NOT EXISTS %s " +
             "(%s INT32 ," +
             " %s VARCHAR(30), " +
-            " %s VARCHAR(30))",
+            " %s VARCHAR(30))  ",
             Constant.Login.TABLE_NAME,
             Constant.Login.USERNAME,
             Constant.Login.PASSWORD,
             Constant.Login.ID);
+
+    public static final String CREATE_MSGLISTINF = String.format("CREATE TABLE IF NOT EXISTS %s " +
+                    "(%s INT32 primary key," +
+                    " %s INT32,"+
+                    " %s VARCHAR(30))  ",
+            Constant.MsgList.TABLE_NAME,
+            Constant.MsgList.MSGID,//消息按照msgid排序
+            Constant.MsgList.DSTID,//消息目的用户(组)
+            Constant.MsgList.MSG);//最新一条消息
     /**
      * @param context  上下文环境（例如，一个 Activity）
      * @param name   数据库名字
@@ -60,6 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("Database","onCreate");
         db.execSQL(CREATE_MESSAGE);
         db.execSQL(CREATE_LOGININF);
+        db.execSQL(CREATE_MSGLISTINF);
     }
 
     /**
@@ -72,10 +82,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //三个参数，一个 SQLiteDatabase 对象，一个旧的版本号和一个新的版本号
         if(newVersion>oldVersion)
         {
-            String sql1 = "drop table if exists " + Constant.Login.TABLE_NAME;
+            String sql1 = " drop table if exists " + Constant.Login.TABLE_NAME;
             db.execSQL(sql1);
-            String sql2 = "drop table if exists " + Constant.Chat.TABLE_NAME;
+            String sql2 = " drop table if exists " + Constant.Chat.TABLE_NAME;
             db.execSQL(sql2);
+            String sql3 = " drop table if exists " + Constant.MsgList.TABLE_NAME;
+            db.execSQL(sql3);
             this.onCreate(db);
         }
     }

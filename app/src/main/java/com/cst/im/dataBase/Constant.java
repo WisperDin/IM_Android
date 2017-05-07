@@ -23,6 +23,13 @@ public class Constant {
         public static final String PASSWORD = "password";
         public static final String LOGINTYPE = "login_type";
     }
+    //如果加入群聊之后可以将id变成组的id,消息按照msg_id排序
+    public class MsgList{
+        public static final String TABLE_NAME = "LocalMsgList";
+        public static final String DSTID = "dst_id";
+        public static final String MSGID = "msg_id";
+        public static final String MSG = "msg";
+    }
 
 
     //接收状态/发送状态
