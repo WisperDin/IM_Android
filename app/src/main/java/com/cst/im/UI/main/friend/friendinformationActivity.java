@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.msg.MsgFragment;
+import com.cst.im.presenter.ChatListPresenter;
 
 public class friendinformationActivity extends AppCompatActivity {
 
@@ -20,19 +22,22 @@ public class friendinformationActivity extends AppCompatActivity {
         //新页面接收数据
         bundle = this.getIntent().getExtras();
         //接收name值
-        String name = bundle.getString("username");
-        int id= bundle.getInt("userid");
+        final String dstName = bundle.getString("dstName");
+        final int dstId= bundle.getInt("dstId");
         TextView tvname=(TextView) findViewById(R.id.tv_friendinfo_name);
         TextView tvid=(TextView) findViewById(R.id.tv_friendinfo_id);
         Button bt_msg=(Button)findViewById(R.id.bt_msg);
-        tvname.setText(name);
-        tvid.setText( String.valueOf(id));
+        tvname.setText(dstName);
+        tvid.setText( String.valueOf(dstId));
+        //向某个好友发消息
         bt_msg.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent =new Intent(friendinformationActivity.this,ChatActivity.class);
                 intent.putExtras(bundle);
+                //通知消息列表添加消息
+                ((ChatListPresenter)(MsgFragment.chatListPresenter)).AddChatMsg(dstName,"");
                 startActivity(intent);
             }
         });

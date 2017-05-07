@@ -21,6 +21,10 @@
     <string name="title_discovery">Discovery</string>
     <string name="title_me">Me</string>
 
+    <!-- Chat -->
+    <string name="press_say">按住说话</string>
+    <string name="btn_send">发送</string>
+
     <!-- Settings -->
     <!-- Strings related to Settings -->
 

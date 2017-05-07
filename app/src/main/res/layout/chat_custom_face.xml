@@ -17,7 +17,7 @@
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/chat_emoji" />
+            android:src="@drawable/chat_emoj_icon" />
 
         <Button
             android:id="@+id/btn_file"
@@ -29,7 +29,7 @@
             android:layout_toEndOf="@+id/btn_face" />
 
         <Button
-            android:id="@+id/btn_send"
+
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"

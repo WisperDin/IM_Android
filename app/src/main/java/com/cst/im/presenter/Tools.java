@@ -14,7 +14,7 @@ public class Tools {
      * @return 当前时间
      */
     public static String getDate() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(new Date());
     }
 }

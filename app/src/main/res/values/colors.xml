@@ -18,4 +18,7 @@
     <color name="Gray">#666666</color>
     <color name="LightGray">#DDDDDD</color>
 
+    <!-- chat -->
+    <color name="colorChatList">#ebebeb</color>
+
 </resources>

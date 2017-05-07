@@ -88,7 +88,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
 
     //发送文字信息
     @Override
-    public void SendMsg(String contString){
+    public void SendMsg(IUser[] dstUser,String contString){
         if (contString.length() > 0) {
             IMsg entity = new MsgModel();
             entity.setRight_name(localUser.getName());

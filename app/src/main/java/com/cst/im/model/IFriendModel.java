@@ -15,9 +15,10 @@ public class IFriendModel implements IFriend{
 
     private int id;
 
+    //好友姓名列表
     private ArrayList <String> friendlist=new ArrayList<String>();
 
-
+    //好友ID，名字的map
     private HashMap<String ,Integer> friendNameAndID = new HashMap<String , Integer>();
 
     public static  IFriendModel iFriendModel;

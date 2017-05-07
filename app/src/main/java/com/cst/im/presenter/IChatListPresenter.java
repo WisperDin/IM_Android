@@ -14,4 +14,5 @@ public interface IChatListPresenter {
     LinkedList<ChatItem> getMsgList();
     void SetTop(ChatItem chatItem);
     void OffsetTop(ChatItem chatItem);
+    void AddChatMsg(final String userName,final  String message);
 }

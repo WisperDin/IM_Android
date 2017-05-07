@@ -72,4 +72,5 @@ dependencies {
     //protobuf的依赖
     compile 'com.google.protobuf:protobuf-java:3.0.0'
     compile files('lib/pinyin4j-2.5.0.jar')
+    compile 'cn.dreamtobe.kpswitch:library:1.6.0'
 }

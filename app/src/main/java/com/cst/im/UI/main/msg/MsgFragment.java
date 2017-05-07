@@ -1,6 +1,5 @@
 package com.cst.im.UI.main.msg;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,27 +17,31 @@ import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.presenter.ChatListPresenter;
 import com.cst.im.presenter.IChatListPresenter;
-import com.cst.im.view.IFragmentView;
+import com.cst.im.view.IMsgView;
 
-import java.util.LinkedList;
-
-public class MsgFragment extends Fragment implements IFragmentView,
+public class MsgFragment extends Fragment implements IMsgView,
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
     public static MyAdapter myAdapter=null;
     //消息列表
     private ListView chat_lv;
-    IChatListPresenter chatListPresenter;
+    public static IChatListPresenter chatListPresenter=null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msg, container, false);
         chat_lv=(ListView)view.findViewById(R.id.chat_list);
         //实例化Presenter
-        chatListPresenter=new ChatListPresenter();
+        chatListPresenter=new ChatListPresenter(this);
+        //初始化消息列表
+        chatListPresenter.loadChatListLocal();
         //设置自定义Adapter
         myAdapter=new MyAdapter(chatListPresenter.getMsgList(),getActivity());
+
+
+
         chat_lv.setAdapter(myAdapter);
 
         chat_lv.setOnItemClickListener(this);    //设置单击监听，接口实现
@@ -56,8 +58,10 @@ public class MsgFragment extends Fragment implements IFragmentView,
         //用于设置消息已读
         accept.setRead(true);
         //传送接收者名称，“AcceptName”为key
-        it.putExtra("AcceptName",accept.getName());
-        it.putExtra("AcceptID",accept.getID());
+        Bundle bundle = new Bundle();
+        bundle.putString("dstName",accept.getName());
+        bundle.putInt("dstID",accept.getID());
+        it.putExtras(bundle);
         //Toast.makeText(getActivity(), accept.getName(), Toast.LENGTH_LONG).show();
         startActivity(it);
     }
@@ -115,6 +119,12 @@ public class MsgFragment extends Fragment implements IFragmentView,
         }).create().show();
 
         return true;
+    }
+
+    @Override
+    public void onRefreshMsgList() {
+        //通知listView更新
+        myAdapter.notifyDataSetChanged();
     }
 
 }

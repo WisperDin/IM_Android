@@ -29,14 +29,17 @@ public class ChatListModel implements IChatList {
     //接收到消息或发送消息时，消息顶置，若不存在该消息则添加该消息
     @Override
     public void newChatItem(ChatItem chatItem) {
-        if(!MsgList.contains(chatItem)){
-            MsgList.add(chatItem);
-        }
-        for(int i=0;i<MsgList.size();i++){
-            if(!MsgList.get(i).isHasTop()){
-                MsgList.add(i,chatItem);
-                break;
+        chatItem.setRead(false);
+        int existPos=checkChatItem(chatItem);
+        //消息对象已存在检查是否已经置顶
+        if(existPos!=-1){
+            //检查是否已经置顶
+            if(!MsgList.get(existPos).isHasTop()){
+                setTop(MsgList.get(existPos));
             }
+        }else{
+            //消息不存在，添加到列表并置顶
+            MsgList.addFirst(chatItem);
         }
     }
 
@@ -64,11 +67,16 @@ public class ChatListModel implements IChatList {
     }
 
     //判断某个消息对象是否存在
+    //返回非-1表示已存在对象的位置
     @Override
-    public boolean checkChatItem(ChatItem chatItem) {
-        boolean ok=false;
-        if(MsgList.contains(chatItem)){
-            ok=true;
+    public int checkChatItem(ChatItem chatItem) {
+        int ok=-1;
+        for(int i=0;i<MsgList.size();i++)
+        {
+            if(MsgList.get(i).getName().equals(chatItem.getName()))
+            {
+                ok=i;
+            }
         }
         return ok;
     }

@@ -98,7 +98,6 @@ public class SplashActivity extends AppCompatActivity {
             }
             if (successFlag) {
                 Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
-                return;
             }
         }
         Message message = myhandler.obtainMessage();

@@ -13,7 +13,7 @@ public interface IChatList {
     void deleteChatItem(int key);
     ChatItem getChatItem(int key);
     LinkedList<ChatItem> getMsgList();
-    boolean checkChatItem(ChatItem chatItem);
+    int checkChatItem(ChatItem chatItem);
     void setTop(ChatItem chatItem);
     void offsetTop(ChatItem chatItem);
     void newChatItem(ChatItem chatItem);
