@@ -7,13 +7,11 @@ import android.util.Log;
 
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.IMsg;
-import com.cst.im.model.IUser;
 import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.MsgModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 
 /**
