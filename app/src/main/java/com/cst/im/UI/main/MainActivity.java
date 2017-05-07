@@ -6,7 +6,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.discovery.DiscoveryFragment;
@@ -14,24 +13,20 @@ import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
+import com.cst.im.model.IFriendModel;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.IFriendPresenter;
 import com.cst.im.presenter.IFriendPresenterCompl;
-import com.cst.im.presenter.ILoginPresenter;
-import com.cst.im.presenter.LoginPresenterCompl;
-import com.cst.im.presenter.Status;
 import com.cst.im.view.IFriendView;
-import com.cst.im.view.ILoginView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements IFriendView,ILoginView{
-    public static ArrayList<String> friendlist=new ArrayList<String>();//储存好友列表的名字（服务器获取）
-    public static HashMap<String ,Integer> friendlistNameAndID = new HashMap<String , Integer>();//用于获取好友列表名字
+
+
+public class MainActivity extends AppCompatActivity implements IFriendView{
     private IFriendPresenter myfriend=new IFriendPresenterCompl(this);
-    ILoginPresenter loginPresenter;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -63,16 +58,14 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
     protected void onCreate(Bundle savedInstanceState) {
         ILoginUser loginUser = DBManager.queryLoginUser();
         UserModel.InitLocalUser(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId());
-        loginPresenter=new LoginPresenterCompl(this);
-        loginPresenter.doLogin(loginUser.getUsername(),loginUser.getPassword());
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myfriend.Getfriendlist(1);//登陆成功从服务器数据库获取所有好友的名字
+        myfriend.Getfriendlist(5);//登陆成功从服务器数据库获取所有好友的名字
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();
-
     }
 
     private void setCurrentFragment() {
@@ -83,27 +76,11 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
 
     @Override
     public void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID){
-        this.friendlist=list;
-        this.friendlistNameAndID=NameAndID;
+        IFriendModel.InitFriendModel(list,NameAndID);
         System.out.println("运行");
     }
-
     @Override
-    public void onLoginResult(int rslCode, int id) {
-        if(rslCode == Status.Login.LOGINFAILED){
-            Toast.makeText(this,"自动登录失败",Toast.LENGTH_SHORT).show();
-            finish();
-        }
+    public void onReaultCode(int code,String name){}
 
-    }
 
-    @Override
-    public void onNetworkError() {
-
-    }
-
-    @Override
-    public void onEditTip() {
-
-    }
 }

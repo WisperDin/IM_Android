@@ -41,6 +41,9 @@ public class ComService extends TcpService {
     public interface FriendListHandler{
         void handleFriendLisEvent(IFriend fl);//参数为接收到的消息
     }
+    public interface IsFriendHandler{
+        void handleIsFriendEvent(IFriend fl);//参数为接收到的消息
+    }
 
 
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
@@ -49,6 +52,7 @@ public class ComService extends TcpService {
     static ChatMsgHandler chatMsgEvent;
     static FriendListHandler FriendListEvent;
     static ChatListHandler chatListEvent;
+    static IsFriendHandler isfriendEvent;
 
     public static void setRegisterCallback(MsgHandler registerCallback){
         registerEvent =registerCallback;
@@ -66,6 +70,10 @@ public class ComService extends TcpService {
     }
     public static void setFriendListCallback(FriendListHandler FriendListCallback){
         FriendListEvent=FriendListCallback;
+    }
+
+    public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){
+        isfriendEvent=IsFriendCallback;
     }
     @Override
     public void OnTcpStop() {
@@ -130,10 +138,6 @@ public class ComService extends TcpService {
 
             case BuildFrame.GetFriend://好友列表信息
             {
-                if(frame.getSrc()==null||frame.getSrc().getUserID()==0||frame.getDst()==null||frame.getDst().getDstCount()<=0){
-                    Log.e(" bad value", "ComService,OnMessageCome GetFriend");
-                    return;
-                }
                 Log.d("OnMessage", "feedbackofFriendlist");
                 ArrayList<String> list = new ArrayList<String>();
                 HashMap<String ,Integer> NameAndID = new HashMap<String , Integer>();
@@ -142,10 +146,30 @@ public class ComService extends TcpService {
                     NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
                 IFriend myfriend = new IFriendModel(list,NameAndID);
+                IFriendModel.InitFriendModel(list,NameAndID);
                 FriendListEvent.handleFriendLisEvent(myfriend);
-                return;
+                break;
             }
 
+
+            case BuildFrame.IsFriend://判断是否为好友
+            {
+                Log.d("OnMessage", "feedbackofIsFriend");
+                IFriend IsFriend=new IFriendModel(frame.getDst().getDst(0).getUserName());
+                if(frame.getDst().getDst(0).getUserID()!=0){
+                    IsFriend.SetRealtCode(1);
+                }
+                isfriendEvent.handleIsFriendEvent(IsFriend);
+                break;
+            }
+
+            /*case 2://注册事件
+                if(registerEvent!=null)
+                    registerEvent.handleEvent(msg);
+                break;
+            case 3://消息事件
+                handlerMsg(msg);
+                break;*/
             default:
                 Log.w("OnMessageCome","msgType异常");
                 break;

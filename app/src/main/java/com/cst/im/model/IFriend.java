@@ -12,4 +12,7 @@ public interface IFriend {
     int getId();
     HashMap<String, Integer> getFriendNameAndID();
     ArrayList<String> getfriendlist();
+    int SearchId();
+    int ReaultCode();
+    void SetRealtCode(int code);
 }

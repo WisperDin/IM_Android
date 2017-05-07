@@ -21,10 +21,11 @@ import java.util.HashMap;
  * Created by sun on 2017/5/4.
  */
 
-public class IFriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler {
+public class IFriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler,ComService.IsFriendHandler {
 
     Handler handler;
     IFriend ifriend;
+    IFriend IsFriend;
     IFriendView ifriendview;
     ArrayList<String> friendlist=new ArrayList<String>();
     HashMap<String ,Integer> friendNAndID = new HashMap<String , Integer>();
@@ -35,6 +36,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
         ifriend=new IFriendModel(friendlist,friendNAndID);
         //监听收到消息的接口
         ComService.setFriendListCallback(this);
+        ComService.setIsfriendCallback(this);
     }
 
     //发送请求获取好友列表
@@ -56,6 +58,24 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
             }}).start();
     }
 
+    //发送请求获取好友列表
+    @Override
+    public void Isfriend(int ownerid,int IsFriendId) {
+        IFriend Isfriend=new IFriendModel(ownerid,IsFriendId);
+        final byte[] GetFriendFrame = DeEnCode.encodeIsFriendFrame(Isfriend);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData(GetFriendFrame);
+                    Log.w("send","send data chenggong");
+                }
+                catch (IOException ioe)
+                {
+                    Log.w("send","send data failed");
+                }
+            }}).start();
+    }
 
     @Override
     public void handleFriendLisEvent(final IFriend msgRecv) {
@@ -69,4 +89,17 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
             }});
 
         }
+
+    @Override
+    public void handleIsFriendEvent(final IFriend msgRecv) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("send","Get data success");
+                System.out.println(msgRecv.getfriendlist().toString());
+                //数据传输-》loginactivity用到
+                ifriendview.onReaultCode(msgRecv.ReaultCode(),msgRecv.getname());
+            }});
+
+    }
 }
