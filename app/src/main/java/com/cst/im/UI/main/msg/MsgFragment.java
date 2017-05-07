@@ -17,25 +17,31 @@ import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.presenter.ChatListPresenter;
 import com.cst.im.presenter.IChatListPresenter;
-import com.cst.im.view.IFragmentView;
+import com.cst.im.view.IMsgView;
 
-public class MsgFragment extends Fragment implements IFragmentView,
+public class MsgFragment extends Fragment implements IMsgView,
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
 
     public static MyAdapter myAdapter=null;
     //消息列表
     private ListView chat_lv;
-    IChatListPresenter chatListPresenter;
+    public static IChatListPresenter chatListPresenter=null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_msg, container, false);
         chat_lv=(ListView)view.findViewById(R.id.chat_list);
         //实例化Presenter
-        chatListPresenter=new ChatListPresenter();
+        chatListPresenter=new ChatListPresenter(this);
+        //初始化消息列表
+        chatListPresenter.loadChatListLocal();
         //设置自定义Adapter
         myAdapter=new MyAdapter(chatListPresenter.getMsgList(),getActivity());
+
+
+
         chat_lv.setAdapter(myAdapter);
 
         chat_lv.setOnItemClickListener(this);    //设置单击监听，接口实现
@@ -113,6 +119,12 @@ public class MsgFragment extends Fragment implements IFragmentView,
         }).create().show();
 
         return true;
+    }
+
+    @Override
+    public void onRefreshMsgList() {
+        //通知listView更新
+        myAdapter.notifyDataSetChanged();
     }
 
 }
