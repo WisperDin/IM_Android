@@ -60,6 +60,25 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
 
     @Override
     public void onRegisterResult( int result) {
+
+        switch(result){
+            case Status.Register.REGISTER_SUCCESS:
+                // 注册成功 1s 后返回登录界面
+                Toast.makeText(RegisterActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable(){
+                    public void run() {
+                        onBackPressed();
+                    }
+                }, 1000);
+                break;
+            case Status.Register.REGISTER_FAIL:
+                Toast.makeText(RegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+                break;
+            case Status.Register.REGISTER_ALREADY:
+                Toast.makeText(RegisterActivity.this,"已注册",Toast.LENGTH_SHORT).show();
+                break;
+        }
+
         if(result == Status.Register.REGISTER_SUCCESS){
 
             // 注册成功 1s 后返回登录界面

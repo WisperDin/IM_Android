@@ -23,5 +23,6 @@ public final class Status {
 
         public static final int REGISTER_SUCCESS = 200; // 注册成功
         public static final int REGISTER_FAIL = 201; // 注册失败
+        public static final int REGISTER_ALREADY = 202; //已注册
     }
 }
