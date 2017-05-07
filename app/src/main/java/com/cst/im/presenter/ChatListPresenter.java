@@ -76,7 +76,7 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatList
         //构造消息
         ChatItem chatItem=new ChatItem(R.drawable.msg_icon, Tools.getDate().substring(11,16),userName,message,R.drawable.msg_item_redpoint);
         //进行该消息的处理，若列表中不存在则添加，并顶置列表中
-        ChatListPresenter.iChatList.addChatItem(chatItem);
+        ChatListPresenter.iChatList.newChatItem(chatItem);
         handler.post(new Runnable() {
             @Override
             public void run() {
