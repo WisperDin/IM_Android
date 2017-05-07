@@ -73,7 +73,8 @@ public class ChatListModel implements IChatList {
         int ok=-1;
         for(int i=0;i<MsgList.size();i++)
         {
-            if(MsgList.get(i).getName().equals(chatItem.getName()))
+            //比较id
+            if(MsgList.get(i).getID()==chatItem.getID())
             {
                 ok=i;
             }
