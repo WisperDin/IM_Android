@@ -1,9 +1,6 @@
 package com.cst.im.UI.main.chat;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -17,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,8 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.chat.file.CallbackBundle;
-import com.cst.im.UI.main.chat.file.OpenFileDialog;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
@@ -40,10 +34,7 @@ import com.cst.im.view.IChatView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -267,36 +258,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 //        return super.onKeyDown(keyCode, event);
 //    }
 
-    static private int openfileDialogId = 0;
 
-    //创建文件对话框
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        if (id == openfileDialogId) {
-            Map<String, Integer> images = new HashMap<String, Integer>();
-            // 下面几句设置各文件类型的图标， 需要你先把图标添加到资源文件夹
-            images.put(OpenFileDialog.sRoot, R.drawable.filedialog_root);   // 根目录图标
-            images.put(OpenFileDialog.sParent, R.drawable.filedialog_folder_up);    //返回上一层的图标
-            images.put(OpenFileDialog.sFolder, R.drawable.filedialog_folder);   //文件夹图标
-            images.put("wav", R.drawable.filedialog_wavfile);   //wav文件图标
-            images.put("txt", R.drawable.filedialog_wavfile);   //wav文件图标
-            images.put(OpenFileDialog.sEmpty, R.drawable.filedialog_root);
-            Dialog dialog = OpenFileDialog.createDialog(id, this, "打开文件", new CallbackBundle() {
-                        @Override
-                        public void callback(Bundle bundle) {
-                            File file = new File(bundle.getString("path"));
-                            //测试为1发到1
-                            chatPresenter.SendFile(file, 1, new int[]{1});
-                            String filepath = bundle.getString("path");
-                            setTitle(filepath); // 把文件路径显示在标题上
-                        }
-                    },
-                    "",//.wav;
-                    images);
-            return dialog;
-        }
-        return null;
-    }
 
     /*
      * 从相册获取
