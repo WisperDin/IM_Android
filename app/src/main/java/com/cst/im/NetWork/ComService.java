@@ -121,6 +121,7 @@ public class ComService extends TcpService {
                     NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
                 IFriend myfriend = new IFriendModel(list,NameAndID);
+                IFriendModel.InitFriendModel(list,NameAndID);
                 FriendListEvent.handleFriendLisEvent(myfriend);
                 break;
             }

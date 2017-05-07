@@ -10,17 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
+
 
 import com.cst.im.R;
-import com.cst.im.presenter.IFriendPresenter;
-import com.cst.im.presenter.IFriendPresenterCompl;
-import com.cst.im.view.IFriendView;
+import com.cst.im.model.IFriendModel;
 
 import java.util.ArrayList;
 
-import static com.cst.im.UI.main.MainActivity.friendlist;
-import static com.cst.im.UI.main.MainActivity.friendlistNameAndID;
+
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
@@ -35,9 +32,8 @@ public class FriendViewFragment extends Fragment implements
         ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
-        System.out.println("获取list："+friendlist.toString());
-        for(int i=0;i<friendlist.size();i++){
-            addfriend.SortAndAdd(friendlist.get(i));
+        for(int i = 0; i< IFriendModel.iFriendModel.getfriendlist().size(); i++){
+            addfriend.SortAndAdd(IFriendModel.iFriendModel.getfriendlist().get(i));
         }
         for (int i = 0; i < addfriend.getTittle().length; i++) {
             //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
@@ -69,7 +65,7 @@ public class FriendViewFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), friendinformationActivity.class);
         Bundle bundle=new Bundle();
         bundle.putString("username",NameSequencebylistview.get(position));
-        bundle.putInt("userid",friendlistNameAndID.get(NameSequencebylistview.get(position)));
+        bundle.putInt("userid",IFriendModel.iFriendModel.getFriendNameAndID().get(NameSequencebylistview.get(position)));
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
 

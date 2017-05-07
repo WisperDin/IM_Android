@@ -20,6 +20,11 @@ public class IFriendModel implements IFriend{
 
     private HashMap<String ,Integer> friendNameAndID = new HashMap<String , Integer>();
 
+    public static  IFriendModel iFriendModel;
+    public static void InitFriendModel(ArrayList<String> friendlist,HashMap<String ,Integer> NameAndID){
+        iFriendModel=new  IFriendModel(friendlist,NameAndID);
+    }
+
     public IFriendModel(String name){
         this.ownername = name;
     }
@@ -30,6 +35,7 @@ public class IFriendModel implements IFriend{
         this.friendlist = friendlist;
         this.friendNameAndID=NameAndID;
     }
+
 
     //用于获取好友列表
     @Override

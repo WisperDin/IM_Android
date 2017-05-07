@@ -181,13 +181,13 @@
         android:id="@+id/bt_msg"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="#B0E0E6"
-        android:text="发信息"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bt_friend"
         android:gravity="center"
-        android:textSize="22dp"/>
+        android:text="发信息"
+        android:textSize="22dp" />
 
 
 </LinearLayout>

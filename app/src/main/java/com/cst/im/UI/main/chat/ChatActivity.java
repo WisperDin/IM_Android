@@ -45,6 +45,12 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
     private TextView opposite_name;     //显示聊天对象名字
+
+
+    private int userid;//传进来的参数用户id
+
+
+    private String username;//传进来的参数用户名字
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
 
@@ -62,6 +68,22 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private File tempVideoFile;
 
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +99,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();//.getExtras()得到intent所附带的额外数据
         String acceptName=bundle.getString("Accept");//getString()返回指定key的值
+        setUsername(bundle.getString("username"));
+        setUserid(bundle.getInt("userid"));
         Toast.makeText(this, acceptName, Toast.LENGTH_LONG).show();
 
 
@@ -153,7 +177,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mBtnFile.setOnClickListener(this);
         mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
         opposite_name = (TextView)findViewById(R.id.opposite_name);
-        opposite_name.setText("聊天对象ID");
+        opposite_name.setText(getUsername());
 
     }
 

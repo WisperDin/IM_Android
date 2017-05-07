@@ -13,6 +13,7 @@ import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
+import com.cst.im.model.IFriendModel;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.IFriendPresenter;
@@ -22,9 +23,9 @@ import com.cst.im.view.IFriendView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+
 public class MainActivity extends AppCompatActivity implements IFriendView{
-    public static ArrayList<String> friendlist=new ArrayList<String>();//储存好友列表的名字（服务器获取）
-    public static HashMap<String ,Integer> friendlistNameAndID = new HashMap<String , Integer>();//用于获取好友列表名字
     private IFriendPresenter myfriend=new IFriendPresenterCompl(this);
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myfriend.Getfriendlist(1);//登陆成功从服务器数据库获取所有好友的名字
+        myfriend.Getfriendlist(5);//登陆成功从服务器数据库获取所有好友的名字
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();
@@ -75,8 +76,7 @@ public class MainActivity extends AppCompatActivity implements IFriendView{
 
     @Override
     public void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID){
-        this.friendlist=list;
-        this.friendlistNameAndID=NameAndID;
+        IFriendModel.InitFriendModel(list,NameAndID);
         System.out.println("运行");
     }
 
