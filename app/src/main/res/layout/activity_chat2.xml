@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.dreamtobe.kpswitch.widget.KPSwitchRootLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 标题栏 -->
+    <include layout="@layout/activity_chat_top"/>
+
+    <!-- 聊天 -->
+    <include layout="@layout/activity_chat_content_list"/>
+
+    <!-- 输入框(条) -->
+    <include layout="@layout/activity_chat_input_bar" />
+
+    <!-- 加号工具面板 -->
+    <cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout
+        android:id="@+id/panel_root"
+        style="@style/Panel"
+        android:visibility="gone">
+
+        <include layout="@layout/activity_chat_plus_panel" />
+    </cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout>
+
+    <!-- 表情面板 -->
+    <!--<cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout
+        android:id="@+id/emoji_panel"
+        style="@style/Panel"
+        android:visibility="gone">
+
+        <include layout="@layout/chat_emoji_choose"/>
+    </cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout>-->
+
+
+</cn.dreamtobe.kpswitch.widget.KPSwitchRootLinearLayout>

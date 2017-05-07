@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cst.im">
-    <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 在SDCard中创建与删除文件权限
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    -->
     <!-- 在SDCard中创建与删除文件权限
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     -->
     <!-- 往SDCard读数据权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- 往SDCard写入数据权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 录制音频，视频权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 摄像头权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+
+
     <!-- 往SDCard写入数据权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!-- 录制音频，视频权限 -->
@@ -27,7 +40,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UI.LoginActivity"
-            android:theme="@style/LoginTheme">
+            android:theme="@style/FirstTheme">
+
         </activity>
         <activity
             android:name=".UI.SplashActivity"
@@ -49,11 +63,10 @@
         </activity>
 
 
-
         <activity
             android:name=".UI.main.chat.ChatActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/ChatTheme">
             <intent-filter>
                 <action android:name="android.intent.action.DELETE" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,13 +76,14 @@
         <activity
             android:name=".UI.RegisterActivity"
             android:label="@string/app_name"
-            android:theme="@style/RegisterTheme">
+            android:theme="@style/SecondTheme">
 
         </activity>
 
-        <service android:name=".NetWork.ComService"/>
-        <activity android:name=".UI.main.friend.friendinformationActivity"/>
-        <activity android:name=".UI.main.friend.friendremarkActivity"/>
+        <service android:name=".NetWork.ComService" />
+
+        <activity android:name=".UI.main.friend.friendinformationActivity" />
+        <activity android:name=".UI.main.friend.friendremarkActivity" />
 
 
     </application>

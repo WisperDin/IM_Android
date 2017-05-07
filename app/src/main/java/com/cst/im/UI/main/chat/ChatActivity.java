@@ -1,23 +1,34 @@
 package com.cst.im.UI.main.chat;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.UI.main.chat.file.CallbackBundle;
+import com.cst.im.UI.main.chat.file.OpenFileDialog;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IMsg;
@@ -29,22 +40,35 @@ import com.cst.im.view.IChatView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+
+import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 
-public class ChatActivity extends SwipeBackActivity implements View.OnClickListener ,IChatView {
+public class ChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
-    private Button mBtnFile;//发送文件按钮
-    private EditText mEditTextContent;//输入消息的栏
-    private Button mBtnSend;//发送按钮
+    private TextView mSendBtn;//发送按钮
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
     private TextView opposite_name;     //显示聊天对象名字
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
+
+    /**
+     * edit bar & plus button panel
+     */
+    private EditText mSendEdt; // 输入框
+    private KPSwitchPanelLinearLayout mPanelRoot; // 面板
+    private ImageView mPlusIv; // 加号按钮
+    private ImageView mPictureBtn; //发送按钮
+    private ImageView mFileBtn; // 发送文件
 
     //打开文件
     private static final int FILE_REQUEST = 0;
@@ -59,11 +83,11 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private File tempPhotoFile;
     private File tempVideoFile;
 
-    private ArrayList<UserModel> dstUsers = new ArrayList<UserModel>() ;
+    private ArrayList<UserModel> dstUsers = new ArrayList<UserModel>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_chat2);
 
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -71,9 +95,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //新页面接收数据
         Bundle bundle;
         bundle = this.getIntent().getExtras();
-        UserModel dstUser = new UserModel(bundle.getString("dstName"),"",bundle.getInt("dstId"));
+        UserModel dstUser = new UserModel(bundle.getString("dstName"), "", bundle.getInt("dstId"));
         dstUsers.add(dstUser);
-        Toast.makeText(this, dstUser.getName()+" "+dstUser.getID(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, dstUser.getName() + " " + dstUser.getID(), Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用
@@ -83,55 +107,122 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        List<IMsg> msg_list =  DBManager.QueryMsg("lzy");
+        List<IMsg> msg_list = DBManager.QueryMsg("lzy");
 
 
         initView();// 初始化view
 
         //初始化数据（MVP）
-        chatPresenter=new ChatPresenter(this , msg_list);
-        mAdapter = new ChatMsgViewAdapter(this , msg_list);
+        chatPresenter = new ChatPresenter(this, msg_list);
+        mAdapter = new ChatMsgViewAdapter(this, msg_list);
 
         mListView.setAdapter(mAdapter);
         //消息列表选择到最后一行
         mListView.setSelection(mAdapter.getCount() - 1);
 
-        /**
-         * 监听EditText的回车事件
-         * 发送消息
-         */
+        // 监控键盘与面板高度
+        doAttach();
+        // 监听加号按钮以及输入框内容变化
+        setListener();
 
-        mEditTextContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    }
+
+    // 监控键盘与面板高度
+    private void doAttach(){
+        /**
+         * 这个Util主要是监控键盘的状态: 显示与否 以及 键盘的高度
+         */
+        KeyboardUtil.attach(this, mPanelRoot);
+
+        /**
+         * 这个Util主要是协助处理一些面板与键盘相关的事件。
+         */
+        KPSwitchConflictUtil.attach(mPanelRoot, mPlusIv, mSendEdt);
+    }
+
+    // 监听加号按钮以及输入框内容变化
+    private void setListener() {
+        // 监听加号加号按钮
+        mPlusIv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                //当actionId == XX_SEND 或者 XX_DONE时都触发
-                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
-                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
-                if (actionId == EditorInfo.IME_ACTION_SEND
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    //发送消息
-                    UserModel[] dst =new UserModel[dstUsers.size()];
-                    dstUsers.toArray(dst);
-                    chatPresenter.SendMsg(dst,mEditTextContent.getText().toString());
+            public void onClick(View v) {
+                if (mPanelRoot.getVisibility() == View.VISIBLE) {
+                    showKeyboard();
+                } else {
+                    hideKeyboard();
+                    mPanelRoot.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        mSendEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    mSendBtn.setVisibility(View.VISIBLE);
+                } else {
+                    mSendBtn.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        // 触摸空白处隐藏面板
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    hideKeyboard();
+                    mPanelRoot.setVisibility(View.GONE);
+                }
+
                 return false;
             }
         });
 
+        mBtnBack.setOnClickListener(this);
+        mSendBtn.setOnClickListener(this);
+        mFileBtn.setOnClickListener(this);
     }
+
+    // 弹出键盘
+    private void showKeyboard() {
+        mSendEdt.requestFocus();
+        InputMethodManager inputManager =
+                (InputMethodManager) mSendEdt.getContext().getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+        inputManager.showSoftInput(mSendEdt, 0);
+    }
+
+    //隐藏键盘
+    private void hideKeyboard() {
+        InputMethodManager imm =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mSendEdt.clearFocus();
+        imm.hideSoftInputFromWindow(mSendEdt.getWindowToken(), 0);
+    }
+
     //接收到消息就会执行
     @Override
-    public void onRecvMsg(String msg,String date){
+    public void onRecvMsg(String msg, String date) {
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
     }
 
 
     @Override
-    public void onSendMsg(){
+    public void onSendMsg() {
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
-        mEditTextContent.setText("");// 清空编辑框数据
+        mSendEdt.setText("");// 清空编辑框数据
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
     }
 
@@ -139,19 +230,20 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
      * 初始化view
      */
     public void initView() {
-        mListView = (ListView) findViewById(R.id.listview);
+        mListView = (ListView) findViewById(R.id.content_list);
         mBtnBack = (Button) findViewById(R.id.btn_back);
-        mBtnSend = (Button)findViewById(R.id.btn_send);
-        mBtnSend = (Button)findViewById(R.id.btn_send);
-        mBtnFile=(Button) findViewById(R.id.btn_file);
-        mBtnBack.setOnClickListener(this);
-        mBtnSend.setOnClickListener(this);
-
-        mBtnSend.setOnClickListener(this);
-        mBtnFile.setOnClickListener(this);
-        mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
-        opposite_name = (TextView)findViewById(R.id.opposite_name);
+        opposite_name = (TextView) findViewById(R.id.opposite_name);
         opposite_name.setText("聊天对象ID");
+
+        /**
+         * 初始化输入框
+         */
+        mSendEdt = (EditText) findViewById(R.id.send_edt);
+        mPanelRoot = (KPSwitchPanelLinearLayout) findViewById(R.id.panel_root);
+        mPlusIv = (ImageView) findViewById(R.id.plus_iv);
+        mSendBtn = (TextView) findViewById(R.id.btn_send);
+        mPictureBtn = (ImageView) findViewById(R.id.chat_picture);
+        mFileBtn = (ImageView) findViewById(R.id.chat_file);
 
     }
 
@@ -165,10 +257,45 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK
+//                && ((FaceRelativeLayout) findViewById(R.id.FaceRelativeLayout))
+//                .hideFaceView()) {
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+    static private int openfileDialogId = 0;
+
+    //创建文件对话框
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        MsgFragment.myAdapter.notifyDataSetChanged();
+    protected Dialog onCreateDialog(int id) {
+        if (id == openfileDialogId) {
+            Map<String, Integer> images = new HashMap<String, Integer>();
+            // 下面几句设置各文件类型的图标， 需要你先把图标添加到资源文件夹
+            images.put(OpenFileDialog.sRoot, R.drawable.filedialog_root);   // 根目录图标
+            images.put(OpenFileDialog.sParent, R.drawable.filedialog_folder_up);    //返回上一层的图标
+            images.put(OpenFileDialog.sFolder, R.drawable.filedialog_folder);   //文件夹图标
+            images.put("wav", R.drawable.filedialog_wavfile);   //wav文件图标
+            images.put("txt", R.drawable.filedialog_wavfile);   //wav文件图标
+            images.put(OpenFileDialog.sEmpty, R.drawable.filedialog_root);
+            Dialog dialog = OpenFileDialog.createDialog(id, this, "打开文件", new CallbackBundle() {
+                        @Override
+                        public void callback(Bundle bundle) {
+                            File file = new File(bundle.getString("path"));
+                            //测试为1发到1
+                            chatPresenter.SendFile(file, 1, new int[]{1});
+                            String filepath = bundle.getString("path");
+                            setTitle(filepath); // 把文件路径显示在标题上
+                        }
+                    },
+                    "",//.wav;
+                    images);
+            return dialog;
+        }
+        return null;
     }
 
     /*
@@ -185,8 +312,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             Toast.makeText(this, "抱歉,不存在图库", Toast.LENGTH_SHORT).show();
         }
     }
+
     //选择文件
-    private void GetFile(){
+    private void GetFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -196,8 +324,9 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             Toast.makeText(this, "抱歉,不存在文件管理器", Toast.LENGTH_SHORT).show();
         }
     }
+
     //获取视频文件从摄像头
-    private void GetVideoFromCam(){
+    private void GetVideoFromCam() {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         intent.addCategory("android.intent.category.DEFAULT");
         tempPhotoFile = new File(this.getCacheDir(), "testVideoFileFromCam.avi");
@@ -208,6 +337,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
 
     }
+
     /*
     * 判断sdcard是否被挂载
     */
@@ -241,17 +371,18 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_send://发送聊天信息
-                Log.d("Send","Send____________________________________________________");
-                UserModel[] dst =new UserModel[dstUsers.size()];
+                Log.d("Send", "Send____________________________________________________");
+                UserModel[] dst = new UserModel[dstUsers.size()];
                 dstUsers.toArray(dst);
-                chatPresenter.SendMsg(dst,mEditTextContent.getText().toString());
+                chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
                 break;
-            case R.id.btn_file://发送文件
-                Log.d("Viewing","File----");
+            case R.id.chat_file://发送文件
+                Log.d("Viewing", "File----");
                 GetImgFromGallery();
                 break;
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
@@ -260,38 +391,39 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         }
         if (requestCode == FILE_REQUEST) {//一般文件
             Uri uri = data.getData();
-            Toast.makeText(this,uri.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
             Uri uri = data.getData();
-            Toast.makeText(this,uri.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == PHOTO_REQUEST_CAREMA) {// 从相机返回的图片
-            Toast.makeText(this,Uri.fromFile(tempPhotoFile).getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Uri.fromFile(tempPhotoFile).getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == VIDEO_REQUEST_CAREMA) {// 获取视频
-            Toast.makeText(this,Uri.fromFile(tempVideoFile).getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Uri.fromFile(tempVideoFile).getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
     }
 
-    public void InitData(){
-        MsgModel lzy_1 = new MsgModel("lzy" ,"wzb", "2012-09-22 18:00:02" , "有大吗" , true);
+    public void InitData() {
+        MsgModel lzy_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:00:02", "有大吗", true);
         DBManager.InsertMsg(lzy_1);
 
-        MsgModel wzb_1 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:10:22" , "有！你呢？" , false);
+        MsgModel wzb_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:10:22", "有！你呢？", false);
         DBManager.InsertMsg(wzb_1);
 
-        MsgModel lzy_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:11:24" , "我也有" , true);
+        MsgModel lzy_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:11:24", "我也有", true);
         DBManager.InsertMsg(lzy_2);
 
-        MsgModel wzb_2 = new MsgModel("lzy" ,"wzb" , "2012-09-22 18:20:23" , "那上吧" , false);
+
+        MsgModel wzb_2 = new MsgModel("lzy", "wzb", "2012-09-22 18:20:23", "那上吧", false);
         DBManager.InsertMsg(wzb_2);
 
-        MsgModel wzb_3 = new MsgModel("lz" ,"wzb" , "2015-09-22 18:10:22" , "傻逼" , false);
+        MsgModel wzb_3 = new MsgModel("lz", "wzb", "2015-09-22 18:10:22", "傻逼", false);
         DBManager.InsertMsg(wzb_3);
 
 
