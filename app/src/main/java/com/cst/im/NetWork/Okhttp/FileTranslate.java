@@ -16,8 +16,8 @@ import okhttp3.Callback;
 public class FileTranslate {
     private Activity activity;
     private NetFileManagement netFileManagement;
-    private String fileServeUrl="http://192.168.191.1:8123";
-    FileTranslate(Activity activity){
+    private String fileServeUrl="http://192.168.1.100:8123";
+    public FileTranslate(Activity activity){
         this.activity = activity;
         netFileManagement = new NetFileManagement(activity);
     }
