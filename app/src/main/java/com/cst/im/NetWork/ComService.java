@@ -7,10 +7,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
+import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
-import com.cst.im.model.MsgModelBase;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.presenter.Tools;
 
@@ -101,28 +101,34 @@ public class ComService extends TcpService {
             case BuildFrame.FileInfo://文件简要消息
             {
                 System.out.println("chatMsg");
-                MsgModelBase baseMsg = new MsgModelBase();
-
+                IBaseMsg baseMsg = null;
+                //实例化对象
+                if(frame.getMsgType()==BuildFrame.TextMsg){
+                    baseMsg = new TextMsgModel();
+                    ((TextMsgModel)baseMsg).setText(frame.getMsg().getMsg());
+                    baseMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
+                    baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
+                }else if(frame.getMsgType()==BuildFrame.FileInfo){
+                    baseMsg = new FileMsgModel();
+                    baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                }
+                if(baseMsg==null){
+                    Log.e(" bad value", "ComService,baseMsg null");
+                    return;
+                }
+                //初始化一些公有的东西
                 //检查是否空
                 if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!=""){
-                    Log.e(" bad value", "ConService,OnMessageCome ChatMsg");
-                    System.out.println("ConService,OnMessageCome ChatMsg bad value");
+                    Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
                 }
                 int dst[] = new int[frame.getDst().getDstCount()];
                 for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
                     dst[i] = frame.getDst().getDst(i).getUserID();
                 }
+                baseMsg.sendOrRecv(true);
                 baseMsg.setSrc_ID(frame.getSrc().getUserID());
                 baseMsg.setDst_ID(dst);
                 baseMsg.setMsgDate(Tools.getDate());
-                if(frame.getMsgType()==BuildFrame.TextMsg){
-                    TextMsgModel txtMsg = ((TextMsgModel) baseMsg);
-                    txtMsg.setText(frame.getMsg().getMsg());
-                    txtMsg.sendOrRecv(true);
-                    txtMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
-                }else if(frame.getMsgType()==BuildFrame.FileInfo){
-                    //文件消息的处理
-                }
                 if(chatMsgEvent!=null)//执行收到聊天消息反馈事件
                     chatMsgEvent.handleChatMsgEvent(baseMsg);
                 if(chatListEvent!=null)
