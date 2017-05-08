@@ -23,8 +23,15 @@ import okhttp3.Response;
  */
 
 public class UiImRequest implements ImRequest {
-    static String url="";
+    static String url="http://192.168.1.100:8123";
     OkHttpClient client=new OkHttpClient();
+    static UiImRequest uiImRequest;
+    private UiImRequest(){}
+    public static UiImRequest Builder(){
+        if(uiImRequest==null)
+            uiImRequest=new UiImRequest();
+        return uiImRequest;
+    }
     @Override
     public void preRequest(FileSweet fileSweet, final ResultCallBack callback) {
         RequestBody requestBody = new MultipartBody.Builder()
