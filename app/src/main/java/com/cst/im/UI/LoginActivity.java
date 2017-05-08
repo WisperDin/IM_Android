@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
 
     // 注册按钮
-    Button btnRegister;
+    TextView btnRegister;
 
     //登录业务逻辑
     ILoginPresenter loginPresenter;
@@ -106,35 +106,43 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
         editUser = (EditText) findViewById(R.id.username);
         editPwd = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.login_button);
-        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
-        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
-        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
+//        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
+//        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
+//        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
         activityMain = (LinearLayout) findViewById(R.id.activity_main);
         tilUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
         tilPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
-        btnRegister = (Button) findViewById(R.id.register_action);
+        btnRegister = (TextView) findViewById(R.id.register_action);
     }
 
     //处理登录事件的UI提示
     @Override
     public void onLoginResult(final int rslCode,final int id){
 
-        if (rslCode==Status.Login.LOGINSUCCESS){
-            loginPresenter.saveLoginInf();
-            //页面跳转
-            //TODO
-            UserModel.InitLocalUser("abc","123",id);
-            Intent it = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(it);
-            LoginActivity.this.finish();
-            Toast.makeText(this,"登录成功", Toast.LENGTH_SHORT).show();
+        switch (rslCode) {
+            case Status.Login.LOGINSUCCESS:
+                loginPresenter.saveLoginInf();
+                //页面跳转
+                //TODO
+                UserModel.InitLocalUser("abc","123",id);
+                Intent it = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(it);
+                LoginActivity.this.finish();
+                Toast.makeText(this,"登录成功", Toast.LENGTH_SHORT).show();
 
-            //TODO 不知道放哪好，暂时放这里，访问应用程序cache需要上下文
-            FileAccess.InitContext(this);
+                //TODO 不知道放哪好，暂时放这里，访问应用程序cache需要上下文
+                FileAccess.InitContext(this);
+                break;
+            case Status.Login.LOGINFAILED:
+                Toast.makeText(this,"登录失败",Toast.LENGTH_SHORT).show();
+                break;
+            case Status.Login.LOGINNOTEXIST:
+                Toast.makeText(this,"该用户未注册",Toast.LENGTH_SHORT).show();
+                break;
+            case Status.Login.LOGINWRONGPWD:
+                Toast.makeText(this,"密码错误",Toast.LENGTH_SHORT).show();
+                break;
         }
-        else if(rslCode == Status.Login.LOGINFAILED)
-            Toast.makeText(this,"用户名或密码不正确",Toast.LENGTH_SHORT).show();
-
     }
 
     //网络错误提示

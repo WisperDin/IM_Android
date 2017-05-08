@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background6"
+    android:background="#ffffff"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:orientation="vertical">
         <!--图标-->
         <LinearLayout
@@ -40,7 +40,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:text="@string/app_name"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:textSize="28sp" />
 
         </LinearLayout>
@@ -55,7 +55,6 @@
             android:layout_marginTop="72dp"
             android:layout_weight="0.5"
             android:animateLayoutChanges="true"
-            android:background="@drawable/inf_background"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
@@ -63,6 +62,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/login_et_bg"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -71,7 +71,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="6dp"
                     android:layout_marginStart="6dp"
-                    android:background="@drawable/login_username" />
+                    android:background="@drawable/account" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/usernameRegisterWrapper"
@@ -94,14 +94,12 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ffffff" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/login_et_bg"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -110,7 +108,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="6dp"
                     android:layout_marginStart="6dp"
-                    android:background="@drawable/login_password" />
+                    android:background="@drawable/password" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/passwordRegisterWrapper"
@@ -129,12 +127,8 @@
                         android:maxLines="1"
                         android:textColor="@android:color/background_light" />
                 </android.support.design.widget.TextInputLayout>
-
             </LinearLayout>
-
-
         </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -142,7 +136,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -151,9 +145,10 @@
 
             <Button
                 android:id="@+id/register_button"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/login_login_by_message"
+                android:background="@drawable/login_login"
                 android:hint="@string/prompt_message_login"
                 android:textColorHint="#ffffff"
                 android:textSize="16sp" />
