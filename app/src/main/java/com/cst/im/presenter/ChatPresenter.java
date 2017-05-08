@@ -1,11 +1,15 @@
 package com.cst.im.presenter;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.FileTranslate;
+import com.cst.im.NetWork.Okhttp.impl.ImRequest;
+import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.dataBase.DBManager;
@@ -19,6 +23,7 @@ import com.cst.im.model.UserModel;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +108,31 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             //使用http上传文件
             FileTranslate fileTranslate = new FileTranslate(((ChatActivity) iChatView));
             fileTranslate.UploadFile(file.getPath());
+
+            // TODO: 2017/5/8 delete it just test,cjwddz
+            try {
+                FileSweet fs=new FileSweet(FileSweet.FILE_TYPE_FILE ,file);
+                UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
+                    @Override
+                    public void fail(int code, String msg) {
+                        // TODO: 2017/5/8 给某个View做点事
+                        Activity activity=null;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void success(int code, String msg) {
+                        // TODO: 2017/5/8 某个View做点事
+                    }
+                });
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         else
         {

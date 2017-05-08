@@ -26,6 +26,7 @@ public class FileTranslate {
             @Override
             public void preRequest(FileSweet fileSweet, Callback callback) {
                 Log.e("TAG",fileSweet.getFileName());
+
             }
 
             @Override
