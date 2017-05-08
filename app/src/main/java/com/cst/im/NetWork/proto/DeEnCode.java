@@ -9,8 +9,7 @@ import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
-import com.cst.im.model.MsgModelBase;
-import com.cst.im.model.TextMsgModel;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -118,32 +117,16 @@ public class DeEnCode {
         }
         return null;
     }
-    //short转byte数组
-    public static byte[] shortToByteArray(short s) {
-        //java 里面的short是大端存储方式，数据的高位存放在低地址位
-        byte[] targets = new byte[2];
-        targets[1] = (byte) ((s >> 8) & 0xff);
-        targets[0] = (byte) (s & 0xff);
-        return targets;
-    }
-    //byte数组转short
-    public static short byteArrayToShort(byte H,byte L) {
-        //java 里面的short是大端存储方式，数据的高位存放在低地址位
-        return (short)((H&0xFF)<<8 |(L& 0xFF));
-    }
-    //编码文件头 包含帧头，帧类型，源，目的
+
+    //编码文件简要信息帧
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
-/*        Frame head = new BuildFrame(BuildFrame.FileSend).GetFileMsgFrame(fileMsg);
+        Frame frame = new BuildFrame(BuildFrame.FileSend).GetFileInfoFrame(fileMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            head.writeTo(baos);
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
-        return baos.toByteArray();*/
-        byte[] srcID = shortToByteArray((short)fileMsg.getSrc_ID());
-        byte[] dstID = shortToByteArray((short)fileMsg.getDst_IDAt(0));
-        byte[] fileHead = new byte[]{SpecialFrameHead,(byte) BuildFrame.FileSend,srcID[0],srcID[1],dstID[0],dstID[1]};
-        return fileHead;
+        return baos.toByteArray();
     }
     //编码-文件发送帧（固定标志头+文件）
     public static byte[] encodeFileMsgFrame(IFileMsg fileMsg) {
@@ -197,9 +180,9 @@ public class DeEnCode {
    //解码-文件帧
     public static IFileMsg decodeFileFrame(byte[] buffer){
         IFileMsg fileMsg = new FileMsgModel();
-        fileMsg.setSrc_ID(byteArrayToShort(buffer[3],buffer[2]));
-        int[] dstID = new int[]{byteArrayToShort(buffer[5],buffer[4])};
-        fileMsg.setDst_ID(dstID);
+        //fileMsg.setSrc_ID(byteArrayToShort(buffer[3],buffer[2]));
+        //int[] dstID = new int[]{byteArrayToShort(buffer[5],buffer[4])};
+        //fileMsg.setDst_ID(dstID);
         byte[] fileData = Arrays.copyOfRange(buffer,SpecialFrameLength,buffer.length);
         fileMsg.setFile(FileAccess.WriteFile("abc.txt",fileData));
         System.out.println("save file ok");

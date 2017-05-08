@@ -14,6 +14,11 @@ message Msg {
 message DstUser {
   repeated User dst = 1;
 }
+message File {
+  string fileName = 1;//文件名
+  string fileFeature = 2;//文件指纹
+  string fileParam = 3;//文件参数
+}
 message Action {
 	int32 rslCode=1;//状态码
     int32 actionType=2;//行为码
@@ -28,6 +33,8 @@ message Frame {
   User src = 5;
   DstUser dst = 6;
   Msg msg = 7;
+
+  File fileInfo = 8;
   
-  Action fbAction = 8;
+  Action fbAction = 9;
 }

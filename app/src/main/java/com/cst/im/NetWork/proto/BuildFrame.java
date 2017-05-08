@@ -3,10 +3,10 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
-import com.cst.im.model.TextMsgModel;
 
 import protocol.Protocol.DstUser;
 import protocol.Protocol.Frame;
@@ -25,7 +25,6 @@ public class BuildFrame {
     public static final int IsFriend=8;
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
-
         frame.setProtoSign(1234);
         frame.setMsgLength(1);
         frame.setMsgType(msgType);
@@ -91,6 +90,29 @@ public class BuildFrame {
         Log.e(" bad value", "BuildFrame,GetLoginFrame");
         System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
+    }
+    //获取文件简要消息帧
+    public Frame GetFileInfoFrame(IFileMsg fileMsg){
+        //参数判断
+        if(fileMsg.getSrc_ID()==0||fileMsg.getDst_ID()==null||fileMsg.getDst_ID().length<=0){
+            Log.e(" bad value", "BuildFrame,GetFileInfoFrame");
+            System.out.println("BuildFrame,GetFileInfoFrame bad value");
+            return null;
+        }
+        //发送源
+        User.Builder src = User.newBuilder();
+        src.setUserID(fileMsg.getSrc_ID());
+        //接收者
+        User.Builder dst = User.newBuilder();
+        dst.setUserID(fileMsg.getDst_IDAt(0));
+        DstUser.Builder dstGroup = DstUser.newBuilder();
+        dstGroup.addDst(dst);
+        //文件信息
+        //...
+        frame.setSrc(src.build());
+        frame.setDst(dstGroup.build());
+        return frame.build();
+
     }
 
     //获取好友列表帧

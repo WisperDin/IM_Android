@@ -11,6 +11,6 @@ public interface IChatPresenter {
     void  SendMsg(IUser[] dstUser, String contString);
 
     //发送一般文件
-    void SendFile(File file, int srcID, int[] dstID);
+    void SendFile(IUser[] dstUser,File file);
 
 }

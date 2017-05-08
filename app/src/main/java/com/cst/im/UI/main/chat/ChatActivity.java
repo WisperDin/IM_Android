@@ -72,7 +72,10 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private File tempPhotoFile;
     private File tempVideoFile;
 
+    //目的用户信息
     private ArrayList<UserModel> dstUsers = new ArrayList<UserModel>();
+    //目的用户信息，数组形态
+    private UserModel[] dst;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +89,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         bundle = this.getIntent().getExtras();
         UserModel dstUser = new UserModel(bundle.getString("dstName"), "", bundle.getInt("dstId"));
         dstUsers.add(dstUser);
+        dst = new UserModel[dstUsers.size()];
+        dstUsers.toArray(dst);
         Toast.makeText(this, dstUser.getName() + " " + dstUser.getID(), Toast.LENGTH_LONG).show();
 
 
@@ -332,8 +337,6 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
             case R.id.btn_send://发送聊天信息
                 Log.d("Send", "Send____________________________________________________");
-                UserModel[] dst = new UserModel[dstUsers.size()];
-                dstUsers.toArray(dst);
                 chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
                 break;
             case R.id.chat_file://发送文件
@@ -351,6 +354,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         }
         if (requestCode == FILE_REQUEST) {//一般文件
             Uri uri = data.getData();
+            //发送文件
+            chatPresenter.SendFile(dst,new File(uri.getPath()));
             Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }

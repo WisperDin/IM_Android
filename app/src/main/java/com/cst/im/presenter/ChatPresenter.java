@@ -65,22 +65,26 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //发送一般文件
     @Override
-    public void SendFile(File file, int srcID, int[] dstID){
+    public void SendFile(IUser[] dstUser ,File file){
+        //将dstUser的ID取出
+        int dst_ID[] = new int[dstUser.length+1];
+        for(int i = 0 ; i <dstUser.length ; i++){
+            dst_ID[i] = dstUser[i].getID();
+        }
         IFileMsg fileMsg = new FileMsgModel();
         fileMsg.setFile(file);
-        fileMsg.setSrc_ID(srcID);
-        fileMsg.setDst_ID(dstID);
+        fileMsg.setSrc_ID(UserModel.localUser.getID());
+        fileMsg.setDst_ID(dst_ID);
         //TODO: 断线续传
-        //编码（固定帧头+文件）
-        final byte[] fileDataToSend = DeEnCode.encodeFileMsgFrame(fileMsg);
-        if(fileDataToSend!=null)
+        final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
+        if(fileHeadToSend!=null)
         {
             //发送数据
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        ComService.client.SendData(fileDataToSend);
+                        ComService.client.SendData(fileHeadToSend);
                     }
                     catch (IOException ioe)
                     {
@@ -91,8 +95,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         else
         {
-            Log.w("file","fileDataToSend null");
-            System.out.println("fileDataToSend null");
+            Log.w("file","fileHeadToSend null");
+            System.out.println("fileHeadToSend null");
         }
 
 

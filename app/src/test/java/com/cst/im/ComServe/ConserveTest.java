@@ -1,16 +1,12 @@
 package com.cst.im.ComServe;
 
 import com.cst.im.NetWork.ComService;
-import com.cst.im.NetWork.proto.BuildFrame;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.MsgModel;
-import com.cst.im.presenter.Tools;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
-import protocol.Protocol;
+//import com.cst.im.model.IMsg;
+//import com.cst.im.model.MsgModel;
 
 /**
  * Created by ASUS on 2017/5/2.
@@ -30,7 +26,7 @@ public class ConserveTest {
     public void tear()throws Exception{
         //frame=null;
     }
-    //成功样例
+    /*//成功样例
     @Test
     public void OnMessageComeSuccessTest(){
         //初始化帧
@@ -86,5 +82,5 @@ public class ConserveTest {
         //调用消息分发函数
         comService.OnMessageCome(frameOrigin.build());
 
-    }
+    }*/
 }
