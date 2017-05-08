@@ -19,8 +19,8 @@ public class BuildFrame {
     public static final int Login  = 1;
     public static final int Register  = 2;
     public static final int FeedBack  = 3;
-    public static final int ChatMsg  = 5;
-    public static final int FileSend = 6;
+    public static final int TextMsg  = 5;
+    public static final int FileInfo = 6;
     public static final int GetFriend  = 7;
     public static final int IsFriend=8;
     public  BuildFrame(int msgType) {

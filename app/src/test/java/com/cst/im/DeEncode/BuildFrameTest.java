@@ -1,14 +1,6 @@
 package com.cst.im.DeEncode;
 
-import com.cst.im.NetWork.proto.BuildFrame;
-import com.cst.im.model.FileMsgModel;
-import com.cst.im.model.IFileMsg;
-import com.cst.im.presenter.Tools;
-
 import org.junit.Before;
-import org.junit.Test;
-
-import protocol.Protocol;
 
 /**
  * Created by ASUS on 2017/5/1.
@@ -132,7 +124,7 @@ public class BuildFrameTest {
        // System.out.println(fileDataMsg);
 
     //}
-    @Test
+/*    @Test
     public void TestGetFileInfoFrame(){
         //初始化帧
         BuildFrame fileHeadFrame = new BuildFrame(BuildFrame.FileSend);
@@ -149,5 +141,5 @@ public class BuildFrameTest {
         System.out.println(frame.getSenderTime());
         System.out.println(frame.getSrc().getUserID());
         System.out.println(frame.getDst().getDst(0).getUserID());
-    }
+    }*/
 }

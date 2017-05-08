@@ -8,5 +8,4 @@ package com.cst.im.view;
 public interface IChatView {
      void onSendMsg();
      void onRecvMsg(String msg,String date);
-
 }

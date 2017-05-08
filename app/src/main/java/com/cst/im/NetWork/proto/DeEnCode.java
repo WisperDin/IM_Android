@@ -65,7 +65,7 @@ public class DeEnCode {
 //                    return baos.toByteArray();
 //            }
             ITextMsg txtMsg = ((ITextMsg) chatMsg);
-            Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(txtMsg);
+            Frame frame = new BuildFrame(BuildFrame.TextMsg).GetChatMsgFrame(txtMsg);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
                 frame.writeTo(baos);
@@ -128,7 +128,7 @@ public class DeEnCode {
 
     //编码文件简要信息帧
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
-        Frame frame = new BuildFrame(BuildFrame.FileSend).GetFileInfoFrame(fileMsg);
+        Frame frame = new BuildFrame(BuildFrame.FileInfo).GetFileInfoFrame(fileMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
@@ -178,7 +178,7 @@ public class DeEnCode {
     public static void decodeSpFrame(byte[] frameData){
         int msgType=frameData[1];
         switch (msgType){
-            case BuildFrame.FileSend://文件帧
+            case BuildFrame.FileInfo://文件帧
                 DeEnCode.decodeFileFrame(frameData);
                 break;
             default:

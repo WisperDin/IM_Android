@@ -10,7 +10,7 @@ import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
-import com.cst.im.model.ITextMsg;
+import com.cst.im.model.MsgModelBase;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.presenter.Tools;
 
@@ -34,9 +34,14 @@ public class ComService extends TcpService {
     public interface ChatMsgHandler{
         void handleChatMsgEvent(IBaseMsg msgRecv);//参数为接收到的消息
     }
+    //TODO 其实可以直接用上面的
     public interface ChatListHandler{
         void handleChatListEvent(IBaseMsg msgRecv);//参数为接收到的消息
     }
+
+/*    public interface FileMsgHandler{
+        void handleFileMsgEvent(IBaseMsg msgRecv);//参数为接收到的文件简要信息
+    }*/
 
     public interface FriendListHandler{
         void handleFriendLisEvent(IFriend fl);//参数为接收到的消息
@@ -53,28 +58,17 @@ public class ComService extends TcpService {
     static FriendListHandler FriendListEvent;
     static ChatListHandler chatListEvent;
     static IsFriendHandler isfriendEvent;
+    //static FileMsgHandler fileMsgHandler;
 
-    public static void setRegisterCallback(MsgHandler registerCallback){
-        registerEvent =registerCallback;
-    }
+    public static void setRegisterCallback(MsgHandler registerCallback){registerEvent =registerCallback;}
     public static void setLoginCallback(MsgHandler loginCallback){
         loginFbEvent=loginCallback;
     }
-
-    public static void setChatMsgCallback(ChatMsgHandler chatMsgCallback){
-        chatMsgEvent=chatMsgCallback;
-    }
-
-    public static  void setChatListCallback(ChatListHandler chatListCallback) {
-        chatListEvent=chatListCallback;
-    }
-    public static void setFriendListCallback(FriendListHandler FriendListCallback){
-        FriendListEvent=FriendListCallback;
-    }
-
-    public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){
-        isfriendEvent=IsFriendCallback;
-    }
+    public static void setChatMsgCallback(ChatMsgHandler chatMsgCallback){chatMsgEvent=chatMsgCallback;}
+    //public static void setFileMsgCallback(FileMsgHandler fileMsgCallback){fileMsgHandler=fileMsgCallback;}
+    public static void setChatListCallback(ChatListHandler chatListCallback) {chatListEvent=chatListCallback;}
+    public static void setFriendListCallback(FriendListHandler FriendListCallback){FriendListEvent=FriendListCallback;}
+    public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){isfriendEvent=IsFriendCallback;}
     @Override
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
@@ -103,37 +97,39 @@ public class ComService extends TcpService {
                 }
                 break;
             }
-            case BuildFrame.ChatMsg://聊天消息
+            case BuildFrame.TextMsg://聊天消息
+            case BuildFrame.FileInfo://文件简要消息
             {
                 System.out.println("chatMsg");
+                MsgModelBase baseMsg = new MsgModelBase();
+
                 //检查是否空
-                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!="")
-                {
-                    //模拟了一个date
-                    int dst[] = new int[frame.getDst().getDstCount()+1];
-                    for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
-                        dst[i] = frame.getDst().getDst(i).getUserID();
-                    }
-                    ITextMsg textMsg = new TextMsgModel();
-                    textMsg.setSrc_ID(frame.getSrc().getUserID());
-                    textMsg.setDst_ID(dst);
-                    textMsg.setMsgDate(Tools.getDate());
-                    textMsg.setText(frame.getMsg().getMsg());
-                    textMsg.sendOrRecv(true);
-                    textMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
-//                    IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
-//                            frame.getDst().getDst(0).getUserName(),
-//                            "1000",
-//                            frame.getMsg().getMsg(),
-//                            true);
-                    if(chatMsgEvent!=null)//执行登录反馈事件
-                        chatMsgEvent.handleChatMsgEvent(textMsg);
-                    if(chatListEvent!=null)
-                        chatListEvent.handleChatListEvent(textMsg);
-                }else{
+                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!=""){
                     Log.e(" bad value", "ConService,OnMessageCome ChatMsg");
                     System.out.println("ConService,OnMessageCome ChatMsg bad value");
                 }
+                int dst[] = new int[frame.getDst().getDstCount()];
+                for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
+                    dst[i] = frame.getDst().getDst(i).getUserID();
+                }
+                baseMsg.setSrc_ID(frame.getSrc().getUserID());
+                baseMsg.setDst_ID(dst);
+                baseMsg.setMsgDate(Tools.getDate());
+                if(frame.getMsgType()==BuildFrame.TextMsg){
+                    TextMsgModel txtMsg = ((TextMsgModel) baseMsg);
+                    txtMsg.setText(frame.getMsg().getMsg());
+                    txtMsg.sendOrRecv(true);
+                    txtMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
+                }else if(frame.getMsgType()==BuildFrame.FileInfo){
+                    //文件消息的处理
+                }
+                if(chatMsgEvent!=null)//执行收到聊天消息反馈事件
+                    chatMsgEvent.handleChatMsgEvent(baseMsg);
+                if(chatListEvent!=null)
+                    chatListEvent.handleChatListEvent(baseMsg);
+
+
+
                 break;
             }
 
@@ -163,14 +159,29 @@ public class ComService extends TcpService {
                 isfriendEvent.handleIsFriendEvent(IsFriend);
                 break;
             }
+            /*case BuildFrame.FileInfo://文件简要消息
+            {
+                System.out.println("fileInfo");
+                //检查是否空
+                if (frame.getSrc()==null&&frame.getDst()==null||frame.getDst().getDstCount()<=0){
+                    Log.e(" bad value", "ConService,OnMessageCome FileInfo");
+                    System.out.println("ConService,OnMessageCome FileInfo bad value");
+                    return;
+                }
+                    int dst[] = new int[frame.getDst().getDstCount()+1];
+                    for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
+                        dst[i] = frame.getDst().getDst(i).getUserID();
+                    }
+                IFileMsg fileMsg = new FileMsgModel();
+                fileMsg.setSrc_ID(frame.getSrc().getUserID());
+                fileMsg.setDst_ID(dst);
+                fileMsg.setMsgDate(Tools.getDate());
+                if(fileMsgHandler!=null)//执行收到文件消息反馈事件
+                    fileMsgHandler.handleFileMsgEvent(fileMsg);
 
-            /*case 2://注册事件
-                if(registerEvent!=null)
-                    registerEvent.handleEvent(msg);
                 break;
-            case 3://消息事件
-                handlerMsg(msg);
-                break;*/
+            }*/
+
             default:
                 Log.w("OnMessageCome","msgType异常");
                 break;
