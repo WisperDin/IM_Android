@@ -99,7 +99,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getID());
 
 
-        initView();// 初始化view
+        initView(bundle.getString("dstName"));// 初始化view
 
         //初始化数据（MVP）
         chatPresenter = new ChatPresenter(this, msg_list);
@@ -218,11 +218,11 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     /**
      * 初始化view
      */
-    public void initView() {
+    public void initView(String dst_Name) {
         mListView = (ListView) findViewById(R.id.content_list);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         opposite_name = (TextView) findViewById(R.id.opposite_name);
-        opposite_name.setText("聊天对象ID");
+        opposite_name.setText(dst_Name);
 
         /**
          * 初始化输入框

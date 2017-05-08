@@ -120,6 +120,7 @@ public class ComService extends TcpService {
                     textMsg.setMsgDate(Tools.getDate());
                     textMsg.setText(frame.getMsg().getMsg());
                     textMsg.sendOrRecv(true);
+                    textMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
 //                    IMsg msgRecv = new MsgModel(frame.getSrc().getUserName(),
 //                            frame.getDst().getDst(0).getUserName(),
 //                            "1000",

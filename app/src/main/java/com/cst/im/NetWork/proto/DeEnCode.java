@@ -53,20 +53,28 @@ public class DeEnCode {
     }
     //编码-聊天消息帧
         public static byte[] encodeChatMsgFrame(IBaseMsg chatMsg) {
-            switch (chatMsg.getMsgType()) {
-                case TEXT:
-                    //强制类型转换
-                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
-                    Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(txtMsg);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        frame.writeTo(baos);
-                    } catch (IOException e) {
-                    }
-                    return baos.toByteArray();
+//            switch (chatMsg.getMsgType()) {
+//                case TEXT:
+//                    //强制类型转换
+//                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
+//                    Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(txtMsg);
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    try {
+//                        frame.writeTo(baos);
+//                    } catch (IOException e) {
+//                    }
+//                    return baos.toByteArray();
+//            }
+            ITextMsg txtMsg = ((ITextMsg) chatMsg);
+            Frame frame = new BuildFrame(BuildFrame.ChatMsg).GetChatMsgFrame(txtMsg);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                frame.writeTo(baos);
+            } catch (IOException e) {
             }
+            return baos.toByteArray();
             //若各个路径都无信息，返回NULL
-            return null;
+            //return null;
         }
 
     //编码-获取好友列表帧

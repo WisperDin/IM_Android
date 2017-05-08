@@ -8,6 +8,9 @@ public interface IBaseMsg {
     //发送源用户id
     int getSrc_ID();
     void setSrc_ID(int src_id);
+    //发送源用户名
+    String getSrc_Name();
+    void setSrc_Name(String src_name);
     //发送目的用户id组
     int[] getDst_ID();
     int getDst_IDAt(int pos);

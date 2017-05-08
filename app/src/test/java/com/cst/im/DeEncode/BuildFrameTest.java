@@ -4,8 +4,6 @@ import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IFileMsg;
-import com.cst.im.model.IMsg;
-import com.cst.im.model.MsgModel;
 import com.cst.im.presenter.Tools;
 
 import org.junit.Before;
