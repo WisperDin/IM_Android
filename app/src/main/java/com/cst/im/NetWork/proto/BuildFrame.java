@@ -60,7 +60,8 @@ public class BuildFrame {
 
     //获得聊天帧
     public Frame GetChatMsgFrame(IBaseMsg chatMsg){
-        if(chatMsg.getDst_ID()!=null&&chatMsg.getDst_ID().length!=0&&chatMsg.getMsgType()!=null){
+        if(chatMsg.getDst_ID()!=null&&chatMsg.getDst_ID().length!=0){
+            //chatMsg.getDst_ID()!=null&&chatMsg.getDst_ID().length!=0&&chatMsg.getMsgType()!=null
             //发送源
             User.Builder src = User.newBuilder();
             src.setUserID(chatMsg.getSrc_ID());
@@ -70,23 +71,30 @@ public class BuildFrame {
 
             DstUser.Builder dstGroup = DstUser.newBuilder();
             dstGroup.addDst(dst);
-            //TODO 要发送的信息
-            switch(chatMsg.getMsgType()){
-                case TEXT:
-                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
-                    Msg.Builder msg = Msg.newBuilder();
-                    msg.setMsg(txtMsg.getText());
-                    frame.setSrc(src.build());
-                    frame.setDst(dstGroup.build());
-                    frame.setMsg(msg);
-                    return frame.build();
-                case FILE:
-                    break;
-                case SOUNDS:
-                    break;
-                case PHOTO:
-                    break;
-            }
+            //要发送的信息，先模拟字符串发送
+            ITextMsg txtMsg = ((ITextMsg) chatMsg);
+            Msg.Builder msg = Msg.newBuilder();
+            msg.setMsg(txtMsg.getText());
+            frame.setSrc(src.build());
+            frame.setDst(dstGroup.build());
+            frame.setMsg(msg);
+            return frame.build();
+//            switch(chatMsg.getMsgType()){
+//                case TEXT:
+//                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
+//                    Msg.Builder msg = Msg.newBuilder();
+//                    msg.setMsg(txtMsg.getText());
+//                    frame.setSrc(src.build());
+//                    frame.setDst(dstGroup.build());
+//                    frame.setMsg(msg);
+//                    return frame.build();
+//                case FILE:
+//                    break;
+//                case SOUNDS:
+//                    break;
+//                case PHOTO:
+//                    break;
+//            }
         }
         Log.e(" bad value", "BuildFrame,GetLoginFrame");
         System.out.println("BuildFrame,GetLoginFrame bad value");
