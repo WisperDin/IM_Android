@@ -39,23 +39,36 @@ public class DBManager {
      * */
     public static void InsertMsg(IBaseMsg msg){
         //判断接受/发送状态
-        String status;
-        if(!msg.sendOrRecv()){
-             status = Constant.SEND;
-        }
-        else {
-             status = Constant.RECEIVE;
-        }
-        ITextMsg textMsg = ((ITextMsg) msg);
-        SQLiteDatabase sdb = helper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(""+Constant.Chat.LEFT_ID+"", textMsg.getDst_IDAt(0));
-        values.put(""+Constant.Chat.RIGHT_ID+"",textMsg.getSrc_ID());
-        values.put(""+Constant.Chat.MSG+"", textMsg.getText());
-        values.put(""+Constant.Chat.TIME+"", textMsg.getMsgDate());
-        values.put(""+Constant.Chat.FLAG+"" , status);
-        sdb.insert(""+Constant.Chat.TABLE_NAME+"", null, values);
-        sdb.close();
+        switch(msg.getMsgType()){
+            case TEXT:
+                String status;
+                if(!msg.sendOrRecv()){
+                    status = Constant.SEND;
+                }
+                else {
+                    status = Constant.RECEIVE;
+                }
+                ITextMsg textMsg = ((ITextMsg) msg);
+                SQLiteDatabase sdb = helper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(""+Constant.Chat.LEFT_ID+"", textMsg.getDst_IDAt(0));
+                values.put(""+Constant.Chat.RIGHT_ID+"",textMsg.getSrc_ID());
+                values.put(""+Constant.Chat.MSG+"", textMsg.getText());
+                values.put(""+Constant.Chat.TIME+"", textMsg.getMsgDate());
+                values.put(""+Constant.Chat.FLAG+"" , status);
+                sdb.insert(""+Constant.Chat.TABLE_NAME+"", null, values);
+                sdb.close();
+                break;
+            case FILE:
+                Log.d("存储文件" ,"文件————————————");
+                return;
+            case PHOTO:
+                Log.d("存储图片" ,"图片————————————");
+                return;
+            case SOUNDS:
+                Log.d("存储语音" ,"语音————————————");
+                return;
+         }
     }
 
 

@@ -207,7 +207,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
     //接收到消息就会执行
     @Override
-    public void onRecvMsg(String msg, String date) {
+    public void onRecvMsg() {
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
     }
@@ -361,6 +361,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         }
         if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
             Uri uri = data.getData();
+            //发送文件
+            chatPresenter.SendFile(dst,new File(uri.getPath()));
             Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }

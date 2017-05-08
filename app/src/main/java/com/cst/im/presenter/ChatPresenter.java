@@ -47,15 +47,20 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //判断数据类型
         switch(msgRecv.getMsgType()) {
             case TEXT:
-                final ITextMsg textMsg = ((ITextMsg)(msgRecv));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iChatView.onRecvMsg(textMsg.getText(), textMsg.getMsgDate());
+                        iChatView.onRecvMsg();
                     }
                 });
                 break;
             case FILE:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onRecvMsg();
+                    }
+                });
                 break;
             case PHOTO:
                 break;
