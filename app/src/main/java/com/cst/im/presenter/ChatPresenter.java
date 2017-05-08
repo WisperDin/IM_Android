@@ -123,6 +123,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             textMsg.setText(contString);
             textMsg.sendOrRecv(false);
             textMsg.setDst_ID(dst_ID);
+            textMsg.setMsgType(IBaseMsg.MsgType.TEXT);
             DBManager.InsertMsg(textMsg);
             //发送数据到服务器
             //编码聊天消息帧
