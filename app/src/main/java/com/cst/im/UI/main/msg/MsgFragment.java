@@ -60,7 +60,7 @@ public class MsgFragment extends Fragment implements IMsgView,
         //传送接收者名称，“AcceptName”为key
         Bundle bundle = new Bundle();
         bundle.putString("dstName",accept.getName());
-        bundle.putInt("dstID",accept.getID());
+        bundle.putInt("dstId",accept.getID());
         it.putExtras(bundle);
         //Toast.makeText(getActivity(), accept.getName(), Toast.LENGTH_LONG).show();
         startActivity(it);
