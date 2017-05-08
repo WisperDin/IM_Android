@@ -116,6 +116,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     @Override
                     public void fail(int code, String msg) {
                         // TODO: 2017/5/8 给某个View做点事
+                    }
+                    @Override
+                    public void success(int code, String msg) {
+                        // TODO: 2017/5/8 某个View做点事
+                        // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
                         Activity activity=null;
                         activity.runOnUiThread(new Runnable() {
                             @Override
@@ -123,11 +128,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
 
                             }
                         });
-                    }
-
-                    @Override
-                    public void success(int code, String msg) {
-                        // TODO: 2017/5/8 某个View做点事
                     }
                 });
             } catch (FileNotFoundException e) {
