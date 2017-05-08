@@ -80,7 +80,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setFile(file);
         fileMsg.setSrc_ID(UserModel.localUser.getID());
         fileMsg.setDst_ID(dst_ID);
-        //TODO: 断线续传
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
         if(fileHeadToSend!=null)
         {
@@ -97,6 +96,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         System.out.println("send file []byte failed");
                     }
                 }});
+            //使用http上传文件
         }
         else
         {
