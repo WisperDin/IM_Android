@@ -11,7 +11,17 @@ public class MsgModelBase implements IBaseMsg {
     int[] dstID;//消息目的
     String msgDate;//消息日期
     IBaseMsg.MsgType msgType;// 消息类型
+    String src_name; //发送源用户名
+    String dst_name;//发送目的名
     boolean isComMeg = true;// 是否为收到的消息
+
+
+
+    //发送源用户名
+    public String getSrc_Name(){return src_name;}
+    public void setSrc_Name(String src_name){
+        this.src_name = src_name;
+    }
 
     //发送源用户id
     public int getSrc_ID(){return srcID;}
@@ -45,8 +55,15 @@ public class MsgModelBase implements IBaseMsg {
     public boolean sendOrRecv() {
         return isComMeg;
     }
-
     public void sendOrRecv(boolean isComMsg) {
         isComMeg = isComMsg;
     }
+
+    public  MsgModelBase(){}
+
+    public  MsgModelBase(int dst_id , String name){
+        this.srcID = dst_id;
+        this.dst_name = name;
+    }
+
 }

@@ -71,14 +71,29 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatList
         switch (msgRecv.getMsgType()) {
             case TEXT:
                 ITextMsg textMsg = ((ITextMsg) msgRecv);
-            AddChatMsg(textMsg.getSrc_ID(), textMsg.getText());
+            AddChatMsg(textMsg.getSrc_ID(),textMsg.getSrc_Name(), textMsg.getText());
         }
     }
     //添加一条消息的接口
     @Override
-    public void AddChatMsg(final int id,final  String message) {
+    public void AddChatMsg(int id ,String name , String text) {
+        //判断消息类型，文本直接显示文字，图片显示[图片信息]，语音显示[语音信息]
+//        String textMsg = "";
+//        switch(msg.getMsgType()){
+//            case FILE:
+//                textMsg = "[文件信息]";break;
+//            case TEXT:
+//                ITextMsg txtMsg = ((ITextMsg)msg);
+//                textMsg = txtMsg.getText();
+//                break;
+//            case SOUNDS:
+//                textMsg = "[语音信息]";break;
+//            case PHOTO:
+//                textMsg = "[图片信息]";break;
+//        }
         //构造消息
-        ChatItem chatItem=new ChatItem(R.drawable.msg_icon, Tools.getDate().substring(11,16),id,message,R.drawable.msg_item_redpoint);
+        ChatItem chatItem=new ChatItem(R.drawable.msg_icon, Tools.getDate().substring(11,16),name,
+               text,R.drawable.msg_item_redpoint);
         //进行该消息的处理，若列表中不存在则添加，并顶置列表中
         ChatListPresenter.iChatList.newChatItem(chatItem);
         handler.post(new Runnable() {

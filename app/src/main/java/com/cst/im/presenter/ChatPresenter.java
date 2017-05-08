@@ -107,7 +107,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     @Override
     public void SendMsg(IUser[] dstUser,String contString){
         //将dstUser的ID取出
-        int dst_ID[] = new int[dstUser.length+1];
+        int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
             dst_ID[i] = dstUser[i].getID();
         }
@@ -118,7 +118,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             textMsg.setText(contString);
             textMsg.sendOrRecv(false);
             textMsg.setDst_ID(dst_ID);
-           // DBManager.InsertMsg(entity);
+            DBManager.InsertMsg(textMsg);
             //发送数据到服务器
             //编码聊天消息帧
             final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(textMsg);

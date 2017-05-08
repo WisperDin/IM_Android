@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.cst.im.R;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.UI.main.msg.MsgFragment;
+import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.MsgModelBase;
 import com.cst.im.presenter.ChatListPresenter;
 
 public class friendinformationActivity extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class friendinformationActivity extends AppCompatActivity {
         Button bt_msg=(Button)findViewById(R.id.bt_msg);
         tvname.setText(dstName);
         tvid.setText( String.valueOf(dstId));
+        //final IBaseMsg dst_User = new MsgModelBase(dstId , dstName);
         //向某个好友发消息
         bt_msg.setOnClickListener(new View.OnClickListener() {
 
@@ -37,7 +40,7 @@ public class friendinformationActivity extends AppCompatActivity {
                 Intent intent =new Intent(friendinformationActivity.this,ChatActivity.class);
                 intent.putExtras(bundle);
                 //通知消息列表添加消息
-                MsgFragment.chatListPresenter.AddChatMsg(dstId,"");
+                MsgFragment.chatListPresenter.AddChatMsg(dstId ,dstName , "");
                 startActivity(intent);
             }
         });

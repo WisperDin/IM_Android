@@ -3,6 +3,7 @@ package com.cst.im.DeEncode;
 import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.presenter.Tools;
 
 import org.junit.Before;
 import org.junit.Test;

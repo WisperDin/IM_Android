@@ -1,6 +1,7 @@
 package com.cst.im.presenter;
 
 import com.cst.im.UI.main.msg.ChatItem;
+import com.cst.im.model.IBaseMsg;
 
 import java.util.LinkedList;
 
@@ -14,5 +15,6 @@ public interface IChatListPresenter {
     LinkedList<ChatItem> getMsgList();
     void SetTop(ChatItem chatItem);
     void OffsetTop(ChatItem chatItem);
-    void AddChatMsg(final int ID,final  String message);
+    //void AddChatMsg(IBaseMsg msg);
+    void AddChatMsg(int id ,String name , String text);
 }
