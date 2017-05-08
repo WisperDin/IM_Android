@@ -111,20 +111,22 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
-                drawable.setBounds(0,0,56,56);
+                Drawable drawableCorrect = getResources().getDrawable(R.drawable.correct);
+                drawableCorrect.setBounds(0,0,60,60);
+                Drawable drawableWarn = getResources().getDrawable(R.drawable.warning);
+                drawableWarn.setBounds(0,0,56,56);
                 switch (registerPresenter.judgeUsername(username.getText().toString())){
                     case Status.Login.USERNAME_INVALID:
-                        username.setError("不合法",drawable);
+                        username.setError("不合法",drawableWarn);
                         break;
                     case Status.Login.USERNAME_PHONE:
-                        username.setError("手机号",drawable);
+                        username.setError("合法手机号",drawableCorrect);
                         break;
                     case Status.Login.USERNAME_EMAIL:
-                        username.setError("邮箱",drawable);
+                        username.setError("合法邮箱",drawableCorrect);
                         break;
                     case Status.Login.USERNAME_ACCOUNT:
-                        username.setError("用户名",drawable);
+                        username.setError("合法用户名",drawableCorrect);
                         break;
                     default:
                         break;
@@ -146,13 +148,15 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
-                drawable.setBounds(0,0,56,56);
+                Drawable drawableCorrect = getResources().getDrawable(R.drawable.correct);
+                drawableCorrect.setBounds(0,0,60,60);
+                Drawable drawableWarn = getResources().getDrawable(R.drawable.warning);
+                drawableWarn.setBounds(0,0,56,56);
                 if(registerPresenter.judgePassword(password.getText().toString())){
-                    password.setError("√",drawable);
+                    password.setError("合法",drawableCorrect);
                 }
                 else {
-                    password.setError("x",drawable);
+                    password.setError("不合法",drawableWarn);
                 }
             }
 

@@ -2,6 +2,7 @@ package com.cst.im.UI;
 
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -43,9 +44,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private ImageView ivLoginByWechat;
     private ImageView ivLoginByWeibo;
     private TextView tvForgetPassword;
-    private LinearLayout activityMain ;
-    private TextInputLayout tilUsername;
-    private TextInputLayout tilPassword;
 
 
 
@@ -109,9 +107,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 //        ivLoginByQQ = (ImageView) findViewById(R.id.qq_login);
 //        ivLoginByWechat = (ImageView) findViewById(R.id.wechat_login);
 //        ivLoginByWeibo = (ImageView) findViewById(R.id.weibo_login);
-        activityMain = (LinearLayout) findViewById(R.id.activity_main);
-        tilUsername = (TextInputLayout) findViewById(R.id.usernameWrapper);
-        tilPassword = (TextInputLayout) findViewById(R.id.passwordWrapper);
         btnRegister = (TextView) findViewById(R.id.register_action);
     }
 
@@ -161,20 +156,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
-                drawable.setBounds(0,0,56,56);
+                Drawable drawableCorrect = getResources().getDrawable(R.drawable.correct);
+                drawableCorrect.setBounds(0,0,60,60);
+                Drawable drawableWarn = getResources().getDrawable(R.drawable.warning);
+                drawableWarn.setBounds(0,0,56,56);
+
                 switch (loginPresenter.judgeUsername(editUser.getText().toString())){
                     case Status.Login.USERNAME_INVALID:
-                        editUser.setError("不合法",drawable);
+                        editUser.setError("不合法",drawableWarn);
                         break;
                     case Status.Login.USERNAME_PHONE:
-                        editUser.setError("手机号",drawable);
+                        editUser.setError("合法手机号",drawableCorrect);
                         break;
                     case Status.Login.USERNAME_EMAIL:
-                        editUser.setError("邮箱",drawable);
+                        editUser.setError("合法邮箱",drawableCorrect);
                         break;
                     case Status.Login.USERNAME_ACCOUNT:
-                        editUser.setError("用户名",drawable);
+                        editUser.setError("合法用户名",drawableCorrect);
                         break;
                     default:
                         break;
@@ -196,13 +194,17 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                Drawable drawable = getResources().getDrawable(R.drawable.login_warning);
-                drawable.setBounds(0,0,56,56);
+                Drawable drawableCorrect = getResources().getDrawable(R.drawable.correct);
+                drawableCorrect.setBounds(0,0,60,60);
+                Drawable drawableWarn = getResources().getDrawable(R.drawable.warning);
+                drawableWarn.setBounds(0,0,56,56);
+
+
                 if(loginPresenter.judgePassword(editPwd.getText().toString())){
-                    editPwd.setError("√",drawable);
+                    editPwd.setError("合法",drawableCorrect);
                 }
                 else {
-                    editPwd.setError("x",drawable);
+                    editPwd.setError("不合法",drawableWarn);
                 }
             }
 
