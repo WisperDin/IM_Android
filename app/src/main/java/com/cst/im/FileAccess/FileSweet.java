@@ -17,6 +17,7 @@ import java.security.InvalidParameterException;
  */
 
 public class FileSweet {
+
     /**
      * 文件固有类型
      */

@@ -62,6 +62,7 @@ public class UiImRequest implements ImRequest {
         }
     }
 
+
     @Override
     public void upLoadFile(FileSweet fileSweet, final ResultCallBack resultCallback) {
         RequestBody fileBody = RequestBody.create(MediaType.parse("file"), fileSweet.getFile());

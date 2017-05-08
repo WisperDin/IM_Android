@@ -7,6 +7,7 @@ import com.cst.im.FileAccess.FileSweet;
  */
 
 public interface ImRequest {
+
     interface ProccessCallBack{
         /**
          * @param percent 进度百分比
