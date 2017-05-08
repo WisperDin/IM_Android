@@ -45,6 +45,35 @@ public class FileSweet {
      */
     String feature;
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getFileParam() {
+        return fileParam;
+    }
+
+    public int getFileType() {
+        return fileType;
+    }
+
+    public String getFilePostfix() {
+        return filePostfix;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * 文件
+
+     */
+    File file;
     /**
      * 生成一个file对象，
      * @param fileType{@link FILE_TYPE_PICTURE,FILE_TYPE_MUSIC,FILE_TYPE_VIDEO,FILE_TYPE_FILE}.
@@ -54,8 +83,9 @@ public class FileSweet {
     public FileSweet(int fileType, String filePath)  throws FileNotFoundException{
         if(filePath==null || fileType<1 || fileType>4 ||!(new File(filePath).exists()))
             throw new FileNotFoundException("文件类型不符，或找不到文件");
+        this.file=new File(filePath);
         try {
-            initParam(fileType,new File(filePath));
+            initParam(fileType,this.file);
         } catch (IOException e) {
             throw new FileNotFoundException(e.toString());
         }
@@ -63,6 +93,7 @@ public class FileSweet {
     public FileSweet(int fileType, File file)  throws FileNotFoundException{
         if(file==null || fileType<1 || fileType>4 ||!file.exists())
             throw new FileNotFoundException("文件类型不符，或找不到文件");
+        this.file=file;
         try {
             initParam(fileType,file);
         } catch (IOException e) {
