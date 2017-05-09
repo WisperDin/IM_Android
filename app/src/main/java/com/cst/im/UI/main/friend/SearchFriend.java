@@ -43,12 +43,31 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             @Override
             public void onClick(View v) {
 
-                if(et.getText().toString()!=""){
+                if(judgetextIsNum(et.getText().toString())==0){
                 IsFriend.Isfriend(localUser.getId(),Integer.parseInt(et.getText().toString()));
+                }
+                else{
+                    tv.setVisibility(View.VISIBLE);
+                    tv.setText("输入不合法");
                 }
             }
         });
     }
+
+
+    public int  judgetextIsNum(String text){
+        if(text.length()==0){
+            return -1;
+        }
+        for(int i=0;i<text.length();i++){
+            if(text.charAt(i)-'0'>9||text.charAt(i)-'0'<0){
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+
     @Override
     public void onReaultCode(int code,String username){
         this.reaultcode=code;
