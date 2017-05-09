@@ -60,6 +60,10 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private ImageView mPlusIv; // 加号按钮
     private ImageView mPictureBtn; //发送按钮
     private ImageView mFileBtn; // 发送文件
+    private ImageView mVoiceKeyboard;  // 语音按钮后面的键盘按钮
+    private ImageView mEmojiKeyboard; // Emoji 后面的键盘按钮
+    private ImageView mVoiceBtn; // 语音按钮
+    private Button mVoicePressBtn; // 按住说话按钮
 
     //打开文件
     private static final int FILE_REQUEST = 0;
@@ -142,6 +146,10 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mPlusIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mVoicePressBtn.getVisibility() == View.VISIBLE){
+                    mVoicePressBtn.setVisibility(View.GONE);
+                    mSendEdt.setVisibility(View.VISIBLE);
+                }
                 if (mPanelRoot.getVisibility() == View.VISIBLE) {
                     showKeyboard();
                 } else {
@@ -185,9 +193,43 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             }
         });
 
+        mVoiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 显示按住说话的按钮
+                mSendEdt.setVisibility(View.GONE);
+                mVoicePressBtn.setVisibility(View.VISIBLE);
+
+                // 语音按钮设置不可见，并显示键盘按钮，同时显示软键盘
+                v.setVisibility(View.GONE);
+                mVoiceKeyboard.setVisibility(View.VISIBLE);
+                hideKeyboard();
+            }
+        });
+
+        mVoiceKeyboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 设置按住说话不可见，设置键盘按钮不可见，语音按钮可见
+                mVoicePressBtn.setVisibility(View.GONE);
+                mSendEdt.setVisibility(View.VISIBLE);
+                mVoiceKeyboard.setVisibility(View.GONE);
+                mVoiceBtn.setVisibility(View.VISIBLE);
+                showKeyboard();
+            }
+        });
+
+        mVoicePressBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         mBtnBack.setOnClickListener(this);
         mSendBtn.setOnClickListener(this);
         mFileBtn.setOnClickListener(this);
+
     }
 
     // 弹出键盘
@@ -240,7 +282,8 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mSendBtn = (TextView) findViewById(R.id.btn_send);
         mPictureBtn = (ImageView) findViewById(R.id.chat_picture);
         mFileBtn = (ImageView) findViewById(R.id.chat_file);
-
+        mVoiceKeyboard = (ImageView) findViewById(R.id.voice_keyboard);
+        mVoicePressBtn = (Button) findViewById(R.id.voice_press_btn);
     }
 
     @Override
@@ -336,7 +379,6 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                 MsgFragment.myAdapter.notifyDataSetChanged();
                 finish();// 结束,实际开发中，可以返回主界面
                 break;
-
             case R.id.btn_send://发送聊天信息
                 Log.d("Send", "Send____________________________________________________");
                 chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
