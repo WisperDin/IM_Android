@@ -100,32 +100,44 @@ public class ComService extends TcpService {
             case BuildFrame.TextMsg://聊天消息
             case BuildFrame.FileInfo://文件简要消息
             {
+                //检查是否空
+                if (frame.getDst().getDstCount()<=0){
+                    Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
+                    return;
+                }
                 System.out.println("chatMsg");
                 IBaseMsg baseMsg = null;
                 //实例化对象
                 if(frame.getMsgType()==BuildFrame.TextMsg){
+                    if(frame.getMsg().getMsg()==""){
+                        Log.e(" bad value", "ComService,OnMessageCome TextMsg");
+                        return;
+                    }
                     baseMsg = new TextMsgModel();
                     ((TextMsgModel)baseMsg).setText(frame.getMsg().getMsg());
                     baseMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
                     baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
                 }else if(frame.getMsgType()==BuildFrame.FileInfo){
+                    if(frame.getFileInfo().getFileName()==""||
+                            frame.getFileInfo().getFileParam()==""||frame.getFileInfo().getFileFeature()==""){
+                        Log.e(" bad value", "ComService,OnMessageCome FileInfo");
+                        return;
+                    }
                     baseMsg = new FileMsgModel();
                     baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                    ((FileMsgModel) baseMsg).setFileName(frame.getFileInfo().getFileName());
+                    ((FileMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
+                    ((FileMsgModel) baseMsg).setFileFeature(frame.getFileInfo().getFileFeature());
                 }
                 if(baseMsg==null){
                     Log.e(" bad value", "ComService,baseMsg null");
                     return;
                 }
                 //初始化一些公有的东西
-                //检查是否空
-                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!=""){
-                    Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
-                }
                 int dst[] = new int[frame.getDst().getDstCount()];
                 for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
                     dst[i] = frame.getDst().getDst(i).getUserID();
                 }
-                baseMsg.sendOrRecv(true);
                 baseMsg.setSrc_ID(frame.getSrc().getUserID());
                 baseMsg.setDst_ID(dst);
                 baseMsg.setMsgDate(Tools.getDate());

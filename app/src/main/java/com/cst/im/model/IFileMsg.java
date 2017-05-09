@@ -13,6 +13,7 @@ public interface IFileMsg extends IBaseMsg {
 
     //文件名
     String getFileName();
+    void setFileName(String fileName);
 
     //文件尺寸
     String getFileSize();
