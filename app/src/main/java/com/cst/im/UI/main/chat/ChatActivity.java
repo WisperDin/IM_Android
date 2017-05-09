@@ -360,10 +360,16 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         }
         if (requestCode == FILE_REQUEST) {//一般文件
             Uri uri = data.getData();
+            //TODO 存在问题 只能传图库文件
+            //解析路径
+            String[] proj = { MediaStore.Images.Media.DATA };
+            Cursor actualimagecursor = managedQuery(uri, proj, null, null, null);
+            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            actualimagecursor.moveToFirst();
+            String path = actualimagecursor.getString(actual_image_column_index);// 获取选择文件
             //发送文件
-            //TODO 要注意这个路径是否uri路径
-            chatPresenter.SendFile(dst,new File(uri.getPath()));
-            Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
+            chatPresenter.SendFile(dst,new File(path));
+            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
