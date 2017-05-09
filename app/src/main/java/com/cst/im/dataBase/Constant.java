@@ -1,5 +1,7 @@
 package com.cst.im.dataBase;
 
+import java.util.SimpleTimeZone;
+
 /**
  * Created by wzb on 2017/4/29.
  * 定义数据库字段
@@ -7,7 +9,10 @@ package com.cst.im.dataBase;
 
 public class Constant {
     public static final String DATABASE_NAME = "Info.db";//数据库名
-    public static final int DATABASE_VERSION = 2;//数据库版本名，如果修改或添加了本地数据库的表请加一
+    public static final int DATABASE_VERSION = 3;//数据库版本名，如果修改或添加了本地数据库的表请加一
+    /*
+    数据库版本3:加入了用户信息的表保存用户的简单个人信息
+     */
     public class Chat{
         public static final String TABLE_NAME = "LocalMessage"; //数据库表名
         public static final String LEFT_ID = "left_id";
@@ -21,7 +26,21 @@ public class Constant {
         public static final String ID = "user_id";
         public static final String USERNAME = "username";
         public static final String PASSWORD = "password";
-        public static final String LOGINTYPE = "login_type";
+        public static final String LOGIN_TYPE = "login_type";
+    }
+    public class UserInfo{
+        public static final String TABLE_NAME = "LocalUserInfo";
+        public static final String ID = "user_id";                  // 用户ID，查询用户唯一凭证
+        public static final String PASSWORD = "password";
+        public static final String USER_PICTURE = "user_picture";    //用户头像,保存一个本地地址
+        public static final String USER_NAME = "username";
+        public static final String USER_SEX = "user_sex";
+
+        public static final String USER_REAL_NAME = "user_real_name"; //用户真实姓名,附带实名认证功能
+        public static final String USER_PHONE = "user_phone";        // 用户手机
+        public static final String USER_EMAIL = "user_email";
+        public static final String USER_ADDRESS = "user_address";  // 用户地址
+        public static final String USER_SIGN = "user_sign";          // 用户个性签名
     }
     //如果加入群聊之后可以将id变成组的id,消息按照msg_id排序
     public class MsgList{

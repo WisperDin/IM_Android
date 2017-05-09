@@ -27,6 +27,8 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
     private Button registerButton;
     private EditText username;
     private EditText password;
+    private boolean isAccountValid;
+    private boolean isPasswordValid;
 
     private IRegisterPresenter registerPresenter;
 
@@ -34,6 +36,9 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        isAccountValid = false;
+        isPasswordValid = false;
 
         initView();
 
@@ -54,6 +59,14 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.register_button:
+                if(!isAccountValid){
+                    Toast.makeText(RegisterActivity.this,"用户名不合法",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if(!isPasswordValid){
+                    Toast.makeText(RegisterActivity.this,"密码不合法",Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 registerPresenter.doRegister(username.getText().toString(),password.getText().toString());
         }
     }
@@ -118,17 +131,23 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
                 switch (registerPresenter.judgeUsername(username.getText().toString())){
                     case Status.Login.USERNAME_INVALID:
                         username.setError("不合法",drawableWarn);
+                        isAccountValid = false;
                         break;
                     case Status.Login.USERNAME_PHONE:
                         username.setError("合法手机号",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     case Status.Login.USERNAME_EMAIL:
                         username.setError("合法邮箱",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     case Status.Login.USERNAME_ACCOUNT:
                         username.setError("合法用户名",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     default:
+                        username.setError("不合法",drawableWarn);
+                        isAccountValid = false;
                         break;
                 }
             }
@@ -154,9 +173,11 @@ public class RegisterActivity extends SwipeBackActivity implements IRegisterView
                 drawableWarn.setBounds(0,0,56,56);
                 if(registerPresenter.judgePassword(password.getText().toString())){
                     password.setError("合法",drawableCorrect);
+                    isPasswordValid = true;
                 }
                 else {
                     password.setError("不合法",drawableWarn);
+                    isPasswordValid = false;
                 }
             }
 

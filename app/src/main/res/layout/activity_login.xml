@@ -90,7 +90,8 @@
                         android:maxLines="1"
                         android:paddingLeft="3dp"
                         android:paddingRight="3dp"
-                        android:textColor="#000000" />
+                        android:textColor="#000000"
+                        android:textCursorDrawable="@null" />
 
 
                 </android.support.design.widget.TextInputLayout>
@@ -133,7 +134,8 @@
                         android:maxLines="1"
                         android:paddingLeft="3dp"
                         android:paddingRight="3dp"
-                        android:textColor="#000000" />
+                        android:textColor="#000000"
+                        android:textCursorDrawable="@null" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageView

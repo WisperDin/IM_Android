@@ -1,26 +1,15 @@
+
 package com.cst.im.NetWork.Okhttp.impl;
 
-import com.cst.im.FileAccess.FileSweet;
-import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
-import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+
 
 
 /**
  * Created by admin on 2017/5/8.
  */
+
 
 public class UiImRequest implements ImRequest {
     static String url="http://192.168.1.100:8123";
@@ -32,7 +21,7 @@ public class UiImRequest implements ImRequest {
             uiImRequest=new UiImRequest();
         return uiImRequest;
     }
-    @Override
+/*    @Override
     public void preRequest(FileSweet fileSweet, final ResultCallBack callback) {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -124,5 +113,26 @@ public class UiImRequest implements ImRequest {
         } catch (IOException e) {
             processCallback.fail();
         }
+    }*/
+
+    @Override
+    public void preRequest(com.cst.im.NetWork.Okhttp.impl.FileSweet fileSweet, Callback callback) {
+
+    }
+
+    @Override
+    public void upLoadFile(com.cst.im.NetWork.Okhttp.impl.FileSweet fileSweet, Callback resultCallback) {
+
+    }
+
+    @Override
+    public void upLoadFile(com.cst.im.NetWork.Okhttp.impl.FileSweet fileSweet, ProccessCallBack processCallback) {
+
+    }
+
+    @Override
+    public void upLoadFile(com.cst.im.NetWork.Okhttp.impl.FileSweet fileSweet, boolean b, long percent) {
+
     }
 }
+

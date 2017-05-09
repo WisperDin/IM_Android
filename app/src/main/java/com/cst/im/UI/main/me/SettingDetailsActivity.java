@@ -12,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.UI.main.MainActivity;
+import com.cst.im.dataBase.DBManager;
+import com.cst.im.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +48,8 @@ public class SettingDetailsActivity extends AppCompatActivity {
                         Intent usernameintent = new Intent(SettingDetailsActivity.this, ChangeDetailsActivity.class);
                         usernameintent.putExtra("value", settingDetails.getValue());
                         usernameintent.putExtra("index", 1);
-                        startActivityForResult(usernameintent, USER_NAME_REQUEST);
+                        startActivity(usernameintent);
                         Toast.makeText(SettingDetailsActivity.this, settingDetails.getName(), Toast.LENGTH_SHORT).show();
-                        adapter.notifyDataSetChanged();
                     }break;
                     case 2: {
                         Intent addressintent = new Intent(SettingDetailsActivity.this, ChangeDetailsActivity.class);
@@ -56,6 +58,12 @@ public class SettingDetailsActivity extends AppCompatActivity {
                         startActivityForResult(addressintent, ADDRESS_REQUEST);
                         Toast.makeText(SettingDetailsActivity.this, settingDetails.getName(), Toast.LENGTH_SHORT).show();
                         adapter.notifyDataSetChanged();
+                    }break;
+                    case 3:{ // 退出到程序，并清空本地的登录信息
+                        DBManager.deleteLoginUser(UserModel.localUser.getId());
+                        Toast.makeText(SettingDetailsActivity.this,"退出成功，请重新登录",Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SettingDetailsActivity.this, MainActivity.class);//利用跳转到MainActivity把栈里的Activity都删除
+                        startActivity(intent);
                     }break;
                 }
             }
@@ -103,9 +111,8 @@ public class SettingDetailsActivity extends AppCompatActivity {
         }
     }
     private void initSettingDetail(){
-        SettingDetails nickname = new SettingDetails("用户名","用户1",1);
-        settingDetailList.add(nickname);
-        SettingDetails address = new SettingDetails("地址","",2);
-        settingDetailList.add(address);
+        settingDetailList.add(new SettingDetails("消息提醒","",1));
+        settingDetailList.add(new SettingDetails("关于","",2));
+        settingDetailList.add(new SettingDetails("退出登录","",3));
     }
 }
