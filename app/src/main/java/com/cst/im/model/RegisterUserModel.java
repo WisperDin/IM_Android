@@ -17,7 +17,7 @@ public class RegisterUserModel implements IRegisterUser {
         Pattern phonePattern = Pattern.compile("^1(3|4|5|7|8)[0-9]\\d{8}$");
         Pattern usernamePattern = Pattern.compile(".*[a-zA-Z]+.*");
 
-        if(username.length() < 4 || username.length() > 22){ //用户名不合格
+        if(username.length() < 3 || username.length() > 16){ //用户名不合格
             return Status.Login.USERNAME_INVALID;
         }
         else if(phonePattern.matcher(username).find()){ //手机号
@@ -36,7 +36,7 @@ public class RegisterUserModel implements IRegisterUser {
 
     @Override
     public boolean checkPasswordValidity(String password) {
-        if(4 < password.length()&&password.length() < 22){
+        if(2 < password.length()&&password.length() < 16){
             return true;
         }
         else{

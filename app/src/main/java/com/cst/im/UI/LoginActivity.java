@@ -46,7 +46,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     private TextView tvForgetPassword;
 
 
-
+    private boolean isAccountValid;
+    private boolean isPasswordValid;
 
 
     // 注册按钮
@@ -64,6 +65,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.cst.im.R.layout.activity_login);
+
+        isAccountValid = false;
+        isPasswordValid = false;
 
         initView();
 
@@ -164,17 +168,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
                 switch (loginPresenter.judgeUsername(editUser.getText().toString())){
                     case Status.Login.USERNAME_INVALID:
                         editUser.setError("不合法",drawableWarn);
+                        isAccountValid = false;
                         break;
                     case Status.Login.USERNAME_PHONE:
                         editUser.setError("合法手机号",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     case Status.Login.USERNAME_EMAIL:
                         editUser.setError("合法邮箱",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     case Status.Login.USERNAME_ACCOUNT:
                         editUser.setError("合法用户名",drawableCorrect);
+                        isAccountValid = true;
                         break;
                     default:
+                        editUser.setError("不合法",drawableWarn);
+                        isAccountValid = false;
                         break;
                 }
             }
@@ -202,9 +212,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
                 if(loginPresenter.judgePassword(editPwd.getText().toString())){
                     editPwd.setError("合法",drawableCorrect);
+                    isPasswordValid = true;
                 }
                 else {
                     editPwd.setError("不合法",drawableWarn);
+                    isPasswordValid = false;
                 }
             }
 
@@ -221,6 +233,16 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
         switch (v.getId()){
             case R.id.login_button:
+
+                if(!isAccountValid){
+                    Toast.makeText(LoginActivity.this,"用户名不合法",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if(!isPasswordValid){
+                    Toast.makeText(LoginActivity.this,"密码不合法",Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 String user = editUser.getText().toString();
                 String pwd = editPwd.getText().toString();
                 //TODO: 暂时版本
