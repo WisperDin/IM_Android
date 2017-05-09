@@ -1,7 +1,5 @@
 package com.cst.im.dataBase;
 
-import java.util.SimpleTimeZone;
-
 /**
  * Created by wzb on 2017/4/29.
  * 定义数据库字段
