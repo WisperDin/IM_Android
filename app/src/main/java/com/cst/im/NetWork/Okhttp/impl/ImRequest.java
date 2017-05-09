@@ -51,7 +51,7 @@ public interface ImRequest {
      * @param  name 文件名称
      * @param processCallback 进度回调
      */
-    void downLoadFile(final int type,String name, ProccessCallBack processCallback) ;
+    void downLoadFile(final int type,final String name, ProccessCallBack processCallback) ;
 
 
 

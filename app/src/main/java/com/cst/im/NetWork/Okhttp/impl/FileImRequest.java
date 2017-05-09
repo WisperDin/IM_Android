@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.cst.im.FileAccess.FileSweet;
+import com.cst.im.NetWork.Okhttp.helper.ProgressHelper;
 import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
 import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
 
@@ -191,8 +192,67 @@ public class FileImRequest implements ImRequest {
     }
 
     @Override
-    public void downLoadFile(final int type,String name, final ProccessCallBack processCallback) {
+    public void downLoadFile(final int type,final String name, final ProccessCallBack processCallback) {
+        Request request1 = new Request.Builder()
+                .url(url+"/"+name)
+                .build();
+        Call call=  ProgressHelper.addProgressResponseListener(client, new ProgressListener() {
+            @Override
+            public void onProgress(long currentBytes, long contentLength, boolean done) {
+                if(done)processCallback.success();
+                processCallback.onProgress(currentBytes/contentLength);
+            }
+        }).newCall(request1);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                processCallback.fail();
+            }
 
+            @Override
+            public void onResponse(Response response) throws IOException {
+                InputStream is = null;
+                byte[] buf = new byte[2048];
+                int len = 0;
+                FileOutputStream fos = null;
 
+                try {
+                    is = response.body().byteStream();
+                    long total = response.body().contentLength();
+                    String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    File file = new File(SDPath,name);
+                    fos = new FileOutputStream(file);
+                    long sum = 0;
+                    while ((len = is.read(buf)) != -1) {
+                        fos.write(buf, 0, len);
+                        sum += len;
+                        int progress = (int) (sum * 1.0f / total * 100);
+                        Log.d("h_bl", "progress=" + progress);
+                    }
+                    fos.flush();
+                    processCallback.success();
+                } catch (Exception e) {
+                    processCallback.fail();
+                } finally {
+                    try {
+                        if (is != null)
+                            is.close();
+                        if (fos != null)
+                            fos.close();
+                    } catch (IOException e) {
+                        processCallback.fail();
+                    }
+                }
+
+            }
+        });
+        try {
+            call.execute();
+        } catch (IOException e) {
+            processCallback.fail();
+        }catch (IllegalStateException ise){
+            processCallback.fail();
+            Log.w("execute","already call"+ise.getMessage());
+        }
     }
 }
