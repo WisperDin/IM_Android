@@ -76,5 +76,7 @@ dependencies {
     //okhttp依赖
     compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
     compile 'com.squareup.okio:okio:1.6.0'
-
+    //图片缩放依赖
+    compile files('lib/gesture-imageview.jar')
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }
