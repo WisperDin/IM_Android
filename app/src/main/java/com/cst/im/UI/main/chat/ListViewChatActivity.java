@@ -303,6 +303,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mSendBtn = (TextView) findViewById(R.id.btn_send);
         mPictureBtn = (ImageView) findViewById(R.id.chat_picture);
         mFileBtn = (ImageView) findViewById(R.id.chat_file);
+        mVoiceBtn = (ImageView) findViewById(R.id.voice_btn);
         mVoiceKeyboard = (ImageView) findViewById(R.id.voice_keyboard);
         mVoicePressBtn = (Button) findViewById(R.id.voice_press_btn);
     }
