@@ -86,11 +86,6 @@ public class UiImRequest implements ImRequest {
                 resultCallback.success(response.code(),response.message());
             }
         });
-        try {
-            call.execute();
-        } catch (Exception e) {
-            resultCallback.fail(-2,"错误！--"+e.toString());
-        }
     }
 
     @Override
