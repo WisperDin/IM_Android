@@ -143,6 +143,14 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });
 
+        //更新UI的适配器
+        fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
+        mDataArrays.add(fileMsg);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iChatView.onSendMsg();
+            }});
     }
 
 
