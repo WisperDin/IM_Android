@@ -44,11 +44,11 @@ public class SettingDetailsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 SettingDetails settingDetails = settingDetailList.get(position);
                 switch (settingDetails.getIndex()){
-                    case 1: {
+                    case USER_NAME_REQUEST: {
                         Intent usernameintent = new Intent(SettingDetailsActivity.this, ChangeDetailsActivity.class);
                         usernameintent.putExtra("value", settingDetails.getValue());
                         usernameintent.putExtra("index", 1);
-                        startActivity(usernameintent);
+                        startActivityForResult(usernameintent,USER_NAME_REQUEST);
                         Toast.makeText(SettingDetailsActivity.this, settingDetails.getName(), Toast.LENGTH_SHORT).show();
                     }break;
                     case 2: {
@@ -77,7 +77,7 @@ public class SettingDetailsActivity extends AppCompatActivity {
                 R.layout.setting_detail_layout,settingDetailList);
 
         ListView listView = (ListView)findViewById(R.id.setting_parent_lv);
-        TextView username = (TextView) findViewById(R.id.setting_value);
+        TextView username = (TextView) findViewById(R.id.setting_name);
         Log.d("USERNAME",username.getText().toString());
         TextView address = (TextView) findViewById(R.id.setting_value);
         Log.d("THIS IS THE FUNCTION","ON_ACTIVITY_RESUTL");
