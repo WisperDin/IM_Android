@@ -39,7 +39,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private final Activity activity;
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
         this.iChatView =  chatView;
-        this.activity= ((ChatActivity) chatView);
+        this.activity= ((ListViewChatActivity) chatView);
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
         //监听收到消息的接口
@@ -123,7 +123,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 @Override
                 public void fail(int code, String msg) {
                     // TODO: 2017/5/8 给某个View做点事
-                    final Activity activity = ((ListViewChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -136,8 +135,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 public void success(int code, String msg) {
                     // TODO: 2017/5/8 某个View做点事
                     // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
-
-                    final Activity activity = ((ListViewChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
