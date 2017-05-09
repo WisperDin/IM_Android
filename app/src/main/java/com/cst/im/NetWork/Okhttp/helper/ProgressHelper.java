@@ -57,7 +57,7 @@ public class ProgressHelper {
                 .addInterceptor(interceptor)
                 .build();
     }
-//    public static OkHttpClient addProgressResponseListener(OkHttpClient client,final UiImRequest uiImRequest){
+//    public static OkHttpClient addProgressResponseListener(OkHttpClient client,final FileImRequest uiImRequest){
 //        Interceptor interceptor = new Interceptor() {
 //            @Override
 //            public Response intercept(Chain chain) throws IOException {

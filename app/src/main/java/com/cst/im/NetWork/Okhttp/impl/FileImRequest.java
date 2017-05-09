@@ -27,8 +27,9 @@ import okhttp3.Response;
  * Created by admin on 2017/5/8.
  */
 
+
 public class FileImRequest implements ImRequest {
-    static String url="http://192.168.1.132:8123";
+    static String url="http://192.168.191.1:8123/file";
     OkHttpClient client=new OkHttpClient();
     static FileImRequest fileImRequest;
     private FileImRequest(){}
@@ -119,7 +120,7 @@ public class FileImRequest implements ImRequest {
                     processCallback.success();
                     return;
                 }
-                processCallback.onProgress((double) currentBytes/contentLength);
+                processCallback.onProgress(currentBytes,contentLength);
             }
         });
         Request request = new Request.Builder()
@@ -134,10 +135,12 @@ public class FileImRequest implements ImRequest {
     }
 
     @Override
-    public void downLoadFile(int type, final String name, final ResultCallBack resultCallback) {
+    public void downLoadFile(final int type, final String name, final ResultCallBack resultCallback) {
         Request request1 = new Request.Builder()
-                .url(url+"/"+name)
+                .url(url+String.format("?name=%s&&type=%d",name,type))
+                .get()
                 .build();
+        //.url(url+"/"+name)
         Call call= client.newCall(request1);
         call.enqueue(new Callback() {
             @Override
@@ -148,15 +151,14 @@ public class FileImRequest implements ImRequest {
             @Override
             public void onResponse(Response response) throws IOException {
                 InputStream is = null;
-                byte[] buf = new byte[2048];
+                byte[] buf = new byte[512];
                 int len = 0;
                 FileOutputStream fos = null;
 
                 try {
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
-                    String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    File file = new File(SDPath,name);
+                    File file = new File(getFilePath(type),name);
                     fos = new FileOutputStream(file);
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
@@ -168,7 +170,7 @@ public class FileImRequest implements ImRequest {
                     fos.flush();
                     resultCallback.success(1,file.getAbsolutePath());
                 } catch (Exception e) {
-                    resultCallback.fail(0,"文件下载失败");
+                    resultCallback.fail(-3,"文件下载失败");
                 } finally {
                     try {
                         if (is != null)
@@ -195,12 +197,14 @@ public class FileImRequest implements ImRequest {
     public void downLoadFile(final int type,final String name, final ProccessCallBack processCallback) {
         Request request1 = new Request.Builder()
                 .url(url+"/"+name)
+                .get()
                 .build();
         Call call=  ProgressHelper.addProgressResponseListener(client, new ProgressListener() {
             @Override
             public void onProgress(long currentBytes, long contentLength, boolean done) {
                 if(done)processCallback.success();
-                processCallback.onProgress(currentBytes/contentLength);
+                Log.i("DOWN1 ","ALL:"+contentLength+" cur;"+currentBytes);
+                processCallback.onProgress(currentBytes,contentLength);
             }
         }).newCall(request1);
         call.enqueue(new Callback() {
@@ -212,15 +216,13 @@ public class FileImRequest implements ImRequest {
             @Override
             public void onResponse(Response response) throws IOException {
                 InputStream is = null;
-                byte[] buf = new byte[2048];
+                byte[] buf = new byte[512];
                 int len = 0;
                 FileOutputStream fos = null;
-
                 try {
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
-                    String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    File file = new File(SDPath,name);
+                    File file = new File(getFilePath(type),name);
                     fos = new FileOutputStream(file);
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
@@ -254,5 +256,28 @@ public class FileImRequest implements ImRequest {
             processCallback.fail();
             Log.w("execute","already call"+ise.getMessage());
         }
+    }
+    private String getFilePath(int MedioType){
+        String Root = Environment.getExternalStorageDirectory().getAbsolutePath()+"/IM";
+        File file=null;
+        switch (MedioType){
+            case FileSweet.FILE_TYPE_FILE:
+                file =new File(Root+"/files");
+                break;
+            case FileSweet.FILE_TYPE_MUSIC:
+                file =new File(Root+"/musics");
+                break;
+            case FileSweet.FILE_TYPE_PICTURE:
+                file =new File(Root+"/pictures");
+                break;
+            case FileSweet.FILE_TYPE_VIDEO:
+                file =new File(Root+"/videos");
+                break;
+        }
+        if(file!=null && !file.exists())
+            file.mkdirs();
+        else
+            return "";
+        return file.getAbsolutePath();
     }
 }
