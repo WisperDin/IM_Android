@@ -196,7 +196,7 @@ public class FileImRequest implements ImRequest {
     @Override
     public void downLoadFile(final int type,final String name, final ProccessCallBack processCallback) {
         Request request1 = new Request.Builder()
-                .url(url+"/"+name)
+                .url(url+String.format("?name=%s&&type=%d",name,type))
                 .get()
                 .build();
         Call call=  ProgressHelper.addProgressResponseListener(client, new ProgressListener() {
