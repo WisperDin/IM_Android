@@ -8,8 +8,8 @@ import android.widget.Toast;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
-import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
+import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.dataBase.DBManager;
@@ -36,8 +36,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private List<IBaseMsg> mDataArrays = new ArrayList<IBaseMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
+    private final Activity activity;
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
         this.iChatView =  chatView;
+        this.activity= ((ChatActivity) chatView);
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
         //监听收到消息的接口
@@ -62,6 +64,28 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 break;
             case FILE:
+                FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, ((FileMsgModel) msgRecv).getFileName(),new ImRequest.ResultCallBack(){
+
+                    @Override
+                    public void fail(int code, String msg) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void success(int code, String msg) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -99,7 +123,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 @Override
                 public void fail(int code, String msg) {
                     // TODO: 2017/5/8 给某个View做点事
-                    final Activity activity = ((ChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -113,7 +136,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     // TODO: 2017/5/8 某个View做点事
                     // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
 
-                    final Activity activity = ((ChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
