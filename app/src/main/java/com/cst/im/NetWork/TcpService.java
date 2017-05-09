@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.cst.im.NetWork.proto.DeEnCode;
 
@@ -28,9 +29,9 @@ public abstract class TcpService extends Service {
         //这里是设置服务器的ip地址和端口
 //        client = new TcpClient("192.168.1.106",6666);
 //        client = new TcpClient("172.18.149.95",6666);
-            //client = new TcpClient("192.168.1.113",6666);
-//        client = new TcpClient("192.168.191.1",6666);
+//        client = new TcpClient("192.168.1.101",6666);
         client = new TcpClient("192.168.191.1",6666);
+        Log.d("TCP","start client");
         new Thread(new Runnable() {
             @Override
             public void run() {

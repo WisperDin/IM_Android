@@ -9,6 +9,7 @@ import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.LoginUserModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.view.ILoginView;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
     @Override
     public void saveLoginInf() {
         DBManager.saveLoginUser(loginUser);
+        DBManager.initLocalUserInfo(new UserModel(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId()));
     }
 
 

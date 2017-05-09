@@ -76,11 +76,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length+1];
         for(int i = 0 ; i <dstUser.length ; i++){
-            dst_ID[i] = dstUser[i].getID();
+            dst_ID[i] = dstUser[i].getId();
         }
         IFileMsg fileMsg = new FileMsgModel();
         fileMsg.setFile(file);
-        fileMsg.setSrc_ID(UserModel.localUser.getID());
+        fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
         if(fileHeadToSend!=null)
@@ -118,11 +118,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
-            dst_ID[i] = dstUser[i].getID();
+            dst_ID[i] = dstUser[i].getId();
         }
         if (contString.length() > 0) {
             ITextMsg textMsg = new TextMsgModel();
-            textMsg.setSrc_ID(localUser.getID());
+            textMsg.setSrc_ID(localUser.getId());
             textMsg.setMsgDate(Tools.getDate());
             textMsg.setText(contString);
             textMsg.sendOrRecv(false);
