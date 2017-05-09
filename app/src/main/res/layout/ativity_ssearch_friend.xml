@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,11 +33,30 @@
             android:layout_weight="0.50" />
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+
     <TextView
         android:id="@+id/tv_searchname"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:gravity="center_vertical"
-        android:textSize="17dp"
-        android:text="TextView" />
+        android:layout_weight="0.23"
+        android:textSize="20dp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/img_friend_add"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_weight="0.77"
+        app:srcCompat="@drawable/friend_add"
+        android:visibility="gone"/>
+    </LinearLayout>
+
 </LinearLayout>

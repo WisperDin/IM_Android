@@ -13,6 +13,8 @@ import protocol.Protocol.Frame;
 import protocol.Protocol.Msg;
 import protocol.Protocol.User;
 
+import static com.cst.im.model.UserModel.localUser;
+
 public class BuildFrame {
 
     private Frame.Builder frame;
@@ -125,7 +127,7 @@ public class BuildFrame {
 
     //获取好友列表帧
     public Frame GetFriendList(IFriend GetFriendList){
-        if (GetFriendList.getId()!=0)
+        if (localUser.getID()!=0)
         {
             User.Builder src = User.newBuilder();
             src.setUserID(GetFriendList.getId());
