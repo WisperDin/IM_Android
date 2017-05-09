@@ -1,5 +1,7 @@
 package com.cst.im.NetWork.Okhttp.impl;
 
+import android.util.Log;
+
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
 import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
@@ -86,6 +88,13 @@ public class UiImRequest implements ImRequest {
                 resultCallback.success(response.code(),response.message());
             }
         });
+        try {
+            call.execute();
+        } catch (IOException e) {
+            resultCallback.fail(-2,"io错误！--"+e.toString());
+        }catch (IllegalStateException ise){
+            Log.w("execute","already call"+ise.getMessage());
+        }
     }
 
     @Override
