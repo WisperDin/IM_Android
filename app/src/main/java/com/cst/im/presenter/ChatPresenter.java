@@ -7,11 +7,9 @@ import android.util.Log;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
-import com.cst.im.NetWork.Okhttp.FileTranslate;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
@@ -106,8 +104,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     }
                 }});
             //使用http上传文件
-            FileTranslate fileTranslate = new FileTranslate(((ChatActivity) iChatView));
-            fileTranslate.UploadFile(file.getPath());
 
             // TODO: 2017/5/8 delete it just test,cjwddz
             try {
