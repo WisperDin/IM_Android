@@ -26,6 +26,8 @@
     <string name="btn_send">发送</string>
 
     <!-- Settings -->
+    <string name="setting_name">settting</string>
+    <string name="userinfo">User</string>
     <!-- Strings related to Settings -->
 
     <!-- DeEnCode General settings -->

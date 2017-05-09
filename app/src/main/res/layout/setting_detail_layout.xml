@@ -9,9 +9,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="left"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:gravity="center_vertical|left"
-        android:padding="10dp"/>
+        android:typeface="serif"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/setting_value"
@@ -21,7 +23,14 @@
         android:layout_gravity="right"
         android:textSize="22sp"
         android:gravity="center_vertical|right"
-        android:padding="10dp"/>
-
+        android:padding="10dp"
+        android:layout_marginRight="10dp"/>
+    <ImageView
+        android:id="@+id/setting_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="right"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

@@ -148,7 +148,6 @@ public class SplashActivity extends AppCompatActivity {
 
 
         databaseHelper = DBManager.getIntance(this);
-        databaseHelper.getWritableDatabase();
 
         //需要获取存储空间访问权限
         // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取

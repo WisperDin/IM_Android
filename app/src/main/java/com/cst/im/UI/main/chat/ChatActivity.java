@@ -93,7 +93,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         dstUsers.add(dstUser);
         dst = new UserModel[dstUsers.size()];
         dstUsers.toArray(dst);
-        Toast.makeText(this, dstUser.getName() + " " + dstUser.getID(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, dstUser.getName() + " " + dstUser.getId(), Toast.LENGTH_LONG).show();
 
 
         //数据库的创建及调用
@@ -103,7 +103,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getID());
+        List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getId());
 
 
         initView(bundle.getString("dstName"));// 初始化view

@@ -23,16 +23,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ""+Constant.Chat.LEFT_ID+" integer, "
             + ""+Constant.Chat.RIGHT_ID+" integer,"
             + ""+Constant.Chat.MSG+" text, "
-            + ""+Constant.Chat.TIME+" text，)  ";
-
+            + ""+Constant.Chat.TIME+" text，)";
+    /**
+     * 登录表
+     * 用户信息包括id，用户名，密码
+     */
     public static final String CREATE_LOGININF = String.format("CREATE TABLE IF NOT EXISTS %s " +
             "(%s INT32 ," +
             " %s VARCHAR(30), " +
-            " %s VARCHAR(30))  ",
+            " %s VARCHAR(30))",
             Constant.Login.TABLE_NAME,
             Constant.Login.USERNAME,
             Constant.Login.PASSWORD,
             Constant.Login.ID);
+    /**
+     * 用户信息表
+     * 保存用户的基本信息包括
+     * id，用户头像的本地保存位置，用户名，性别，真实姓名，手机号码，邮箱，地址，个性签名
+     */
+    public static final String CREATE_USERINFO = String.format("CREATE TABLE IF NOT EXISTS %s(" +
+            "%s INT32 NOT NULL," +
+            "%s VARCHAR(128)," +
+            "%s VARCHAR(30)," +
+            "%s VARCHAR(2) ," +
+            "%s VARCHAR(30)," +
+            "%s VARCHAR(20)," +
+            "%s VARCHAR(30)," +
+            "%s VARCHAR(256)," +
+            "%s VARCHAR(128))",
+            Constant.UserInfo.TABLE_NAME,
+            Constant.UserInfo.ID,
+            Constant.UserInfo.USER_PICTURE,
+            Constant.UserInfo.USER_NAME,
+            Constant.UserInfo.USER_SEX,
+            Constant.UserInfo.USER_REAL_NAME,
+            Constant.UserInfo.USER_PHONE,
+            Constant.UserInfo.USER_EMAIL,
+            Constant.UserInfo.USER_ADDRESS,
+            Constant.UserInfo.USER_SIGN);
+
 
     public static final String CREATE_MSGLISTINF = String.format("CREATE TABLE IF NOT EXISTS %s " +
                     "(%s INT32 primary key," +
@@ -69,6 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("Database","onCreate");
         db.execSQL(CREATE_MESSAGE);
         db.execSQL(CREATE_LOGININF);
+        db.execSQL(CREATE_USERINFO);
         db.execSQL(CREATE_MSGLISTINF);
     }
 
@@ -82,12 +112,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //三个参数，一个 SQLiteDatabase 对象，一个旧的版本号和一个新的版本号
         if(newVersion>oldVersion)
         {
-            String sql1 = " drop table if exists " + Constant.Login.TABLE_NAME;
+            String sql1 = "DROP TABLE IF EXISTS " + Constant.Login.TABLE_NAME;
             db.execSQL(sql1);
-            String sql2 = " drop table if exists " + Constant.Chat.TABLE_NAME;
+            String sql2 = "DROP TABLE IF EXISTS " + Constant.Chat.TABLE_NAME;
             db.execSQL(sql2);
-            String sql3 = " drop table if exists " + Constant.MsgList.TABLE_NAME;
+            String sql3 = "DROP TABLE IF EXISTS " + Constant.UserInfo.TABLE_NAME;
             db.execSQL(sql3);
+            String sql4 = " drop table if exists " + Constant.MsgList.TABLE_NAME;
+            db.execSQL(sql4);
             this.onCreate(db);
         }
     }
