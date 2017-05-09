@@ -8,6 +8,7 @@ import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
 
+import protocol.Protocol;
 import protocol.Protocol.DstUser;
 import protocol.Protocol.Frame;
 import protocol.Protocol.Msg;
@@ -102,7 +103,9 @@ public class BuildFrame {
     //获取文件简要消息帧
     public Frame GetFileInfoFrame(IFileMsg fileMsg){
         //参数判断
-        if(fileMsg.getSrc_ID()==0||fileMsg.getDst_ID()==null||fileMsg.getDst_ID().length<=0){
+        if(fileMsg.getSrc_ID()==0||fileMsg.getDst_ID()==null||fileMsg.getDst_ID().length<=0||
+                fileMsg.getFile()==null||fileMsg.getFileName()==null||fileMsg.getFileName()==""||
+                fileMsg.getFileFeature()==null||fileMsg.getFileParam()==null){
             Log.e(" bad value", "BuildFrame,GetFileInfoFrame");
             System.out.println("BuildFrame,GetFileInfoFrame bad value");
             return null;
@@ -116,9 +119,14 @@ public class BuildFrame {
         DstUser.Builder dstGroup = DstUser.newBuilder();
         dstGroup.addDst(dst);
         //文件信息
-        //...
+        Protocol.File.Builder file = Protocol.File.newBuilder();
+        file.setFileName(fileMsg.getFileName());
+        file.setFileFeature(fileMsg.getFileFeature());
+        file.setFileParam(fileMsg.getFileParam());
+
         frame.setSrc(src.build());
         frame.setDst(dstGroup.build());
+        frame.setFileInfo(file);
         return frame.build();
 
     }

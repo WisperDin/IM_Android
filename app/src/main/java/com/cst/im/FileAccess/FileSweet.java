@@ -3,6 +3,7 @@ package com.cst.im.FileAccess;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.cst.im.tools.FileUtils;
 import com.cst.im.tools.Md5Utils;
 
 import java.io.File;
@@ -105,8 +106,7 @@ public class FileSweet {
     void initParam(int fileType, File file) throws IOException {
         this.fileType=fileType;
         this.fileName =  file.getName();
-        //TODO 先不写参数
-        this.fileParam="";
+        this.fileParam= FileUtils.getAutoFileOrFilesSize(file);
         filePostfix=fileName.substring(fileName.lastIndexOf(".")+1);
         feature= Md5Utils.getMd5(getDataCharacteristic(file));
         StringBuffer sb=new StringBuffer((filePostfix!=null && !filePostfix.isEmpty())?(filePostfix+" "):"");
