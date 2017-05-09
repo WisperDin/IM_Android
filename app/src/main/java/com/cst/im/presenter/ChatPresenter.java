@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
-import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
+import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.dataBase.DBManager;
@@ -95,7 +95,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             fileMsg.setFileSize(fs.getFileParam());
             fileMsg.setFileParam(fs.getFileParam());
             fileMsg.setFileFeature(fs.getFeature());
-            UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
+            FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
                 @Override
                 public void fail(int code, String msg) {
                     // TODO: 2017/5/8 给某个View做点事
@@ -143,6 +143,14 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });
 
+        //更新UI的适配器
+        fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
+        mDataArrays.add(fileMsg);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iChatView.onSendMsg();
+            }});
     }
 
 
