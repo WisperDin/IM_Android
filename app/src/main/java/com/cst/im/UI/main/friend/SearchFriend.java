@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cst.im.R;
@@ -17,6 +18,9 @@ import com.cst.im.view.IFriendView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.cst.im.model.IFriendModel.iFriendModel;
+import static com.cst.im.model.UserModel.localUser;
+
 public class SearchFriend extends AppCompatActivity implements IFriendView {
 
     private int reaultcode;
@@ -24,6 +28,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     EditText et;
     Button bt;
     TextView tv;
+    ImageView img;
     private IFriendPresenter IsFriend=new IFriendPresenterCompl(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
         setContentView(R.layout.ativity_ssearch_friend);
         et=(EditText)findViewById(R.id.et_search);
         bt=(Button)findViewById(R.id.bt_search);
+        img=(ImageView)findViewById(R.id.img_friend_add);
         tv=(TextView)findViewById(R.id.tv_searchname);
         bt.setOnClickListener(new View.OnClickListener() {
 
@@ -38,7 +44,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             public void onClick(View v) {
 
                 if(et.getText().toString()!=""){
-                IsFriend.Isfriend(5,Integer.parseInt(et.getText().toString()));
+                IsFriend.Isfriend(localUser.getId(),Integer.parseInt(et.getText().toString()));
                 }
             }
         });
@@ -47,10 +53,16 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     public void onReaultCode(int code,String username){
         this.reaultcode=code;
         this.name=username;
+        tv.setVisibility(View.VISIBLE);
         if(code==0){
             tv.setText("用户不存在");
             return;
         }
+        if(!iFriendModel.getfriendlist().contains(username)){
+            tv.setText("你们已经是好友");
+            return;
+        }
+        img.setVisibility(View.VISIBLE);
         tv.setText(username);
     }
     @Override
