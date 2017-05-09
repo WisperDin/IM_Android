@@ -64,6 +64,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 break;
             case FILE:
+                //TODO： 这个路径还要改
                 FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, ((FileMsgModel) msgRecv).getFileName(),new ImRequest.ResultCallBack(){
 
                     @Override
@@ -89,6 +90,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        //TODO 出问题
                         iChatView.onRecvMsg();
                     }
                 });
