@@ -3,9 +3,13 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +30,9 @@ import com.cst.im.R;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IPhotoMsg;
+import com.cst.im.model.ITextMsg;
+import com.cst.im.model.MsgModelBase;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
@@ -33,7 +40,9 @@ import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
@@ -41,16 +50,24 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
+import static android.R.id.message;
+import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
 
-public class ChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
+
+public class ListViewChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
     private SQLiteOpenHelper helper;//从数据库获取历史消息
     private Button mBtnBack;// 返回btn
     private TextView mSendBtn;//发送按钮
     private ListView mListView;//消息列表
     private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
+    public ArrayList<String> imageList = new ArrayList<String>();//adapter图片数据
+    public HashMap<Integer, Integer> imagePosition = new HashMap<Integer, Integer>();//图片下标位置
+    private SendMessageHandler sendMessageHandler;
     private TextView opposite_name;     //显示聊天对象名字
+    public List<IBaseMsg> msg_List = new ArrayList<IBaseMsg>();
     //抽象出聊天的业务逻辑
     private IChatPresenter chatPresenter;
+
 
     /**
      * edit bar & plus button panel
@@ -64,6 +81,12 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
     private ImageView mEmojiKeyboard; // Emoji 后面的键盘按钮
     private ImageView mVoiceBtn; // 语音按钮
     private Button mVoicePressBtn; // 按住说话按钮
+
+    private static final int IMAGE_SIZE = 100 * 1024;// 300kb
+    public static final int SEND_OK = 0x1110;
+    public static final int REFRESH = 0x0011;
+    public static final int RECERIVE_OK = 0x1111;
+    public static final int PULL_TO_REFRESH_DOWN = 0x0111;
 
     //打开文件
     private static final int FILE_REQUEST = 0;
@@ -107,18 +130,13 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getId());
+        final List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getId());
 
 
-        initView(bundle.getString("dstName"));// 初始化view
+        initView(bundle.getString("dstName") , msg_list);// 初始化view
 
         //初始化数据（MVP）
         chatPresenter = new ChatPresenter(this, msg_list);
-        mAdapter = new ChatMsgViewAdapter(this, msg_list);
-
-        mListView.setAdapter(mAdapter);
-        //消息列表选择到最后一行
-        mListView.setSelection(mAdapter.getCount() - 1);
 
         // 监控键盘与面板高度
         doAttach();
@@ -229,7 +247,6 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mBtnBack.setOnClickListener(this);
         mSendBtn.setOnClickListener(this);
         mFileBtn.setOnClickListener(this);
-
     }
 
     // 弹出键盘
@@ -259,19 +276,23 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
 
     @Override
     public void onSendMsg() {
-        mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
-        mSendEdt.setText("");// 清空编辑框数据
-        mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
     }
 
     /**
      * 初始化view
      */
-    public void initView(String dst_Name) {
+    public void initView(String dst_Name ,List<IBaseMsg> msg_list ) {
+        sendMessageHandler = new SendMessageHandler(this);
         mListView = (ListView) findViewById(R.id.content_list);
+        mAdapter = new ChatMsgViewAdapter(this, msg_list);
+        mListView.setAdapter(mAdapter);
+        //消息列表选择到最后一行
+        mListView.setSelection(mAdapter.getCount() - 1);
+        mAdapter.isPicRefresh = true;
         mBtnBack = (Button) findViewById(R.id.btn_back);
         opposite_name = (TextView) findViewById(R.id.opposite_name);
         opposite_name.setText(dst_Name);
+
 
         /**
          * 初始化输入框
@@ -282,6 +303,7 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         mSendBtn = (TextView) findViewById(R.id.btn_send);
         mPictureBtn = (ImageView) findViewById(R.id.chat_picture);
         mFileBtn = (ImageView) findViewById(R.id.chat_file);
+        mVoiceBtn = (ImageView) findViewById(R.id.voice_btn);
         mVoiceKeyboard = (ImageView) findViewById(R.id.voice_keyboard);
         mVoicePressBtn = (Button) findViewById(R.id.voice_press_btn);
     }
@@ -379,9 +401,11 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
                 MsgFragment.myAdapter.notifyDataSetChanged();
                 finish();// 结束,实际开发中，可以返回主界面
                 break;
+
             case R.id.btn_send://发送聊天信息
                 Log.d("Send", "Send____________________________________________________");
-                chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
+                sendMessage();
+                //chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
                 break;
             case R.id.chat_file://发送文件
                 Log.d("Viewing", "File----");
@@ -390,9 +414,163 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             case R.id.chat_picture://发送图片
                 Log.d("Viewing", "Photo----");
                 GetImgFromGallery();
+
                 break;
         }
     }
+
+    /**
+     * 发送文字
+     */
+    protected void sendMessage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
+                sendMessageHandler.sendEmptyMessage(SEND_OK);
+                // ListViewChatActivity.this.content = content;
+                //receriveHandler.sendEmptyMessageDelayed(0, 1000);
+            }
+        }).start();
+
+    }
+
+    /**
+     * 接收文字
+     */
+    //IBaseMsg content = "";
+    public void receriveMsgText(final IBaseMsg msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ITextMsg txtmsg = ((ITextMsg)msg);
+                String time = returnTime();
+                txtmsg.setMsgDate(time);
+                txtmsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
+                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
+            }
+        }).start();
+    }
+
+    /**
+     * 发送图片
+     */
+    int i = 0;
+    protected void sendImage(final IBaseMsg msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                if (i == 0) {
+//                    msg_List.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
+//                            0f, ChatConst.SENDING));
+//                } else if (i == 1) {
+//                    tblist.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
+//                            0f, ChatConst.SENDERROR));
+//                } else if (i == 2) {
+//                    tblist.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
+//                            0f, ChatConst.COMPLETED));
+//                    i = -1;
+//                }
+                IPhotoMsg photoMsg = ((IPhotoMsg)msg);
+                msg_List.add(msg);
+                imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
+                imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
+                sendMessageHandler.sendEmptyMessage(SEND_OK);
+                ListViewChatActivity.this.filePath = filePath;
+                //receriveHandler.sendEmptyMessageDelayed(1, 3000);
+                i++;
+            }
+        }).start();
+    }
+
+    /**
+     * 接收图片
+     */
+    String filePath = "";
+
+    private void receriveImageText(final IBaseMsg msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                IPhotoMsg photoMsg = ((IPhotoMsg)msg);
+                String time = returnTime();
+                photoMsg.setMsgDate(time);
+                photoMsg.setPhotoLocal(photoMsg.getPhotoUrl());
+                photoMsg.setType(ChatMsgViewAdapter.FROM_USER_IMG);
+                msg_List.add(msg);
+                imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
+                imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
+                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
+               // mChatDbManager.insert(tbub);
+            }
+        }).start();
+    }
+
+    /**
+     * 发送语音
+     */
+//    @Override
+//    protected void sendVoice(final float seconds, final String filePath) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                msg_List.add(getTbub(userName, ChatListViewAdapter.TO_USER_VOICE, null, null, null, null, filePath,
+//                        null, seconds, ChatConst.SENDING));
+//                sendMessageHandler.sendEmptyMessage(SEND_OK);
+//                ListViewChatActivity.this.seconds = seconds;
+//                voiceFilePath = filePath;
+//                receriveHandler.sendEmptyMessageDelayed(2, 3000);
+//            }
+//        }).start();
+//    }
+//
+//    /**
+//     * 接收语音
+//     */
+//    float seconds = 0.0f;
+//    String voiceFilePath = "";
+//
+//    private void receriveVoiceText(final float seconds, final String filePath) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                ChatMessageBean tbub = new ChatMessageBean();
+//                tbub.setUserName(userName);
+//                String time = returnTime();
+//                tbub.setTime(time);
+//                tbub.setUserVoiceTime(seconds);
+//                tbub.setUserVoicePath(filePath);
+//                tbAdapter.unReadPosition.add(tblist.size() + "");
+//                tbub.setType(ChatListViewAdapter.FROM_USER_VOICE);
+//                tblist.add(tbub);
+//                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
+//                mChatDbManager.insert(tbub);
+//            }
+//        }).start();
+//    }
+
+    /**
+     * 为了模拟接收延迟
+     */
+//    private Handler receriveHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case 0:
+//                    receriveMsgText(content);
+//                    break;
+//                case 1:
+//                    receriveImageText(filePath);
+//                    break;
+//                case 2:
+//                    //receriveVoiceText(seconds, voiceFilePath);
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -417,6 +595,61 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             return;
         }
     }
+    static class SendMessageHandler extends Handler {
+        WeakReference<ListViewChatActivity> mActivity;
+
+        SendMessageHandler(ListViewChatActivity activity) {
+            mActivity = new WeakReference<ListViewChatActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            ListViewChatActivity theActivity = mActivity.get();
+            if (theActivity != null) {
+                switch (msg.what) {
+                    case REFRESH:
+                        theActivity.mAdapter.isPicRefresh = true;
+                        theActivity.mAdapter.notifyDataSetChanged();
+                        theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
+                        //theActivity.myList.setSelection(theActivity.tblist
+                        //        .size() - 1);
+                        break;
+                    case SEND_OK:
+                        theActivity.mSendEdt.setText("");// 清空编辑框数据
+                        theActivity.mAdapter.isPicRefresh = true;
+                        theActivity.mAdapter.notifyDataSetChanged();
+                        theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);
+//                        theActivity.myList.setSelection(theActivity.tblist
+//                                .size() - 1);
+                        break;
+                    case RECERIVE_OK:
+                        theActivity.mAdapter.isPicRefresh = true;
+                        theActivity.mAdapter.notifyDataSetChanged();
+                        theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);
+                        //theActivity.myList.setSelection(theActivity.tblist
+                         //       .size() - 1);
+                        break;
+                    case PULL_TO_REFRESH_DOWN:
+                        //theActivity.pullList.refreshComplete();
+                        theActivity.mAdapter.notifyDataSetChanged();
+                        theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);
+                       // theActivity.myList.setSelection(theActivity.position - 1);
+                        //theActivity.isDown = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+
 
 //    public void InitData() {
 //        MsgModel lzy_1 = new MsgModel("lzy", "wzb", "2012-09-22 18:00:02", "有大吗", true);

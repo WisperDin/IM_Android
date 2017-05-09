@@ -2,6 +2,8 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
+import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
@@ -68,7 +70,6 @@ public class BuildFrame {
             //接收者
             User.Builder dst = User.newBuilder();
             dst.setUserID(chatMsg.getDst_IDAt(0));
-
             DstUser.Builder dstGroup = DstUser.newBuilder();
             dstGroup.addDst(dst);
             //要发送的信息，先模拟字符串发送
@@ -78,6 +79,8 @@ public class BuildFrame {
             frame.setSrc(src.build());
             frame.setDst(dstGroup.build());
             frame.setMsg(msg);
+            //设置消息布局类型<文本>
+            txtMsg.setType(ChatMsgViewAdapter.TO_USER_MSG);
             return frame.build();
 //            switch(chatMsg.getMsgType()){
 //                case TEXT:

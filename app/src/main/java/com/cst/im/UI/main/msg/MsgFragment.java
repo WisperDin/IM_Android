@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.presenter.ChatListPresenter;
 import com.cst.im.presenter.IChatListPresenter;
 import com.cst.im.view.IMsgView;
@@ -52,7 +52,7 @@ public class MsgFragment extends Fragment implements IMsgView,
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
 
-        Intent it = new Intent(getActivity(), ChatActivity.class);
+        Intent it = new Intent(getActivity(), ListViewChatActivity.class);
         //得到被点击的对象
         ChatItem accept = chatListPresenter.getMsgList().get(position);
         //用于设置消息已读

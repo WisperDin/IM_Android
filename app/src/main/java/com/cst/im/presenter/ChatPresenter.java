@@ -11,7 +11,7 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
@@ -123,6 +123,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 @Override
                 public void fail(int code, String msg) {
                     // TODO: 2017/5/8 给某个View做点事
+                    final Activity activity = ((ListViewChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -136,6 +137,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     // TODO: 2017/5/8 某个View做点事
                     // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
 
+                    final Activity activity = ((ListViewChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

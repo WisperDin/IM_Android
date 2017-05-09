@@ -8,11 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.UI.main.msg.MsgFragment;
-import com.cst.im.model.IBaseMsg;
-import com.cst.im.model.MsgModelBase;
-import com.cst.im.presenter.ChatListPresenter;
 
 public class friendinformationActivity extends AppCompatActivity {
 
@@ -37,7 +34,7 @@ public class friendinformationActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(friendinformationActivity.this,ChatActivity.class);
+                Intent intent =new Intent(friendinformationActivity.this,ListViewChatActivity.class);
                 intent.putExtras(bundle);
                 //通知消息列表添加消息
                 MsgFragment.chatListPresenter.AddChatMsg(dstId ,dstName , "");
