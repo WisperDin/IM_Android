@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.UI.main.chat.ChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
@@ -112,16 +114,24 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     @Override
                     public void fail(int code, String msg) {
                         // TODO: 2017/5/8 给某个View做点事
+                        final Activity activity= ((ChatActivity) iChatView);
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "上传失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     @Override
                     public void success(int code, String msg) {
                         // TODO: 2017/5/8 某个View做点事
                         // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
-                        Activity activity=null;
+
+                        final Activity activity= ((ChatActivity) iChatView);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
+                                Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

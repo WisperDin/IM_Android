@@ -4,9 +4,7 @@ import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
 import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,7 +21,7 @@ import okhttp3.Response;
  */
 
 public class UiImRequest implements ImRequest {
-    static String url="http://192.168.1.100:8123";
+    static String url="http://192.168.1.132:8123";
     OkHttpClient client=new OkHttpClient();
     static UiImRequest uiImRequest;
     private UiImRequest(){}
@@ -90,8 +88,8 @@ public class UiImRequest implements ImRequest {
         });
         try {
             call.execute();
-        } catch (IOException e) {
-            resultCallback.fail(-2,"IO错误！--"+e.toString());
+        } catch (Exception e) {
+            resultCallback.fail(-2,"错误！--"+e.toString());
         }
     }
 

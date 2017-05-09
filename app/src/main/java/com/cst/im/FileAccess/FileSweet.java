@@ -105,6 +105,8 @@ public class FileSweet {
     void initParam(int fileType, File file) throws IOException {
         this.fileType=fileType;
         this.fileName =  file.getName();
+        //TODO 先不写参数
+        this.fileParam="";
         filePostfix=fileName.substring(fileName.lastIndexOf(".")+1);
         feature= Md5Utils.getMd5(getDataCharacteristic(file));
         StringBuffer sb=new StringBuffer((filePostfix!=null && !filePostfix.isEmpty())?(filePostfix+" "):"");
