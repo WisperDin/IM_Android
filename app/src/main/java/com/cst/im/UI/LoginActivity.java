@@ -2,7 +2,6 @@ package com.cst.im.UI;
 
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -23,6 +22,7 @@ import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
+import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
                 loginPresenter.saveLoginInf();
                 //页面跳转
                 //TODO
-                UserModel.InitLocalUser("abc","123",id);
+
                 Intent it = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(it);
                 LoginActivity.this.finish();
@@ -142,6 +142,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
                 Toast.makeText(this,"密码错误",Toast.LENGTH_SHORT).show();
                 break;
         }
+
     }
 
     //网络错误提示

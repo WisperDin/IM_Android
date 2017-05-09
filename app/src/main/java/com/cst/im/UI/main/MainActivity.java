@@ -1,5 +1,6 @@
 package com.cst.im.UI.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.UI.SplashActivity;
+import com.cst.im.UI.main.chat.FaceConversionUtil;
 import com.cst.im.UI.main.discovery.DiscoveryFragment;
 import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
@@ -60,10 +63,14 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
 
     };
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DBManager.getIntance(this);
         ILoginUser loginUser = DBManager.queryLoginUser();
-        UserModel.InitLocalUser(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId());
+        UserModel.InitLocalUser(loginUser.getId());
         loginPresenter=new LoginPresenterCompl(this);
         loginPresenter.doLogin(loginUser.getUsername(),loginUser.getPassword());
 
@@ -73,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setCurrentFragment();
+
+
     }
 
     private void setCurrentFragment() {
@@ -106,5 +115,12 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
     @Override
     public void onEditTip() {
 
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {//退出登录
+        super.onNewIntent(intent);
+        Intent intent1 = new Intent(this, SplashActivity.class);
+        startActivity(intent1);
+        this.finish();
     }
 }

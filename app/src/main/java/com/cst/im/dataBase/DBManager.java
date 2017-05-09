@@ -9,10 +9,13 @@ import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.LoginUserModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.model.TextMsgModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 
 /**
@@ -166,11 +169,109 @@ public class DBManager {
         return loginUserModel;
     }
 
-    public static void deleteLoginUser(String username){
+    public static void deleteLoginUser(int id){// 删除本地用户登录
         SQLiteDatabase sdb = helper.getWritableDatabase();
 
-        String sql = String.format("DELETE  FROM %s WHERE %s = '%s'",Constant.Login.TABLE_NAME,Constant.Login.USERNAME,username);
-        //"DELETE * FROM " + Constant.Login.TABLE_NAME + " WHERE "+ Constant.Login.USERNAME  + " = "+ username;
+        String sql = String.format("DELETE  FROM %s WHERE %s = '%s'",Constant.Login.TABLE_NAME,Constant.Login.ID,id);
+
+        sdb.execSQL(sql);
+    }
+
+    public static UserModel queryLocalUserInfo(int userId){//查询本地的用户信息,返回一个userModel类
+
+        if(userId == 0){
+            return null;
+        }
+        SQLiteDatabase sdb = helper.getReadableDatabase();
+        UserModel userModel = new UserModel();
+        userModel.setId(userId);
+        String sql = String.format("SELECT * FROM %s WHERE %s = '%s'",
+                Constant.UserInfo.TABLE_NAME,
+                Constant.UserInfo.ID,
+                userId);
+        Cursor cursor = sdb.rawQuery(sql,null);
+
+        if(cursor.moveToFirst()){
+            userModel.setId(cursor.getInt(cursor.getColumnIndex(Constant.UserInfo.ID)));
+            userModel.setUserPicture(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_PICTURE)));
+            userModel.setName(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_NAME)));
+            userModel.setUserSex(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_SEX)));
+            userModel.setUserRealName(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_REAL_NAME)));
+            userModel.setUserPhone(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_PHONE)));
+            userModel.setUserEmail(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_EMAIL)));
+            userModel.setUserAddress(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_ADDRESS)));
+            userModel.setUserSign(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_SIGN)));
+        }
+        else{
+            return null;
+        }
+        Log.d("DBManager", "selectUserInfoOver");
+        sdb.close();
+        cursor.close();
+
+        return userModel;
+    }
+
+    public static void initLocalUserInfo(UserModel userModel){
+        SQLiteDatabase sdb = helper.getWritableDatabase();
+
+        if(userModel.getId() == 0){
+            return ;
+        }
+        String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s,%s,%s) " +
+                        "           VALUES (%s,'%s','%s','%s','%s','%s','%s','%s','%s')"
+                ,Constant.UserInfo.TABLE_NAME ,
+                Constant.UserInfo.ID,
+                Constant.UserInfo.USER_PICTURE,
+                Constant.UserInfo.USER_NAME,
+                Constant.UserInfo.USER_SEX,
+                Constant.UserInfo.USER_REAL_NAME,
+                Constant.UserInfo.USER_PHONE,
+                Constant.UserInfo.USER_EMAIL,
+                Constant.UserInfo.USER_ADDRESS,
+                Constant.UserInfo.USER_SIGN,
+                userModel.getId(),
+                userModel.getUserPicture(),
+                userModel.getName(),
+                userModel.getUserSex(),
+                userModel.getUserRealName(),
+                userModel.getUserPhone(),
+                userModel.getUserEmail(),
+                userModel.getUserAddress(),
+                userModel.getUserSign()
+                );
+
+        sdb.execSQL(sql);
+    }
+
+    public static void pushLocalUserInfo(UserModel userModel){
+        SQLiteDatabase sdb = helper.getWritableDatabase();
+
+        if(userModel.getId() == 0){
+            return ;
+        }
+        String sql = String.format("UPDATE %s SET " +
+                        "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'," +
+                "%s = '%s'" +
+                " WHERE %s = %s",Constant.UserInfo.TABLE_NAME ,
+                Constant.UserInfo.ID,userModel.getId(),
+                Constant.UserInfo.USER_PICTURE, userModel.getUserPicture(),
+                Constant.UserInfo.USER_NAME, userModel.getName(),
+                Constant.UserInfo.USER_SEX,userModel.getUserSex(),
+                Constant.UserInfo.USER_REAL_NAME,userModel.getUserRealName(),
+                Constant.UserInfo.USER_PHONE,userModel.getUserPhone(),
+                Constant.UserInfo.USER_EMAIL,userModel.getUserEmail(),
+                Constant.UserInfo.USER_ADDRESS,userModel.getUserAddress(),
+                Constant.UserInfo.USER_SIGN,userModel.getUserSign(),
+                Constant.UserInfo.ID,userModel.getId());
+
         sdb.execSQL(sql);
     }
 
