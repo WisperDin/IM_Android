@@ -3,7 +3,6 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +29,7 @@ import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
+import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
@@ -358,31 +358,12 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        if (requestCode == FILE_REQUEST) {//一般文件
+        if (requestCode == FILE_REQUEST||requestCode == PHOTO_REQUEST_GALLERY) {//一般文件 //从相册选择的图片
             Uri uri = data.getData();
-            //TODO 存在问题 只能传图库文件
-            //解析路径
-            String[] proj = { MediaStore.Images.Media.DATA };
-            Cursor actualimagecursor = managedQuery(uri, proj, null, null, null);
-            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            actualimagecursor.moveToFirst();
-            String path = actualimagecursor.getString(actual_image_column_index);// 获取选择文件
+            String absolutePath = UriUtils.getPath(this,uri);
             //发送文件
-            chatPresenter.SendFile(dst,new File(path));
-            Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
-            Uri uri = data.getData();
-            //解析路径
-            String[] proj = { MediaStore.Images.Media.DATA };
-            Cursor actualimagecursor = managedQuery(uri, proj, null, null, null);
-            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            actualimagecursor.moveToFirst();
-            String path = actualimagecursor.getString(actual_image_column_index);// 获取选择文件
-            //发送图片文件
-            chatPresenter.SendFile(dst,new File(path));
-            Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
+            chatPresenter.SendFile(dst,new File(absolutePath));
+            Toast.makeText(this, absolutePath, Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == PHOTO_REQUEST_CAREMA) {// 从相机返回的图片
