@@ -29,7 +29,7 @@ import okhttp3.Response;
 
 
 public class FileImRequest implements ImRequest {
-    static String url="http://192.168.191.1:8123/file";
+    static String url="http://192.168.1.132:8123/";
     OkHttpClient client=new OkHttpClient();
     static FileImRequest fileImRequest;
     private FileImRequest(){}
@@ -170,6 +170,8 @@ public class FileImRequest implements ImRequest {
                     fos.flush();
                     resultCallback.success(1,file.getAbsolutePath());
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.print(e.getMessage());
                     resultCallback.fail(-3,"文件下载失败");
                 } finally {
                     try {
@@ -274,10 +276,18 @@ public class FileImRequest implements ImRequest {
                 file =new File(Root+"/videos");
                 break;
         }
-        if(file!=null && !file.exists())
+        if(file==null){
+            return "";
+        }
+        if(!file.exists())
+            file.mkdirs();
+        return file.getAbsolutePath();
+
+        //////////////////////TODO 这里有问题？
+        /*if(file!=null && !file.exists())
             file.mkdirs();
         else
             return "";
-        return file.getAbsolutePath();
+        return file.getAbsolutePath();*/
     }
 }

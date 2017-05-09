@@ -20,6 +20,7 @@ import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.model.UserModel;
+import com.cst.im.tools.FileUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
@@ -44,6 +45,30 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         handler = new Handler(Looper.getMainLooper());
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
+
+       /* //test
+        FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
+
+            @Override
+            public void fail(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void success(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });*/
     }
 
 
@@ -65,7 +90,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 break;
             case FILE:
                 //TODO： 这个路径还要改
-                FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, ((FileMsgModel) msgRecv).getFileName(),new ImRequest.ResultCallBack(){
+                FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
 
                     @Override
                     public void fail(int code, String msg) {
@@ -91,7 +116,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     @Override
                     public void run() {
                         //TODO 出问题
-                        iChatView.onRecvMsg();
+                        //iChatView.onRecvMsg();
                     }
                 });
                 break;
