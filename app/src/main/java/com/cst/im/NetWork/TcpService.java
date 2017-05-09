@@ -30,7 +30,7 @@ public abstract class TcpService extends Service {
 //        client = new TcpClient("172.18.149.95",6666);
             //client = new TcpClient("192.168.1.113",6666);
 //        client = new TcpClient("192.168.191.1",6666);
-        client = new TcpClient("192.168.1.100",6666);
+        client = new TcpClient("192.168.1.132",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,7 +63,6 @@ public abstract class TcpService extends Service {
             running=true;
             socket = new Socket(serverIp,port);
             lastSendTime= System.currentTimeMillis();
-
             // 获取Socket的OutputStream对象用于发送数据。
             //OutputStream outputStream = socket.getOutputStream();
             //UserModel userToLogin = new UserModel("lzy","123");
@@ -96,33 +95,26 @@ public abstract class TcpService extends Service {
 
        class ReceiveThread implements Runnable {
             private ExecutorService msgPool = Executors.newCachedThreadPool();
-            byte[] buffer=new byte[1024];
-            //StringBuffer stringBuffer;
-            //int sum=0;
+            byte[] buffer;
             public void run() {
                 while(client.running){
                     try {
-
                         InputStream in = socket.getInputStream();
-                        if(in.available()>0){
+                        int c=in.available();
+                        if(c>0){
+                            buffer=new byte[c];
                             //读字节流
-                            int count= in.read(buffer,0,1024);
+                            int count= in.read(buffer);
                             System.out.print("Rec:  ");
                             for (int i= 0 ;i<count;i++){
                                 System.out.print(buffer[i]+" ");
                             }
-                            //复制有效字节到新的字节数组中
-                            //TODO:以后要注意粘帧的情况
-                            byte[] frameData = new byte[count];
-                            System.arraycopy(buffer, 0, frameData, 0, count);
-                            if (frameData[0]==DeEnCode.SpecialFrameHead)//如果遇到特殊帧
-                            {
-                                DeEnCode.decodeSpFrame(frameData);
-                            }
-                            else
-                            {
+                            if (buffer[0]==DeEnCode.SpecialFrameHead){
+                                //特殊帧
+                                DeEnCode.decodeSpFrame(buffer);
+                            }else{
                                 //解码
-                                final Frame frame =  DeEnCode.decodeFrame(frameData);
+                                final Frame frame =  DeEnCode.decodeFrame(buffer);
                                 //放到线程池执行
                                 msgPool.execute(new Runnable() {
                                     @Override
@@ -130,9 +122,26 @@ public abstract class TcpService extends Service {
                                     }
                                 });
                             }
-
-                            }
-                        else{
+                            //复制有效字节到新的字节数组中
+                            //TODO:以后要注意粘帧的情况
+//                            byte[] frameData = new byte[count];
+//                            System.arraycopy(buffer, 0, frameData, 0, count);
+//                            if (frameData[0]==DeEnCode.SpecialFrameHead)//如果遇到特殊帧
+//                            {
+//                                DeEnCode.decodeSpFrame(frameData);
+//                            }
+//                            else
+//                            {
+//                                //解码
+//                                final Frame frame =  DeEnCode.decodeFrame(frameData);
+//                                //放到线程池执行
+//                                msgPool.execute(new Runnable() {
+//                                    @Override
+//                                    public void run() {OnMessageCome(frame);
+//                                    }
+//                                });
+//                            }
+                        }else{
                             Thread.sleep(10);
                        }
                     } catch (Exception e) {
