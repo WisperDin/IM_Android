@@ -3,6 +3,8 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.FileAccess.FileAccess;
+import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
@@ -65,6 +67,7 @@ public class DeEnCode {
 //                    return baos.toByteArray();
 //            }
             ITextMsg txtMsg = ((ITextMsg) chatMsg);
+            txtMsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
             Frame frame = new BuildFrame(BuildFrame.TextMsg).GetChatMsgFrame(txtMsg);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {

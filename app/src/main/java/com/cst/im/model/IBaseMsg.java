@@ -27,4 +27,13 @@ public interface IBaseMsg {
 
     boolean sendOrRecv();
     void sendOrRecv(boolean isComMsg);
+
+    int getSendState();
+    void setSendState(int sendState);
+
+    int getType();
+    void setType(int type);
+
+    String getPhotoLocal();
+    void setPhotoLocal(String imageLocal);
 }
