@@ -1,12 +1,16 @@
 package com.cst.im.NetWork.Okhttp.impl;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
 import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -22,15 +26,15 @@ import okhttp3.Response;
  * Created by admin on 2017/5/8.
  */
 
-public class UiImRequest implements ImRequest {
+public class FileImRequest implements ImRequest {
     static String url="http://192.168.1.132:8123";
     OkHttpClient client=new OkHttpClient();
-    static UiImRequest uiImRequest;
-    private UiImRequest(){}
-    public static UiImRequest Builder(){
-        if(uiImRequest==null)
-            uiImRequest=new UiImRequest();
-        return uiImRequest;
+    static FileImRequest fileImRequest;
+    private FileImRequest(){}
+    public static FileImRequest Builder(){
+        if(fileImRequest ==null)
+            fileImRequest =new FileImRequest();
+        return fileImRequest;
     }
     @Override
     public void preRequest(FileSweet fileSweet, final ResultCallBack callback) {
@@ -129,12 +133,66 @@ public class UiImRequest implements ImRequest {
     }
 
     @Override
-    public void downLoadFile(FileSweet fileSweet, ResultCallBack resultCallback) {
+    public void downLoadFile(int type, final String name, final ResultCallBack resultCallback) {
+        Request request1 = new Request.Builder()
+                .url(url+"/"+name)
+                .build();
+        Call call= client.newCall(request1);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                resultCallback.fail(-1,"网络连接失败，请检查网络！");
+            }
 
+            @Override
+            public void onResponse(Response response) throws IOException {
+                InputStream is = null;
+                byte[] buf = new byte[2048];
+                int len = 0;
+                FileOutputStream fos = null;
+
+                try {
+                    is = response.body().byteStream();
+                    long total = response.body().contentLength();
+                    String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    File file = new File(SDPath,name);
+                    fos = new FileOutputStream(file);
+                    long sum = 0;
+                    while ((len = is.read(buf)) != -1) {
+                        fos.write(buf, 0, len);
+                        sum += len;
+                        int progress = (int) (sum * 1.0f / total * 100);
+                        Log.d("h_bl", "progress=" + progress);
+                    }
+                    fos.flush();
+                    resultCallback.success(1,file.getAbsolutePath());
+                } catch (Exception e) {
+                    resultCallback.fail(0,"文件下载失败");
+                } finally {
+                    try {
+                        if (is != null)
+                            is.close();
+                        if (fos != null)
+                            fos.close();
+                    } catch (IOException e) {
+                        resultCallback.success(-2,"文件关闭失败");
+                    }
+                }
+
+            }
+        });
+        try {
+            call.execute();
+        } catch (IOException e) {
+            resultCallback.fail(-2,"io错误！--"+e.toString());
+        }catch (IllegalStateException ise){
+            Log.w("execute","already call"+ise.getMessage());
+        }
     }
 
     @Override
-    public void downLoadFile(FileSweet fileSweet, ProccessCallBack processCallback) {
+    public void downLoadFile(final int type,String name, final ProccessCallBack processCallback) {
+
 
     }
 }

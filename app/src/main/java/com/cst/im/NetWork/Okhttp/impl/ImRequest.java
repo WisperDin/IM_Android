@@ -42,15 +42,16 @@ public interface ImRequest {
 
     /**
      * 回调一次上传结果，成功或失败
-     * @param resultCallback
+     * @param resultCallback -1 失败 1 成功
      */
-    void downLoadFile(FileSweet fileSweet, ResultCallBack resultCallback) ;
+    void downLoadFile(final int type,String name, ResultCallBack resultCallback) ;
     /**
      * 回调上传状态和上传进度
-     * @param fileSweet
-     * @param processCallback
+     * @param type 文件类型
+     * @param  name 文件名称
+     * @param processCallback 进度回调
      */
-    void downLoadFile(FileSweet fileSweet, ProccessCallBack processCallback) ;
+    void downLoadFile(final int type,String name, ProccessCallBack processCallback) ;
 
 
 
