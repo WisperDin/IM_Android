@@ -79,25 +79,22 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     @Override
     public void SendFile(IUser[] dstUser ,File file){
         //将dstUser的ID取出
-        int dst_ID[] = new int[dstUser.length+1];
+        int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
             dst_ID[i] = dstUser[i].getId();
         }
         IFileMsg fileMsg = new FileMsgModel();
         fileMsg.setFile(file);
-        //fileMsg.setFileSize(FileUtils.getAutoFileOrFilesSize(file));
-        //fileMsg.setSrc_ID(UserModel.localUser.getID());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
-        final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
-        if(fileHeadToSend==null){
-            Log.w("file","fileHeadToSend null");
-            System.out.println("fileHeadToSend null");
-        }
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
             FileSweet fs = new FileSweet(FileSweet.FILE_TYPE_FILE, file);
+            //使用文件信息写入到FileMsg中
+            fileMsg.setFileSize(fs.getFileParam());
+            fileMsg.setFileParam(fs.getFileParam());
+            fileMsg.setFileFeature(fs.getFeature());
             UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
                 @Override
                 public void fail(int code, String msg) {
@@ -128,9 +125,12 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-
-        //发送数据
+        //发送文件简要信息帧到服务器
+        final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
+        if(fileHeadToSend==null){
+            Log.w("file","fileHeadToSend null");
+            System.out.println("fileHeadToSend null");
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {
