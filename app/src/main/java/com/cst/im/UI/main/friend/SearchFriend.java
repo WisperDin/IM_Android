@@ -58,7 +58,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             tv.setText("用户不存在");
             return;
         }
-        if(!iFriendModel.getfriendlist().contains(username)){
+        if(iFriendModel.getfriendlist().contains(username)){
             tv.setText("你们已经是好友");
             return;
         }
