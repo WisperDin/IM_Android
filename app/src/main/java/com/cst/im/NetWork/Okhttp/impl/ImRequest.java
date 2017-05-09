@@ -38,4 +38,20 @@ public interface ImRequest {
      * @param processCallback
      */
     void upLoadFile(FileSweet fileSweet, ProccessCallBack processCallback) ;
+
+
+    /**
+     * 回调一次上传结果，成功或失败
+     * @param resultCallback
+     */
+    void downLoadFile(FileSweet fileSweet, ResultCallBack resultCallback) ;
+    /**
+     * 回调上传状态和上传进度
+     * @param fileSweet
+     * @param processCallback
+     */
+    void downLoadFile(FileSweet fileSweet, ProccessCallBack processCallback) ;
+
+
+
 }

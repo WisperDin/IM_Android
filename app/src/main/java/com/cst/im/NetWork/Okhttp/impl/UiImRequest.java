@@ -127,4 +127,14 @@ public class UiImRequest implements ImRequest {
             processCallback.fail();
         }
     }
+
+    @Override
+    public void downLoadFile(FileSweet fileSweet, ResultCallBack resultCallback) {
+
+    }
+
+    @Override
+    public void downLoadFile(FileSweet fileSweet, ProccessCallBack processCallback) {
+
+    }
 }
