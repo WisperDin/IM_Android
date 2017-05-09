@@ -3,6 +3,7 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
@@ -355,14 +357,24 @@ public class ChatActivity extends SwipeBackActivity implements View.OnClickListe
         if (requestCode == FILE_REQUEST) {//一般文件
             Uri uri = data.getData();
             //发送文件
-            chatPresenter.SendFile(dst,new File(uri.getPath()));
+            //chatPresenter.SendFile(dst,new File(uri.getPath()));
             Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
         if (requestCode == PHOTO_REQUEST_GALLERY) {//从相册选择的图片
             Uri uri = data.getData();
+
+            //解析路径
+            String[] proj = { MediaStore.Images.Media.DATA };
+            Cursor actualimagecursor = managedQuery(uri, proj, null, null, null);
+            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            actualimagecursor.moveToFirst();
+            String path = actualimagecursor.getString(actual_image_column_index);// 获取选择文件
+
+
+
             //发送文件
-            chatPresenter.SendFile(dst,new File(uri.getPath()));
+            chatPresenter.SendFile(dst,new File(path));
             Toast.makeText(this, uri.getPath(), Toast.LENGTH_SHORT).show();
             return;
         }
