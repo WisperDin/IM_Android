@@ -4,8 +4,9 @@ package com.cst.im.model;
  * Created by wzb on 2017/5/8.
  */
 
-public class PhotoMsgModel extends MsgModelBase implements IPhotoMsg {
+public class PhotoMsgModel extends FileMsgModel implements IPhotoMsg {
     String photoUrl;
+
     @Override
     public String getPhotoUrl() {
         return photoUrl;
@@ -15,4 +16,5 @@ public class PhotoMsgModel extends MsgModelBase implements IPhotoMsg {
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
+
 }

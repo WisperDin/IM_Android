@@ -44,8 +44,9 @@ public class DBManager {
         //判断接受/发送状态
         switch(msg.getMsgType()){
             case TEXT:
+                //设置数据库发送状态
                 String status;
-                if(!msg.sendOrRecv()){
+                if(msg.getType() == 1 || msg.getType() == 3 || msg.getType() == 5){
                     status = Constant.SEND;
                 }
                 else {
@@ -108,7 +109,8 @@ public class DBManager {
                         entity.setMsgDate(time);
                         entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.sendOrRecv(false);// 自己发送的消息
+                        entity.setType(0);
+                        //entity.sendOrRecv(false);// 自己发送的消息
                         cursor.moveToNext();
                     }
                     else{
@@ -117,7 +119,8 @@ public class DBManager {
                         entity.setMsgDate(time);
                         entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.sendOrRecv(true);// 收到的消息
+                        entity.setType(1);
+                        //entity.sendOrRecv(true);// 收到的消息
                         cursor.moveToNext();
                     }
 

@@ -3,6 +3,7 @@ package com.cst.im.presenter;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,7 +12,8 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
+import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
+
 /**
  * Created by ASUS on 2017/4/23.
  */
@@ -36,12 +40,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private List<IBaseMsg> mDataArrays = new ArrayList<IBaseMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
-    private IUser localUser;//假设这个是登录这个客户端的用户
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
         this.iChatView =  chatView;
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
-        localUser=new UserModel("lzy","123",1);
+
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
     }
@@ -114,7 +117,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     @Override
                     public void fail(int code, String msg) {
                         // TODO: 2017/5/8 给某个View做点事
-                        final Activity activity= ((ChatActivity) iChatView);
+                        final Activity activity= ((ListViewChatActivity) iChatView);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -127,7 +130,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         // TODO: 2017/5/8 某个View做点事
                         // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
 
-                        final Activity activity= ((ChatActivity) iChatView);
+                        final Activity activity= ((ListViewChatActivity) iChatView);
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -160,10 +163,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         if (contString.length() > 0) {
             ITextMsg textMsg = new TextMsgModel();
-            textMsg.setSrc_ID(localUser.getId());
+            textMsg.setSrc_ID(UserModel.localUser.getId());
             textMsg.setMsgDate(Tools.getDate());
             textMsg.setText(contString);
-            textMsg.sendOrRecv(false);
+            //textMsg.sendOrRecv(false);
             textMsg.setDst_ID(dst_ID);
             textMsg.setMsgType(IBaseMsg.MsgType.TEXT);
             DBManager.InsertMsg(textMsg);

@@ -1,91 +1,124 @@
 package com.cst.im.UI.main.chat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
-import android.text.SpannableString;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.text.SpannableString;
 import com.cst.im.R;
+import com.cst.im.dataBase.ChatConst;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
-
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifTextView;
 
 /**
- * 消息ListView的Adapter
- *
- * @author way
+ * Created by wzb on 2017/5/9.
  */
+
 public class ChatMsgViewAdapter extends BaseAdapter {
-
-    public static interface IMsgViewType {
-        int IMVT_COM_MSG = 0;// 收到对方的消息
-        int IMVT_TO_MSG = 1;// 自己发送出去的消息
-    }
-
-    private static final int ITEMCOUNT = 8;// 消息类型的总数
-    private List<IBaseMsg> coll;// 消息对象数组
-    private LayoutInflater mInflater;
     private Context context;
+    //private List<ChatMessageBean> userList = new ArrayList<ChatMessageBean>();
     private ArrayList<String> imageList = new ArrayList<String>();
     private HashMap<Integer,Integer> imagePosition = new HashMap<Integer,Integer>();
+    public static final int FROM_USER_MSG = 0;//接收消息类型
+    public static final int TO_USER_MSG = 1;//发送消息类型
+    public static final int FROM_USER_IMG = 2;//接收消息类型
+    public static final int TO_USER_IMG = 3;//发送消息类型
+    public static final int FROM_USER_VOICE = 4;//接收消息类型
+    public static final int TO_USER_VOICE = 5;//发送消息类型
     private int mMinItemWith;// 设置对话框的最大宽度和最小宽度
+    private List<IBaseMsg> coll;// 消息对象数组
     private int mMaxItemWith;
+    public MyHandler handler;
+    private Animation an;
+    private SendErrorListener sendErrorListener;
     private VoiceIsRead voiceIsRead;
     public List<String> unReadPosition = new ArrayList<String>();
     private int voicePlayPosition = -1;
-    public static final int FROM_USER_VOICE = 4;//接受语音信息
+    private LayoutInflater mLayoutInflater;
+    private boolean isGif = true;
+    public boolean isPicRefresh = true;
 
+    public interface SendErrorListener {
+        public void onClick(int position);
+    }
 
+    public void setSendErrorListener(SendErrorListener sendErrorListener) {
+        this.sendErrorListener = sendErrorListener;
+    }
 
-    //判断语音是否已读
     public interface VoiceIsRead {
         public void voiceOnClick(int position);
     }
-    //监听语音按钮
+
     public void setVoiceIsReadListener(VoiceIsRead voiceIsRead) {
         this.voiceIsRead = voiceIsRead;
     }
-
-
     public ChatMsgViewAdapter(Context context, List<IBaseMsg> coll) {
-        this.coll = coll;
-        mInflater = LayoutInflater.from(context);
         this.context = context;
+        this.coll = coll;
+        mLayoutInflater = LayoutInflater.from(context);
+        // 获取系统宽度
+        WindowManager wManager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wManager.getDefaultDisplay().getMetrics(outMetrics);
+        mMaxItemWith = (int) (outMetrics.widthPixels * 0.5f);
+        mMinItemWith = (int) (outMetrics.widthPixels * 0.15f);
+        handler = new MyHandler(this);
     }
 
+    public static class MyHandler extends Handler {
+        private final WeakReference<ChatMsgViewAdapter> mTbAdapter;
 
+        public MyHandler(ChatMsgViewAdapter tbAdapter) {
+            mTbAdapter = new WeakReference<ChatMsgViewAdapter>(tbAdapter);
+        }
 
-    public int getCount() {
-        return coll.size();
+        @Override
+        public void handleMessage(Message msg) {
+            ChatMsgViewAdapter tbAdapter = mTbAdapter.get();
+
+            if (tbAdapter != null) {
+            }
+        }
     }
 
-    public Object getItem(int position) {
-        return coll.get(position);
+    public void setIsGif(boolean isGif) {
+        this.isGif = isGif;
     }
 
-    public long getItemId(int position) {
-        return position;
-    }
+    //public void setUserList(List<ChatMessageBean> userList) {
+    //   this.userList = userList;
+    //}
 
     public void setImageList(ArrayList<String> imageList) {
         this.imageList = imageList;
@@ -94,293 +127,685 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         this.imagePosition = imagePosition;
     }
 
-    /**
-     * 得到Item的类型，是对方发过来的消息，还是自己发送出去的
-     */
+    @Override
+    public int getCount() {
+        return coll.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return coll.get(position);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
     public int getItemViewType(int position) {
-        IBaseMsg entity = coll.get(position);
-
-        if (entity.sendOrRecv()) {//收到的消息
-            return IMsgViewType.IMVT_COM_MSG;
-        } else {//自己发送的消息
-            return IMsgViewType.IMVT_TO_MSG;
-        }
+        // TODO Auto-generated method stub
+        return coll.get(position).getType();
     }
 
-    /**
-     * Item类型的总数
-     */
+    @Override
     public int getViewTypeCount() {
-        return ITEMCOUNT;
+        // TODO Auto-generated method stub
+        return 6;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        IBaseMsg msg = coll.get(position);
-        boolean isComMsg = msg.sendOrRecv();
-        convertView = judgeMsgType(msg , convertView ,isComMsg , position);
-        return convertView;
+    @SuppressLint("InflateParams")
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        IBaseMsg msg = coll.get(i);
+        switch (getItemViewType(i)) {
+            case FROM_USER_MSG:
+                FromUserMsgViewHolder holder;
+                if (view == null) {
+                    holder = new FromUserMsgViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.activity_chat_left, null);
+                    holder.headicon = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder.chat_time = (TextView) view.findViewById(R.id.tv_sendtime);
+                    holder.content = (TextView) view.findViewById(R.id.tv_chatcontent);
+                    view.setTag(holder);
+                } else {
+                    holder = (FromUserMsgViewHolder) view.getTag();
+                }
+                fromMsgUserLayout((FromUserMsgViewHolder) holder, msg, i);
+                break;
+            case FROM_USER_IMG:
+                FromUserImageViewHolder holder1;
+                if (view == null) {
+                    holder1 = new FromUserImageViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_imagefrom_list_item, null);
+                    holder1.headicon = (ImageView) view
+                            .findViewById(R.id.tb_other_user_icon);
+                    holder1.chat_time = (TextView) view.findViewById(R.id.chat_time);
+                    holder1.image_Msg = (BubbleImageView) view
+                            .findViewById(R.id.image_message);
+                    view.setTag(holder1);
+                } else {
+                    holder1 = (FromUserImageViewHolder) view.getTag();
+                }
+                fromImgUserLayout((FromUserImageViewHolder) holder1, msg, i);
+                break;
+            case FROM_USER_VOICE:
+                FromUserVoiceViewHolder holder2;
+                if (view == null) {
+                    holder2 = new FromUserVoiceViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_voicefrom_list_item, null);
+                    holder2.headicon = (ImageView) view
+                            .findViewById(R.id.tb_other_user_icon);
+                    holder2.chat_time = (TextView) view.findViewById(R.id.chat_time);
+                    holder2.voice_group = (LinearLayout) view
+                            .findViewById(R.id.voice_group);
+                    holder2.voice_time = (TextView) view
+                            .findViewById(R.id.voice_time);
+                    holder2.receiver_voice_unread = (View) view
+                            .findViewById(R.id.receiver_voice_unread);
+                    holder2.voice_image = (FrameLayout) view
+                            .findViewById(R.id.voice_receiver_image);
+                    holder2.voice_anim = (View) view
+                            .findViewById(R.id.id_receiver_recorder_anim);
+                    view.setTag(holder2);
+                } else {
+                    holder2 = (FromUserVoiceViewHolder) view.getTag();
+                }
+                fromVoiceUserLayout((FromUserVoiceViewHolder) holder2, msg, i);
+                break;
+            case TO_USER_MSG:
+                ToUserMsgViewHolder holder3;
+                if (view == null) {
+                    holder3 = new ToUserMsgViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.activity_chat_right, null);
+                    holder3.headicon = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder3.chat_time = (TextView) view
+                            .findViewById(R.id.tv_sendtime);
+                    holder3.content = (TextView) view
+                            .findViewById(R.id.tv_chatcontent);
+                    holder3.sendFailImg = (ImageView) view
+                            .findViewById(R.id.mysend_fail_img);
+                    view.setTag(holder3);
+                } else {
+                    holder3 = (ToUserMsgViewHolder) view.getTag();
+                }
+                toMsgUserLayout((ToUserMsgViewHolder) holder3, msg, i);
+                break;
+            case TO_USER_IMG:
+                ToUserImgViewHolder holder4;
+                if (view == null) {
+                    holder4 = new ToUserImgViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_imageto_list_item, null);
+                    holder4.headicon = (ImageView) view
+                            .findViewById(R.id.tb_my_user_icon);
+                    holder4.chat_time = (TextView) view
+                            .findViewById(R.id.mychat_time);
+                    holder4.sendFailImg = (ImageView) view
+                            .findViewById(R.id.mysend_fail_img);
+                    holder4.image_group = (LinearLayout) view
+                            .findViewById(R.id.image_group);
+                    holder4.image_Msg = (BubbleImageView) view
+                            .findViewById(R.id.image_message);
+                    view.setTag(holder4);
+                } else {
+                    holder4 = (ToUserImgViewHolder) view.getTag();
+                }
+                toImgUserLayout((ToUserImgViewHolder) holder4, msg, i);
+                break;
+            case TO_USER_VOICE:
+                ToUserVoiceViewHolder holder5;
+                if (view == null) {
+                    holder5 = new ToUserVoiceViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_voiceto_list_item, null);
+                    holder5.headicon = (ImageView) view
+                            .findViewById(R.id.tb_my_user_icon);
+                    holder5.chat_time = (TextView) view
+                            .findViewById(R.id.mychat_time);
+                    holder5.voice_group = (LinearLayout) view
+                            .findViewById(R.id.voice_group);
+                    holder5.voice_time = (TextView) view
+                            .findViewById(R.id.voice_time);
+                    holder5.voice_image = (FrameLayout) view
+                            .findViewById(R.id.voice_image);
+                    holder5.voice_anim = (View) view
+                            .findViewById(R.id.id_recorder_anim);
+                    holder5.sendFailImg = (ImageView) view
+                            .findViewById(R.id.mysend_fail_img);
+                    view.setTag(holder5);
+                } else {
+                    holder5 = (ToUserVoiceViewHolder) view.getTag();
+                }
+                toVoiceUserLayout((ToUserVoiceViewHolder) holder5, msg, i);
+                break;
+        }
+
+        return view;
     }
 
-    static class ViewHolder {
-        public TextView tvSendTime;
-        public TextView tvUserName;
-        public TextView tvContent;
+    public class FromUserMsgViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
+        public TextView content;
+    }
+
+    public class FromUserImageViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
         public BubbleImageView image_Msg;
-        public LinearLayout image_group;
+    }
 
+    public class FromUserVoiceViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
         public LinearLayout voice_group;
         public TextView voice_time;
         public FrameLayout voice_image;
         public View receiver_voice_unread;
         public View voice_anim;
-        public boolean isComMsg = true;
     }
 
-    //将数据加载到listView
-    public View judgeMsgType(IBaseMsg msg, View convertView, boolean isComMsg  , final int position){
-        if(msg.getMsgType() == null){
-            msg.setMsgType(IBaseMsg.MsgType.TEXT);
+    public class ToUserMsgViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
+        public TextView content;
+        public ImageView sendFailImg;
+    }
+
+    public class ToUserImgViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
+        public LinearLayout image_group;
+        public BubbleImageView image_Msg;
+        public ImageView sendFailImg;
+    }
+
+    public class ToUserVoiceViewHolder {
+        public ImageView headicon;
+        public TextView chat_time;
+        public LinearLayout voice_group;
+        public TextView voice_time;
+        public FrameLayout voice_image;
+        public View receiver_voice_unread;
+        public View voice_anim;
+        public ImageView sendFailImg;
+    }
+
+    private void fromMsgUserLayout(final FromUserMsgViewHolder holder, final IBaseMsg msg, final int position) {
+        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
+            } else {
+                holder.chat_time.setVisibility(View.GONE);
+            }
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
         }
-        ViewHolder viewHolder;
-        switch(msg.getMsgType()){
-            case TEXT:
-                /**获取文本布局*/
-                if (convertView == null) {
-                    //获取文本信息布局
-                    convertView = judgeSendOrRecv(msg , isComMsg);
-                    viewHolder = new ViewHolder();
-                    viewHolder.tvSendTime = (TextView) convertView
-                            .findViewById(R.id.tv_sendtime);
-                    viewHolder.tvContent = (TextView) convertView
-                            .findViewById(R.id.tv_chatcontent);
-                    viewHolder.isComMsg = isComMsg;
-                    convertView.setTag(viewHolder);
-                } else {
-                    viewHolder = (ViewHolder) convertView.getTag();
+        holder.content.setVisibility(View.VISIBLE);
+        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, ((ITextMsg)msg).getText());
+        holder.content.setText(spannableString);
+    }
+
+    private void fromImgUserLayout(final FromUserImageViewHolder holder, final IBaseMsg msg, final int position) {
+        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
+            } else {
+                holder.chat_time.setVisibility(View.GONE);
+            }
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
+        }
+        if (isPicRefresh) {
+            holder.image_Msg.setImageBitmap(null);
+            IPhotoMsg photoUrl = ((IPhotoMsg)msg);
+            final String imageSrc = photoUrl.getPhotoUrl() == null ? "" :
+                    photoUrl.getPhotoLocal();
+            final String imageUrlSrc = photoUrl.getPhotoUrl() == null ? "" :
+                    photoUrl.getPhotoUrl();
+            final String imageIconUrl = photoUrl.getPhotoUrl() == null ? ""
+                    : photoUrl.getPhotoUrl();
+            File file = new File(imageSrc);
+            final boolean hasLocal = !imageSrc.equals("")
+                   && FileSaveUtil.isFileExists(file);
+            int res;
+            res = R.drawable.chatfrom_bg_focused;
+            if (hasLocal) {
+                holder.image_Msg.setLocalImageBitmap(ImageCheckoutUtil.getLoacalBitmap(imageSrc),
+                        res);
+            } else {
+                holder.image_Msg.load(imageIconUrl, res, R.mipmap.cygs_cs);
+            }
+            holder.image_Msg.load(imageIconUrl, res, R.mipmap.cygs_cs);
+            holder.image_Msg.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    // TODO Auto-generated method stub
+                    stopPlayVoice();
+                    Intent intent = new Intent(context, ImageViewActivity.class);
+                    intent.putStringArrayListExtra("images", imageList);
+                    intent.putExtra("clickedIndex", imagePosition.get(position));
+                    context.startActivity(intent);
                 }
-                viewHolder.tvSendTime.setText(msg.getMsgDate());
-                SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, ((ITextMsg)msg).getText());
-                viewHolder.tvContent.setText(spannableString);
-                return convertView;
-            case PHOTO:
-                /**获取照片信息布局**/
-                //获取图片URL
-                IPhotoMsg photoMsg = ((IPhotoMsg)msg);
-                //获取加载图片的气泡
-                int res_p;
-                res_p = getImageChatBubble(isComMsg);
-                final String imageIconUrl = photoMsg.getPhotoUrl() == null ? ""
-                        : photoMsg.getPhotoUrl();
-                if (convertView == null) {
-                    convertView = judgeSendOrRecv(msg , isComMsg);
-                    viewHolder = new ViewHolder();
-                    viewHolder.tvSendTime = (TextView) convertView
-                            .findViewById(R.id.tv_sendtime);
-                    viewHolder.isComMsg = isComMsg;
-                    viewHolder.image_Msg = (BubbleImageView) convertView
-                            .findViewById(R.id.image_message);
-                    viewHolder.image_group = (LinearLayout) convertView
-                            .findViewById(R.id.image_group);
-                    convertView.setTag(viewHolder);
-                } else {
-                    viewHolder = (ViewHolder) convertView.getTag();
+
+            });
+        }
+
+    }
+
+    private void fromVoiceUserLayout(final FromUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
+        final ISoundMsg soundUrl = ((ISoundMsg)msg);
+        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
+            } else {
+                holder.chat_time.setVisibility(View.GONE);
+            }
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
+        }
+
+        holder.voice_group.setVisibility(View.VISIBLE);
+        if (holder.receiver_voice_unread != null)
+            holder.receiver_voice_unread.setVisibility(View.GONE);
+        if (holder.receiver_voice_unread != null && unReadPosition != null) {
+            for (String unRead : unReadPosition) {
+                if (unRead.equals(position + "")) {
+                    holder.receiver_voice_unread
+                            .setVisibility(View.VISIBLE);
+                    break;
                 }
-                viewHolder.tvSendTime.setText(msg.getMsgDate());
-                viewHolder.image_Msg.load(imageIconUrl, res_p, R.mipmap.cygs_cs);
-                viewHolder.image_Msg.setOnClickListener(new View.OnClickListener() {
+            }
+        }
+        //播放语音动画效果
+        AnimationDrawable drawable;
+        holder.voice_anim.setId(position);
+        if (position == voicePlayPosition) {
+            holder.voice_anim
+                    .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+            holder.voice_anim
+                    .setBackgroundResource(R.drawable.voice_play_receiver);
+            drawable = (AnimationDrawable) holder.voice_anim
+                    .getBackground();
+            drawable.start();
+        } else {
+            holder.voice_anim
+                    .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+        }
+        holder.voice_group.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (holder.receiver_voice_unread != null)
+                    holder.receiver_voice_unread.setVisibility(View.GONE);
+                holder.voice_anim
+                        .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+                stopPlayVoice();
+                voicePlayPosition = holder.voice_anim.getId();
+                AnimationDrawable drawable;
+                holder.voice_anim
+                        .setBackgroundResource(R.drawable.voice_play_receiver);
+                drawable = (AnimationDrawable) holder.voice_anim
+                        .getBackground();
+                drawable.start();
+//                String voicePath = tbub.getUserVoicePath() == null ? "" : tbub
+//                        .getUserVoicePath();
+//                File file = new File(voicePath);
+//                if (!(!voicePath.equals("") && FileSaveUtil
+//                        .isFileExists(file))) {
+//                    voicePath = tbub.getUserVoiceUrl() == null ? ""
+//                            : tbub.getUserVoiceUrl();
+//                }
+//                voicePath = soundUrl.getSoundUrl();
+                if (voiceIsRead != null) {
+                    voiceIsRead.voiceOnClick(position);
+                }
+                MediaManager.playSound(soundUrl.getSoundUrl(),
+                        new MediaPlayer.OnCompletionListener() {
+
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                voicePlayPosition = -1;
+                                holder.voice_anim
+                                        .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+                            }
+                        });
+            }
+
+        });
+        float voiceTime = soundUrl.getUserVoiceTime();
+        BigDecimal b = new BigDecimal(voiceTime);
+        float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        holder.voice_time.setText(f1 + "\"");
+        ViewGroup.LayoutParams lParams = holder.voice_image
+                .getLayoutParams();
+        lParams.width = (int) (mMinItemWith + mMaxItemWith / 60f
+                * soundUrl.getUserVoiceTime());
+        holder.voice_image.setLayoutParams(lParams);
+    }
+
+    private void toMsgUserLayout(final ToUserMsgViewHolder holder, final IBaseMsg msg, final int position) {
+        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        holder.headicon.setImageDrawable(context.getResources()
+                .getDrawable(R.mipmap.grzx_tx_s));
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
+            } else {
+                holder.chat_time.setVisibility(View.GONE);
+            }
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
+        }
+        holder.content.setVisibility(View.VISIBLE);
+        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, ((ITextMsg)msg).getText());
+        holder.content.setText(spannableString);
+    }
+
+    private void toImgUserLayout(final ToUserImgViewHolder holder, final IBaseMsg msg, final int position) {
+        IPhotoMsg photoMsgUrl = ((IPhotoMsg)msg);
+        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        switch (msg.getSendState()) {
+            case ChatConst.SENDING:
+                an = AnimationUtils.loadAnimation(context,
+                        R.anim.update_loading_progressbar_anim);
+                LinearInterpolator lin = new LinearInterpolator();
+                an.setInterpolator(lin);
+                an.setRepeatCount(-1);
+                holder.sendFailImg
+                        .setBackgroundResource(R.mipmap.xsearch_loading);
+                holder.sendFailImg.startAnimation(an);
+                an.startNow();
+                holder.sendFailImg.setVisibility(View.VISIBLE);
+                break;
+
+            case ChatConst.COMPLETED:
+                holder.sendFailImg.clearAnimation();
+                holder.sendFailImg.setVisibility(View.GONE);
+                break;
+
+            case ChatConst.SENDERROR:
+                holder.sendFailImg.clearAnimation();
+                holder.sendFailImg
+                        .setBackgroundResource(R.mipmap.msg_state_fail_resend_pressed);
+                holder.sendFailImg.setVisibility(View.VISIBLE);
+                holder.sendFailImg.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View view) {
                         // TODO Auto-generated method stub
-                        Intent intent = new Intent(context, ImageViewActivity.class);
-                        intent.putStringArrayListExtra("images", imageList);
-                        intent.putExtra("clickedIndex", imagePosition.get(position));
-                        context.startActivity(intent);
+                        if (sendErrorListener != null) {
+                            sendErrorListener.onClick(position);
+                        }
                     }
 
                 });
-                return convertView;
-            case SOUNDS:
-                //获取声音URL
-                //ISoundMsg soundMsg = ((ISoundMsg)msg);
-                if (convertView == null) {
-                    convertView = judgeSendOrRecv(msg , isComMsg);
-                    viewHolder = new ViewHolder();
-                    viewHolder.tvSendTime = (TextView) convertView
-                            .findViewById(R.id.tv_sendtime);
-                    viewHolder.isComMsg = isComMsg;
-                    getSoundStatus(viewHolder , isComMsg , position , msg);
-                    viewHolder.voice_group.setVisibility(View.VISIBLE);
-                    convertView.setTag(viewHolder);
-                } else {
-                    viewHolder = (ViewHolder) convertView.getTag();
-                }
-
-                viewHolder.tvSendTime.setText(msg.getMsgDate());
-                //viewHolder.image_Msg.load(imageIconUrl, res, R.mipmap.cygs_cs);
-
-
-        }
-        Log.d("ChatMsgAdapter" , "_______________聊天数据、布局加载失败__________________");
-        return null;
-    }
-
-    //初始化收到信息的Item
-    public View changeView_From(IBaseMsg msg){
-        switch(msg.getMsgType()){
-            case TEXT:
-                View convertView_tl = mInflater.inflate(R.layout.activity_chat_left, null);
-                return convertView_tl;
-            case SOUNDS:
-                View convertView_sl = mInflater.inflate(R.layout.layout_voicefrom_list_item, null);
-                return convertView_sl;
-            case PHOTO:
-                View convertView_pl = mInflater.inflate(R.layout.layout_imagefrom_list_item, null);
-                return convertView_pl;
-            case FILE:
+                break;
+            default:
                 break;
         }
-        Log.d("初始化聊天界面Item","________初始化聊天界面Item失败_________________");
-        return null;
-    }
-    //初始化发送信息的Item
-    public View changeView_To(IBaseMsg msg){
-        switch(msg.getMsgType()){
-            case TEXT:
-                View convertView_tr = mInflater.inflate(R.layout.activity_chat_right, null);
-                return convertView_tr;
-            case SOUNDS:
-                View convertView_sr = mInflater.inflate(R.layout.layout_voiceto_list_item, null);
-                return convertView_sr;
-            case PHOTO:
-                View convertView_pr = mInflater.inflate(R.layout.layout_imageto_list_item, null);
-                return convertView_pr;
-            case FILE:
-                break;
-        }
-        Log.d("初始化聊天界面Item","________初始化聊天界面Item失败_________________");
-        return null;
-    }
+        holder.headicon.setImageDrawable(context.getResources()
+                .getDrawable(R.mipmap.grzx_tx_s));
 
-    public View judgeSendOrRecv(IBaseMsg msg, boolean isComMsg){
-        View convertView;
-        if (isComMsg) {
-            //加载收到数据的Item
-            convertView = changeView_From(msg);
-        } else {
-            //加载发送数据的Item
-            convertView = changeView_To(msg);
-        }
-        return convertView;
-    }
-    public ChatMsgViewAdapter(Context context) {
-        this.context = context;
-        mInflater = LayoutInflater.from(context);
-        // 获取系统宽度
-        WindowManager wManager = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wManager.getDefaultDisplay().getMetrics(outMetrics);
-        mMaxItemWith = (int) (outMetrics.widthPixels * 0.5f);
-        mMinItemWith = (int) (outMetrics.widthPixels * 0.15f);
-        //handler = new MyHandler(this);
-    }
-    //获取图片气泡
-    public int getImageChatBubble(boolean isComing){
-        int res;
-        if(isComing){
-            res = R.drawable.chat_from_bg_normal;
-            return res;
-        } else {
-            res = R.drawable.chat_to_bg_normal;
-            return res;
-        }
-    }
-
-    //获取语音信息阅读状态
-    public void getSoundStatus(final ViewHolder viewHolder , boolean isComming , final int position , IBaseMsg msg){
-        final ISoundMsg soundMsgUrl = ((ISoundMsg)msg);
-        if(isComming){
-            /**接受语音信息处理*/
-            if (viewHolder.receiver_voice_unread != null)
-                viewHolder.receiver_voice_unread.setVisibility(View.GONE);
-            if (viewHolder.receiver_voice_unread != null && unReadPosition != null) {
-                for (String unRead : unReadPosition) {
-                    if (unRead.equals(position + "")) {
-                        viewHolder.receiver_voice_unread
-                                .setVisibility(View.VISIBLE);
-                        break;
-                    }
-                }
-            }
-            AnimationDrawable drawable;
-            viewHolder.voice_anim.setId(position);
-            if (position == voicePlayPosition) {
-                viewHolder.voice_anim
-                        .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
-                viewHolder.voice_anim
-                        .setBackgroundResource(R.drawable.voice_play_receiver);
-                drawable = (AnimationDrawable) viewHolder.voice_anim
-                        .getBackground();
-                drawable.start();
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
             } else {
-                viewHolder.voice_anim
-                        .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+                holder.chat_time.setVisibility(View.GONE);
             }
-            viewHolder.voice_group.setOnClickListener(new View.OnClickListener() {
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
+        }
+
+        if (isPicRefresh) {
+//            holder.image_Msg.setImageBitmap(null);
+            holder.image_group.setVisibility(View.VISIBLE);
+//            final String imageSrc = tbub.getImageLocal() == null ? "" : tbub
+//                    .getImageLocal();
+            final String imageUrlSrc = photoMsgUrl.getPhotoUrl() == null ? "" : photoMsgUrl.getPhotoUrl();
+//            final String imageIconUrl = photoMsgUrl.getImageIconUrl() == null ? ""
+//                    : tbub.getImageIconUrl();
+//            File file = new File(imageSrc);
+//            final boolean hasLocal = !imageSrc.equals("")
+//                    && FileSaveUtil.isFileExists(file);
+            int res;
+            res = R.drawable.chat_to_bg_normal;
+            //判断本地是否存在此图片
+//            if (hasLocal) {
+//                holder.image_Msg.setLocalImageBitmap(ImageCheckoutUtil.getLoacalBitmap(imageSrc),
+//                        res);
+//            } else {
+                holder.image_Msg.load(imageUrlSrc, res, R.mipmap.cygs_cs);
+//            }
+            holder.image_Msg.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
                     // TODO Auto-generated method stub
-                    if (viewHolder.receiver_voice_unread != null)
-                        viewHolder.receiver_voice_unread.setVisibility(View.GONE);
-                    viewHolder.voice_anim
-                            .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
                     stopPlayVoice();
-                    voicePlayPosition = viewHolder.voice_anim.getId();
-                    AnimationDrawable drawable;
-                    viewHolder.voice_anim
-                            .setBackgroundResource(R.drawable.voice_play_receiver);
-                    drawable = (AnimationDrawable) viewHolder.voice_anim
-                            .getBackground();
-                    drawable.start();
-                    String voicePath = soundMsgUrl.getSoundUrl() == null ? "" : soundMsgUrl.getSoundUrl();
-//                    File file = new File(voicePath);
-//                    if (!(!voicePath.equals("") && FileSaveUtil
-//                            .isFileExists(file))) {
-//                        voicePath = tbub.getUserVoiceUrl() == null ? ""
-//                                : tbub.getUserVoiceUrl();
-//                    }
-                    if (voiceIsRead != null) {
-                        voiceIsRead.voiceOnClick(position);
-                    }
-                    MediaManager.playSound(voicePath,
-                            new MediaPlayer.OnCompletionListener() {
-
-                                @Override
-                                public void onCompletion(MediaPlayer mp) {
-                                    voicePlayPosition = -1;
-                                    viewHolder.voice_anim
-                                            .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
-                                }
-                            });
+                    Intent intent = new Intent(context, ImageViewActivity.class);
+                    intent.putStringArrayListExtra("images", imageList);
+                    intent.putExtra("clickedIndex", imagePosition.get(position));
+                    context.startActivity(intent);
                 }
 
             });
-            float voiceTime = soundMsgUrl.getUserVoiceTime();
-            BigDecimal b = new BigDecimal(voiceTime);
-            float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
-            viewHolder.voice_time.setText(f1 + "\"");
-            ViewGroup.LayoutParams lParams = viewHolder.voice_image
-                    .getLayoutParams();
-            lParams.width = (int) (mMinItemWith + mMaxItemWith / 60f
-                    * soundMsgUrl.getUserVoiceTime());
-            viewHolder.voice_image.setLayoutParams(lParams);
         }
-        else{
-            /**发送语音信息出来*/
+    }
 
+    private void toVoiceUserLayout(final ToUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
+        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        switch (msg.getSendState()) {
+            case ChatConst.SENDING:
+                an = AnimationUtils.loadAnimation(context,
+                        R.anim.update_loading_progressbar_anim);
+                LinearInterpolator lin = new LinearInterpolator();
+                an.setInterpolator(lin);
+                an.setRepeatCount(-1);
+                holder.sendFailImg
+                        .setBackgroundResource(R.mipmap.xsearch_loading);
+                holder.sendFailImg.startAnimation(an);
+                an.startNow();
+                holder.sendFailImg.setVisibility(View.VISIBLE);
+                break;
+
+            case ChatConst.COMPLETED:
+                holder.sendFailImg.clearAnimation();
+                holder.sendFailImg.setVisibility(View.GONE);
+                break;
+
+            case ChatConst.SENDERROR:
+                holder.sendFailImg.clearAnimation();
+                holder.sendFailImg
+                        .setBackgroundResource(R.mipmap.msg_state_fail_resend_pressed);
+                holder.sendFailImg.setVisibility(View.VISIBLE);
+                holder.sendFailImg.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        // TODO Auto-generated method stub
+                        if (sendErrorListener != null) {
+                            sendErrorListener.onClick(position);
+                        }
+                    }
+
+                });
+                break;
+            default:
+                break;
         }
+        holder.headicon.setImageDrawable(context.getResources()
+                .getDrawable(R.mipmap.grzx_tx_s));
+
+        /* time */
+        if (position != 0) {
+            String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
+            if (showTime != null) {
+                holder.chat_time.setVisibility(View.VISIBLE);
+                holder.chat_time.setText(showTime);
+            } else {
+                holder.chat_time.setVisibility(View.GONE);
+            }
+        } else {
+            String showTime = getTime(msg.getMsgDate(), null);
+            holder.chat_time.setVisibility(View.VISIBLE);
+            holder.chat_time.setText(showTime);
+        }
+        holder.voice_group.setVisibility(View.VISIBLE);
+        if (holder.receiver_voice_unread != null)
+            holder.receiver_voice_unread.setVisibility(View.GONE);
+        if (holder.receiver_voice_unread != null && unReadPosition != null) {
+            for (String unRead : unReadPosition) {
+                if (unRead.equals(position + "")) {
+                    holder.receiver_voice_unread
+                            .setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
+        }
+        AnimationDrawable drawable;
+        holder.voice_anim.setId(position);
+        if (position == voicePlayPosition) {
+            holder.voice_anim.setBackgroundResource(R.mipmap.adj);
+            holder.voice_anim
+                    .setBackgroundResource(R.drawable.voice_play_send);
+            drawable = (AnimationDrawable) holder.voice_anim
+                    .getBackground();
+            drawable.start();
+        } else {
+            holder.voice_anim.setBackgroundResource(R.mipmap.adj);
+        }
+        final ISoundMsg soundMsgUrl = ((ISoundMsg)msg);
+        holder.voice_group.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (holder.receiver_voice_unread != null)
+                    holder.receiver_voice_unread.setVisibility(View.GONE);
+                holder.voice_anim.setBackgroundResource(R.mipmap.adj);
+                stopPlayVoice();
+                voicePlayPosition = holder.voice_anim.getId();
+                AnimationDrawable drawable;
+                holder.voice_anim
+                        .setBackgroundResource(R.drawable.voice_play_send);
+                drawable = (AnimationDrawable) holder.voice_anim
+                        .getBackground();
+                drawable.start();
+                String voicePath = soundMsgUrl.getSoundUrl() == null ? ""
+                        : soundMsgUrl.getSoundUrl();
+                if (voiceIsRead != null) {
+                    voiceIsRead.voiceOnClick(position);
+                }
+                MediaManager.playSound(voicePath,
+                        new MediaPlayer.OnCompletionListener() {
+
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                voicePlayPosition = -1;
+                                holder.voice_anim
+                                        .setBackgroundResource(R.mipmap.adj);
+                            }
+                        });
+            }
+
+        });
+        float voiceTime = soundMsgUrl.getUserVoiceTime();
+        BigDecimal b = new BigDecimal(voiceTime);
+        float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        holder.voice_time.setText(f1 + "\"");
+        ViewGroup.LayoutParams lParams = holder.voice_image
+                .getLayoutParams();
+        lParams.width = (int) (mMinItemWith + mMaxItemWith / 60f
+                * soundMsgUrl.getUserVoiceTime());
+        holder.voice_image.setLayoutParams(lParams);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public String getTime(String time, String before) {
+        String show_time = null;
+        if (before != null) {
+            try {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                java.util.Date now = df.parse(time);
+                java.util.Date date = df.parse(before);
+                long l = now.getTime() - date.getTime();
+                long day = l / (24 * 60 * 60 * 1000);
+                long hour = (l / (60 * 60 * 1000) - day * 24);
+                long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
+                if (min >= 1) {
+                    show_time = time.substring(11);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            show_time = time.substring(11);
+        }
+        String getDay = getDay(time);
+        if (show_time != null && getDay != null)
+            show_time = getDay + " " + show_time;
+        return show_time;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String returnTime() {
+        SimpleDateFormat sDateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss");
+        String date = sDateFormat.format(new java.util.Date());
+        return date;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public String getDay(String time) {
+        String showDay = null;
+        String nowTime = returnTime();
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date now = df.parse(nowTime);
+            java.util.Date date = df.parse(time);
+            long l = now.getTime() - date.getTime();
+            long day = l / (24 * 60 * 60 * 1000);
+            if (day >= 365) {
+                showDay = time.substring(0, 10);
+            } else if (day >= 1 && day < 365) {
+                showDay = time.substring(5, 10);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return showDay;
     }
 
     public void stopPlayVoice() {
