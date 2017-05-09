@@ -36,12 +36,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private List<IBaseMsg> mDataArrays = new ArrayList<IBaseMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
-    private IUser localUser;//假设这个是登录这个客户端的用户
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
         this.iChatView =  chatView;
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
-        localUser=new UserModel("lzy","123",1);
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
     }
@@ -87,65 +85,63 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         IFileMsg fileMsg = new FileMsgModel();
         fileMsg.setFile(file);
+        //fileMsg.setFileSize(FileUtils.getAutoFileOrFilesSize(file));
+        //fileMsg.setSrc_ID(UserModel.localUser.getID());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
-        if(fileHeadToSend!=null)
-        {
-            //发送数据
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ComService.client.SendData(fileHeadToSend);
-                    }
-                    catch (IOException ioe)
-                    {
-                        Log.w("send","send file []byte failed");
-                        System.out.println("send file []byte failed");
-                    }
-                }});
-            //使用http上传文件
-
-            // TODO: 2017/5/8 delete it just test,cjwddz
-            try {
-                FileSweet fs=new FileSweet(FileSweet.FILE_TYPE_FILE ,file);
-                UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
-                    @Override
-                    public void fail(int code, String msg) {
-                        // TODO: 2017/5/8 给某个View做点事
-                        final Activity activity= ((ChatActivity) iChatView);
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(activity, "上传失败", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                    @Override
-                    public void success(int code, String msg) {
-                        // TODO: 2017/5/8 某个View做点事
-                        // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
-
-                        final Activity activity= ((ChatActivity) iChatView);
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        else
-        {
+        if(fileHeadToSend==null){
             Log.w("file","fileHeadToSend null");
             System.out.println("fileHeadToSend null");
         }
+        //使用http上传文件
+        // TODO: 2017/5/8 delete it just test,cjwddz
+        try {
+            FileSweet fs = new FileSweet(FileSweet.FILE_TYPE_FILE, file);
+            UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
+                @Override
+                public void fail(int code, String msg) {
+                    // TODO: 2017/5/8 给某个View做点事
+                    final Activity activity = ((ChatActivity) iChatView);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "上传失败", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
+                @Override
+                public void success(int code, String msg) {
+                    // TODO: 2017/5/8 某个View做点事
+                    // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
+
+                    final Activity activity = ((ChatActivity) iChatView);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        //发送数据
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData(fileHeadToSend);
+                } catch (IOException ioe) {
+                    Log.w("send", "send file []byte failed");
+                    System.out.println("send file []byte failed");
+                }
+            }
+        });
 
     }
 
@@ -160,7 +156,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         if (contString.length() > 0) {
             ITextMsg textMsg = new TextMsgModel();
-            textMsg.setSrc_ID(localUser.getId());
+            textMsg.setSrc_ID(UserModel.localUser.getId());
             textMsg.setMsgDate(Tools.getDate());
             textMsg.setText(contString);
             textMsg.sendOrRecv(false);
