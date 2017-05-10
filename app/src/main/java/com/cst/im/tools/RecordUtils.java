@@ -14,17 +14,24 @@ import java.io.IOException;
 
 public class RecordUtils {
 
-    public static final String TAG = "Record";
+    private static final String TAG = "Record";
 
-    public static MediaRecorder mediaRecorder;
+    private static MediaRecorder mediaRecorder;
     // 系统的音频文件
-    public static File soundFile;
+    private static File soundFile;
 
-    public static boolean initRecord(){
+    private enum RecordStatus {
+        START_RECORD,
+        STOP_RECORD
+    }
+
+    private static RecordStatus flag;
+
+    public static boolean initRecord() {
 
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
-            Log.e(TAG,"检测不到内存");
+            Log.e(TAG, "检测不到内存");
             return false;
         }
         // 创建保存录音的音频文件
@@ -44,52 +51,71 @@ public class RecordUtils {
         return true;
     }
 
-    /** 获取音频文件绝对路径 */
-    public static String getAudioPath(){
-        if (soundFile.exists() && soundFile != null) {
+    /**
+     * 获取音频文件绝对路径
+     */
+    public static String getAudioPath() {
+        /** 录音文件存在且已经停止录音 */
+        if (soundFile.exists()
+                && soundFile != null
+                && flag == RecordStatus.STOP_RECORD) {
             return soundFile.getAbsolutePath();
         }
         return null;
     }
 
-    /** 开始录音 */
-    public static void startRecord(){
+    /**
+     * 开始录音
+     */
+    public static void startRecord() {
         // 准备录音
         try {
             mediaRecorder.prepare();
             // 开始录音
             mediaRecorder.start();
+            flag = RecordStatus.START_RECORD;
+            Log.d(TAG,"开始录音");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /** 停止录音 */
-    public static boolean stopRecord(){
+    /**
+     * 停止录音
+     */
+    public static boolean stopRecord() {
         if (soundFile.exists() && soundFile != null) {
             // 停止录制
             mediaRecorder.stop();
+            flag = RecordStatus.STOP_RECORD;
+            Log.d(TAG,"停止录音");
             return true;
         }
         return false;
     }
 
-    /** 播放本地录音 */
-    public static void playLocalAudio(){
-        if(stopRecord()){
+    /**
+     * 播放本地录音
+     */
+    public static void playLocalAudio() {
+        if (stopRecord()) {
             // 释放资源
             mediaRecorder.release();
             mediaRecorder = null;
+            Log.d(TAG,"播放本地录音成功");
         }
     }
 
-    /** 播放接收到的录音 */
-    public static void playReceiveAudio(String path){
+    /**
+     * 播放接收到的录音
+     */
+    public static void playReceiveAudio(String path) {
         MediaPlayer player = new MediaPlayer();
         try {
             player.setDataSource(path);
             player.prepare();
             player.start();
+            Log.d(TAG,"播放接收录音成功");
         } catch (IOException e) {
             e.printStackTrace();
         }
