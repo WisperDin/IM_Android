@@ -26,9 +26,12 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.MsgFragment;
+import com.cst.im.dataBase.ChatConst;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IPhotoMsg;
+import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
@@ -281,6 +284,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     }
 
 
+
     @Override
     public void onSendMsg() {
     }
@@ -420,6 +424,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             case R.id.chat_picture://发送图片
                 Log.d("Viewing", "Photo----");
                 GetImgFromGallery();
+
                 break;
         }
     }
@@ -461,8 +466,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
      * 发送图片
      */
     int i = 0;
-
-    protected void sendImage(final IBaseMsg msg) {
+    @Override
+    public void onSendImg(final IPhotoMsg msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -477,7 +482,11 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //                            0f, ChatConst.COMPLETED));
 //                    i = -1;
 //                }
-                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
+                msg.getPhotoUrl();
+//              IPhotoMsg photoMsg = ((IPhotoMsg)msg);
+                msg.setType(ChatMsgViewAdapter.TO_USER_IMG);
+                //chatPresenter.SendFile(dst , File new(msg));
+//                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
                 msg_List.add(msg);
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
                 imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
@@ -487,6 +496,11 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 i++;
             }
         }).start();
+    }
+
+    @Override
+    public void onSendVoice(float seconds, ISoundMsg soundMsg) {
+
     }
 
     /**
@@ -588,9 +602,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             String absolutePath = UriUtils.getPath(this, uri);
             //发送文件
             IBaseMsg.MsgType msgType=null;
-            if(requestCode==FILE_REQUEST){
-                msgType= IBaseMsg.MsgType.FILE;
-            }
             switch (requestCode){
                 case FILE_REQUEST:
                     msgType = IBaseMsg.MsgType.FILE;

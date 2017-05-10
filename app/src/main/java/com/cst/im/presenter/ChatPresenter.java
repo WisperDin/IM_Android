@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
+import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
@@ -16,8 +17,10 @@ import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
+import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
@@ -94,6 +97,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             case FILE:
                 //TODO： 这个路径还要改
                 FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
+
                     @Override
                     public void fail(int code, String msg) {
                         activity.runOnUiThread(new Runnable() {
@@ -162,6 +166,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(msgType);
         fileMsg.setMsgDate(Tools.getDate());
+        iChatView.onSendImg(((PhotoMsgModel) fileMsg));
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
@@ -216,8 +221,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         });
 
         //更新UI的适配器
-        /*mDataArrays.add(fileMsg);
-        handler.post(new Runnable() {
+        mDataArrays.add(fileMsg);
+        /*handler.post(new Runnable() {
             @Override
             public void run() {
                 iChatView.onSendMsg();

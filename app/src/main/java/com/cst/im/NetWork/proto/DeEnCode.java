@@ -129,7 +129,6 @@ public class DeEnCode {
         return null;
     }
 
-    //编码文件简要信息帧
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
         Frame frame = new BuildFrame(BuildFrame.FileInfo).GetFileInfoFrame(fileMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -139,6 +138,31 @@ public class DeEnCode {
         }
         return baos.toByteArray();
     }
+
+//    //编码文件简要信息帧
+//    public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
+//        Frame frame = new BuildFrame(BuildFrame.FileInfo).GetFileInfoFrame(fileMsg);
+//        //fileMsg.setMsgType(frame.getMsgType());
+//        fileMsg.setMsgType(IBaseMsg.MsgType.PHOTO);
+//        switch(fileMsg.getMsgType()){
+//            case PHOTO:
+//                fileMsg.setType(ChatMsgViewAdapter.FROM_USER_IMG);
+//                break;
+//            case FILE:
+//                Log.d("文件" , "_______________________文件传输布局还没做_________________");
+//                break;
+//            case SOUNDS:
+//                fileMsg.setType(ChatMsgViewAdapter.FROM_USER_VOICE);
+//                break;
+//        }
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        try {
+//            frame.writeTo(baos);
+//        } catch (IOException e) {
+//        }
+//        return baos.toByteArray();
+//    }
+
     //编码-文件发送帧（固定标志头+文件）
     public static byte[] encodeFileMsgFrame(IFileMsg fileMsg) {
         byte[] fileMsgHead = encodeFileMsgFrameHead(fileMsg);

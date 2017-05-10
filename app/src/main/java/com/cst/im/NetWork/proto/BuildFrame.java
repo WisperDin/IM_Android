@@ -3,6 +3,7 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
@@ -125,6 +126,18 @@ public class BuildFrame {
         file.setFileName(fileMsg.getFileName());
         file.setFileFeature(fileMsg.getFileFeature());
         file.setFileParam(fileMsg.getFileParam());
+        Log.d("fileMsg.getMsgType()" , "_______________"+fileMsg.getMsgType()+"_________________________");
+        switch (fileMsg.getMsgType()){
+            case FILE:
+                Log.d("文件" , "_____________简要信息______________");
+                break;
+            case SOUNDS:
+                fileMsg.setType(ChatMsgViewAdapter.TO_USER_VOICE);
+                break;
+            case PHOTO:
+                fileMsg.setType(ChatMsgViewAdapter.TO_USER_IMG);
+                break;
+        }
         //文件类型
         file.setFileType(fileMsg.getMsgTypeInt());
 

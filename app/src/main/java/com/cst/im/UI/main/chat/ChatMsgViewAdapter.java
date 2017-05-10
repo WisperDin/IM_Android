@@ -25,9 +25,12 @@ import android.text.SpannableString;
 import com.cst.im.R;
 import com.cst.im.dataBase.ChatConst;
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.PhotoMsgModel;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
@@ -188,7 +191,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder1 = (FromUserImageViewHolder) view.getTag();
                 }
-                fromImgUserLayout((FromUserImageViewHolder) holder1, msg, i);
+                fromImgUserLayout(holder1, msg, i);
                 break;
             case FROM_USER_VOICE:
                 FromUserVoiceViewHolder holder2;
@@ -252,7 +255,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder4 = (ToUserImgViewHolder) view.getTag();
                 }
-                toImgUserLayout((ToUserImgViewHolder) holder4, msg, i);
+                toImgUserLayout(holder4, msg, i);
                 break;
             case TO_USER_VOICE:
                 ToUserVoiceViewHolder holder5;
@@ -529,7 +532,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private void toImgUserLayout(final ToUserImgViewHolder holder, final IBaseMsg msg, final int position) {
-        IPhotoMsg photoMsgUrl = ((IPhotoMsg)msg);
+        IPhotoMsg photoMsgUrl = ((PhotoMsgModel)msg);
         holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
         switch (msg.getSendState()) {
             case ChatConst.SENDING:
