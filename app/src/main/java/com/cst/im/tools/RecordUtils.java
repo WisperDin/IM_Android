@@ -69,7 +69,7 @@ public class RecordUtils {
                 && flag == RecordStatus.STOP_RECORD) {
             return soundFile.getAbsolutePath();
         }
-        return null;
+        return "";
     }
 
     /**

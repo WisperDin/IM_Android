@@ -31,15 +31,20 @@ import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
+import com.cst.im.presenter.Tools;
 import com.cst.im.tools.RecordUtils;
 import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +55,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
+import static java.lang.System.currentTimeMillis;
 
 
 public class ListViewChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
@@ -104,6 +110,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     //目的用户信息，数组形态
     private UserModel[] dst;
 
+    private ISoundMsg soundMsg;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat2);
@@ -140,6 +148,9 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         doAttach();
         // 监听加号按钮以及输入框内容变化
         setListener();
+
+        // 初始化声音实体
+        soundMsg = new SoundMsgModel();
 
     }
 
@@ -235,13 +246,16 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             }
         });
 
+
+
         /** 按住说话录音，松开停止录音 */
         mVoicePressBtn.setOnTouchListener(new View.OnTouchListener() {
+            long startVoiceT,endVoiceT;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) { // 按下
-
+                    startVoiceT =  System.currentTimeMillis();
                     mVoicePressBtn.setText("松开 结束");
                     // 初始化录音对象
                     if (RecordUtils.initRecord()) {
@@ -254,12 +268,44 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                     }
 
                 } else if (action == MotionEvent.ACTION_UP) { // 松开
-
+                    endVoiceT = System.currentTimeMillis();
                     mVoicePressBtn.setText("按住 说话");
+
+                    /*if((endVoiceT - startVoiceT)/1000 < 3){
+                        Log.d("Record","startTime : " + String.valueOf(startVoiceT));
+                        Log.d("Record","endTime : " + String.valueOf(endVoiceT));
+                        Toast.makeText(ListViewChatActivity.this,"录音时长过短",Toast.LENGTH_SHORT).show();
+                        return false;
+                    }*/
                     // 停止录音
                     RecordUtils.stopRecord();
                     // 释放录音对象
                     RecordUtils.releaseRecorder();
+
+                    /* TODO:准备发送 */
+                    try {
+                        String filePath = RecordUtils.getAudioPath();
+
+                        // 设置录音的时长
+                        RecordUtils.player.setDataSource(filePath);
+                        int duration = RecordUtils.player.getDuration();
+                        Log.d("Record","duration : " + String.valueOf(duration));
+                        soundMsg.setUserVoiceTime(duration);
+
+                        // 设置 URL
+                        File file = new File(filePath);
+                        URL url;
+                        url = file.toURL();
+                        Log.d("Record","URL : " + url.toString());
+                        soundMsg.setSoundUrl(url.toString());
+
+                        // 设置时间戳
+                        soundMsg.setMsgDate(Tools.getDate());
+                        Log.d("Record","Time : " + Tools.getDate());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     // 播放录音
                     //RecordUtils.playAudio(RecordUtils.getAudioPath());
 
