@@ -127,6 +127,12 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 break;
             case PHOTO:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onReceriveImageText((IPhotoMsg) msgRecv);
+                    }
+                });
                 break;
             case SOUNDS:
                 break;
@@ -149,6 +155,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 break;
             case PHOTO:
                 fileMsg = new PhotoMsgModel();
+                iChatView.onSendImg(((PhotoMsgModel) fileMsg));
                 fileType = FileSweet.FILE_TYPE_PICTURE;
                 break;
             case SOUNDS:
@@ -166,7 +173,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(msgType);
         fileMsg.setMsgDate(Tools.getDate());
-        iChatView.onSendImg(((PhotoMsgModel) fileMsg));
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {

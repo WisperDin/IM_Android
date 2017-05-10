@@ -462,7 +462,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
      * 接收文字
      */
     //IBaseMsg content = "";
-    public void receriveMsgText(final IBaseMsg msg) {
+    public void receriveMsgText(final IPhotoMsg msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -484,6 +484,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         new Thread(new Runnable() {
             @Override
             public void run() {
+                //判断发送状态
 //                if (i == 0) {
 //                    msg_List.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
 //                            0f, ChatConst.SENDING));
@@ -496,36 +497,47 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //                    i = -1;
 //                }
                 msg.getPhotoUrl();
-//              IPhotoMsg photoMsg = ((IPhotoMsg)msg);
                 msg.setType(ChatMsgViewAdapter.TO_USER_IMG);
-                //chatPresenter.SendFile(dst , File new(msg));
-//                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
                 msg_List.add(msg);
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
                 imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
                 ListViewChatActivity.this.filePath = filePath;
-                //receriveHandler.sendEmptyMessageDelayed(1, 3000);
                 i++;
             }
         }).start();
     }
 
+    /**
+     * 接收语音
+     */
+    float seconds = 0.0f;
+    String voiceFilePath = "";
     @Override
-    public void onSendVoice(float seconds, ISoundMsg soundMsg) {
-
+    public void onSendVoice(final float seconds, final ISoundMsg soundMsg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                msg_List.add(soundMsg);
+                sendMessageHandler.sendEmptyMessage(SEND_OK);
+                ListViewChatActivity.this.seconds = seconds;
+                voiceFilePath = filePath;
+                soundMsg.setType(ChatMsgViewAdapter.TO_USER_VOICE);
+            }
+        }).start();
     }
 
     /**
      * 接收图片
      */
-    String filePath = "";
 
-    private void receriveImageText(final IBaseMsg msg) {
+    String filePath = "";
+    @Override
+    public void onReceriveImageText(final IPhotoMsg msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
+                IPhotoMsg photoMsg = msg;
                 String time = returnTime();
                 photoMsg.setMsgDate(time);
                 photoMsg.setPhotoLocal(photoMsg.getPhotoUrl());
@@ -542,21 +554,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     /**
      * 发送语音
      */
-//    @Override
-//    protected void sendVoice(final float seconds, final String filePath) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                msg_List.add(getTbub(userName, ChatListViewAdapter.TO_USER_VOICE, null, null, null, null, filePath,
-//                        null, seconds, ChatConst.SENDING));
-//                sendMessageHandler.sendEmptyMessage(SEND_OK);
-//                ListViewChatActivity.this.seconds = seconds;
-//                voiceFilePath = filePath;
-//                receriveHandler.sendEmptyMessageDelayed(2, 3000);
-//            }
-//        }).start();
-//    }
-//
+
+
 //    /**
 //     * 接收语音
 //     */
