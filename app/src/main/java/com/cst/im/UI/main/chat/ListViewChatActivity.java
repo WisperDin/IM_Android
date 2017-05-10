@@ -36,6 +36,7 @@ import com.cst.im.model.MsgModelBase;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
+import com.cst.im.tools.RecordUtils;
 import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
 
@@ -133,7 +134,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         final List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getId());
 
 
-        initView(bundle.getString("dstName") , msg_list);// 初始化view
+        initView(bundle.getString("dstName"), msg_list);// 初始化view
 
         //初始化数据（MVP）
         chatPresenter = new ChatPresenter(this, msg_list);
@@ -146,7 +147,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     }
 
     // 监控键盘与面板高度
-    private void doAttach(){
+    private void doAttach() {
         /**
          * 这个Util主要是监控键盘的状态: 显示与否 以及 键盘的高度
          */
@@ -164,7 +165,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mPlusIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mVoicePressBtn.getVisibility() == View.VISIBLE){
+                if (mVoicePressBtn.getVisibility() == View.VISIBLE) {
                     mVoicePressBtn.setVisibility(View.GONE);
                     mSendEdt.setVisibility(View.VISIBLE);
                 }
@@ -237,10 +238,19 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             }
         });
 
-        mVoicePressBtn.setOnClickListener(new View.OnClickListener() {
+        /** 按住说话录音，松开停止录音 */
+        mVoicePressBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) { // 按下
+                    if(RecordUtils.initRecord()){
+                        RecordUtils.startRecord();
+                    }
+                } else if (action == MotionEvent.ACTION_UP) { // 松开
+                    RecordUtils.stopRecord();
+                }
+                return false;
             }
         });
 
@@ -281,7 +291,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     /**
      * 初始化view
      */
-    public void initView(String dst_Name ,List<IBaseMsg> msg_list ) {
+    public void initView(String dst_Name, List<IBaseMsg> msg_list) {
         sendMessageHandler = new SendMessageHandler(this);
         mListView = (ListView) findViewById(R.id.content_list);
         mAdapter = new ChatMsgViewAdapter(this, msg_list);
@@ -327,7 +337,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //        }
 //        return super.onKeyDown(keyCode, event);
 //    }
-
 
 
     /*
@@ -443,7 +452,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ITextMsg txtmsg = ((ITextMsg)msg);
+                ITextMsg txtmsg = ((ITextMsg) msg);
                 String time = returnTime();
                 txtmsg.setMsgDate(time);
                 txtmsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
@@ -456,6 +465,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
      * 发送图片
      */
     int i = 0;
+
     protected void sendImage(final IBaseMsg msg) {
         new Thread(new Runnable() {
             @Override
@@ -471,7 +481,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //                            0f, ChatConst.COMPLETED));
 //                    i = -1;
 //                }
-                IPhotoMsg photoMsg = ((IPhotoMsg)msg);
+                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
                 msg_List.add(msg);
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
                 imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
@@ -492,7 +502,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         new Thread(new Runnable() {
             @Override
             public void run() {
-                IPhotoMsg photoMsg = ((IPhotoMsg)msg);
+                IPhotoMsg photoMsg = ((IPhotoMsg) msg);
                 String time = returnTime();
                 photoMsg.setMsgDate(time);
                 photoMsg.setPhotoLocal(photoMsg.getPhotoUrl());
@@ -501,7 +511,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
                 imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
                 sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
-               // mChatDbManager.insert(tbub);
+                // mChatDbManager.insert(tbub);
             }
         }).start();
     }
@@ -571,18 +581,17 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //            }
 //        }
 //    };
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        if (requestCode == FILE_REQUEST||requestCode == PHOTO_REQUEST_GALLERY) {//一般文件 //从相册选择的图片
+        if (requestCode == FILE_REQUEST || requestCode == PHOTO_REQUEST_GALLERY) {//一般文件 //从相册选择的图片
             Uri uri = data.getData();
-            String absolutePath = UriUtils.getPath(this,uri);
+            String absolutePath = UriUtils.getPath(this, uri);
             //发送文件
-            chatPresenter.SendFile(dst,new File(absolutePath));
+            chatPresenter.SendFile(dst, new File(absolutePath));
             Toast.makeText(this, absolutePath, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -595,6 +604,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             return;
         }
     }
+
     static class SendMessageHandler extends Handler {
         WeakReference<ListViewChatActivity> mActivity;
 
@@ -628,13 +638,13 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                         theActivity.mAdapter.notifyDataSetChanged();
                         theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);
                         //theActivity.myList.setSelection(theActivity.tblist
-                         //       .size() - 1);
+                        //       .size() - 1);
                         break;
                     case PULL_TO_REFRESH_DOWN:
                         //theActivity.pullList.refreshComplete();
                         theActivity.mAdapter.notifyDataSetChanged();
                         theActivity.mListView.setSelection(theActivity.mListView.getCount() - 1);
-                       // theActivity.myList.setSelection(theActivity.position - 1);
+                        // theActivity.myList.setSelection(theActivity.position - 1);
                         //theActivity.isDown = false;
                         break;
                     default:
@@ -644,11 +654,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         }
 
     }
-
-
-
-
-
 
 
 //    public void InitData() {
