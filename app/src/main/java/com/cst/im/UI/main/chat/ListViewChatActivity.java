@@ -302,6 +302,9 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                         // 设置时间戳
                         soundMsg.setMsgDate(Tools.getDate());
                         Log.d("Record","Time : " + Tools.getDate());
+                        IBaseMsg.MsgType msgType = null;
+                        msgType = IBaseMsg.MsgType.SOUNDS;
+                        chatPresenter.SendFile(dst, new File(filePath) ,msgType);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -499,29 +502,11 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             public void run() {
                 chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
-                // ListViewChatActivity.this.content = content;
-                //receriveHandler.sendEmptyMessageDelayed(0, 1000);
             }
         }).start();
 
     }
 
-    /**
-     * 接收文字
-     */
-    //IBaseMsg content = "";
-    public void receriveMsgText(final IPhotoMsg msg) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ITextMsg txtmsg = ((ITextMsg) msg);
-                String time = returnTime();
-                txtmsg.setMsgDate(time);
-                txtmsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
-                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
-            }
-        }).start();
-    }
 
     /**
      * 发送图片
@@ -558,20 +543,37 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     }
 
     /**
-     * 接收语音
+     * 发送语音
      */
-    float seconds = 0.0f;
-    String voiceFilePath = "";
+//    float seconds = 0.0f;
+//    String voiceFilePath = "";
     @Override
-    public void onSendVoice(final float seconds, final ISoundMsg soundMsg) {
+    public void onSendVoice(final ISoundMsg soundMsg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 msg_List.add(soundMsg);
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
-                ListViewChatActivity.this.seconds = seconds;
-                voiceFilePath = filePath;
+                ListViewChatActivity.this.seconds = soundMsg.getUserVoiceTime();
+                voiceFilePath = soundMsg.getSoundUrl();
                 soundMsg.setType(ChatMsgViewAdapter.TO_USER_VOICE);
+            }
+        }).start();
+    }
+
+
+    /**
+     * 接收文字
+     */
+    public void receriveMsgText(final IPhotoMsg msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ITextMsg txtmsg = ((ITextMsg) msg);
+                String time = returnTime();
+                txtmsg.setMsgDate(time);
+                txtmsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
+                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
             }
         }).start();
     }
@@ -600,35 +602,34 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         }).start();
     }
 
-    /**
-     * 发送语音
-     */
+
 
 
 //    /**
 //     * 接收语音
 //     */
-//    float seconds = 0.0f;
-//    String voiceFilePath = "";
-//
-//    private void receriveVoiceText(final float seconds, final String filePath) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                ChatMessageBean tbub = new ChatMessageBean();
-//                tbub.setUserName(userName);
-//                String time = returnTime();
-//                tbub.setTime(time);
-//                tbub.setUserVoiceTime(seconds);
-//                tbub.setUserVoicePath(filePath);
-//                tbAdapter.unReadPosition.add(tblist.size() + "");
-//                tbub.setType(ChatListViewAdapter.FROM_USER_VOICE);
-//                tblist.add(tbub);
-//                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
-//                mChatDbManager.insert(tbub);
-//            }
-//        }).start();
-//    }
+    float seconds = 0.0f;
+    String voiceFilePath = "";
+
+    @Override
+    public void onReceriveSoundText(final ISoundMsg soundMsg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                seconds = soundMsg.getUserVoiceTime();
+                //soundMsg.setUserName(userName);
+                String time = returnTime();
+                soundMsg.setMsgDate(time);
+                soundMsg.setUserVoiceTime(seconds);
+                soundMsg.setSoundUrl(filePath);
+                mAdapter.unReadPosition.add(msg_List.size() + "");
+                soundMsg.setType(ChatMsgViewAdapter.FROM_USER_VOICE);
+                msg_List.add(soundMsg);
+                sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
+                //mChatDbManager.insert(tbub);
+            }
+        }).start();
+    }
 
     /**
      * 为了模拟接收延迟

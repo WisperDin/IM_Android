@@ -65,7 +65,7 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
             public void run() {
                 try {
                     ComService.client.SendData(loginFrame);
-                } catch (IOException ioe) {
+                } catch (IOException | NullPointerException ioe) {
                     Log.w("send", "send data failed");
                 }
             }
