@@ -237,6 +237,9 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             public void run() {
                 iChatView.onSendMsg();
             }});*/
+        ArrayList<String> imgList = new ArrayList<String>();
+        imgList.add(file.getAbsolutePath());
+        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);
     }
 
 
