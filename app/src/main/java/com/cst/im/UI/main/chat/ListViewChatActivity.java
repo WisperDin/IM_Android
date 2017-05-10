@@ -243,11 +243,24 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) { // 按下
+                    mVoicePressBtn.setText("松开 结束");
+
+                    // 初始化录音对象
                     if(RecordUtils.initRecord()){
+                        //录音之前停止播放
+                        RecordUtils.stopAudio();
+                        //开始录音
                         RecordUtils.startRecord();
                     }
                 } else if (action == MotionEvent.ACTION_UP) { // 松开
+                    mVoicePressBtn.setText("按住 说话");
+
+                    // 停止录音
                     RecordUtils.stopRecord();
+                    // 释放录音对象
+                    RecordUtils.releaseRecorder();
+                    // 播放录音
+                    //RecordUtils.playAudio(RecordUtils.getAudioPath());
                 }
                 return false;
             }

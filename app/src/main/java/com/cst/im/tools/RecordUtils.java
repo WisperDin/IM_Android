@@ -16,13 +16,19 @@ public class RecordUtils {
 
     private static final String TAG = "Record";
 
+    // 录音对象
     private static MediaRecorder mediaRecorder;
+    // 音频播放对象
+    private static MediaPlayer player;
+
     // 系统的音频文件
     private static File soundFile;
 
     private enum RecordStatus {
-        START_RECORD,
-        STOP_RECORD
+        START_RECORD, //开始录音
+        STOP_RECORD,  //停止录音
+        PLAY_AUDIO,  //播放录音
+        STOP_AUDIO   //停止播放
     }
 
     private static RecordStatus flag;
@@ -47,6 +53,8 @@ public class RecordUtils {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         // 设置声音的输出路径
         mediaRecorder.setOutputFile(soundFile.getAbsolutePath());
+
+        player = new MediaPlayer();
 
         return true;
     }
@@ -85,7 +93,7 @@ public class RecordUtils {
      */
     public static boolean stopRecord() {
         if (soundFile.exists() && soundFile != null) {
-            // 停止录制
+            // 停止录音
             mediaRecorder.stop();
             flag = RecordStatus.STOP_RECORD;
             Log.d(TAG,"停止录音");
@@ -95,28 +103,40 @@ public class RecordUtils {
     }
 
     /**
-     * 播放本地录音
+     * 释放录音对象
      */
-    public static void playLocalAudio() {
-        if (stopRecord()) {
+    public static void releaseRecorder() {
+        if (flag == RecordStatus.STOP_RECORD) {
             // 释放资源
             mediaRecorder.release();
             mediaRecorder = null;
-            Log.d(TAG,"播放本地录音成功");
+            Log.d(TAG,"释放录音对象成功");
         }
     }
 
     /**
-     * 播放接收到的录音
+     * 播放录音
      */
-    public static void playReceiveAudio(String path) {
-        MediaPlayer player = new MediaPlayer();
+    public static void playAudio(String path) {
         try {
             player.setDataSource(path);
             player.prepare();
             player.start();
-            Log.d(TAG,"播放接收录音成功");
+            Log.d(TAG,"播放录音成功");
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 停止播放
+     */
+    public static void stopAudio(){
+        try{
+            player.stop();
+            Log.d(TAG,"停止播放成功");
+        } catch (Exception e){
+            //仅当 player 没有初始化时才报异常
             e.printStackTrace();
         }
     }
