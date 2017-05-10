@@ -3,12 +3,10 @@ package com.cst.im.UI.main.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -32,7 +30,6 @@ import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ITextMsg;
-import com.cst.im.model.MsgModelBase;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
@@ -51,7 +48,6 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-import static android.R.id.message;
 import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
 
 
@@ -591,7 +587,24 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             Uri uri = data.getData();
             String absolutePath = UriUtils.getPath(this, uri);
             //发送文件
-            chatPresenter.SendFile(dst, new File(absolutePath));
+            IBaseMsg.MsgType msgType=null;
+            if(requestCode==FILE_REQUEST){
+                msgType= IBaseMsg.MsgType.FILE;
+            }
+            switch (requestCode){
+                case FILE_REQUEST:
+                    msgType = IBaseMsg.MsgType.FILE;
+                    break;
+                case PHOTO_REQUEST_GALLERY:
+                case PHOTO_REQUEST_CAREMA:
+                    msgType = IBaseMsg.MsgType.PHOTO;
+                    break;
+            }
+            if(msgType==null){
+                Log.w("msgType","null");
+                return;
+            }
+            chatPresenter.SendFile(dst, new File(absolutePath),msgType);
             Toast.makeText(this, absolutePath, Toast.LENGTH_SHORT).show();
             return;
         }

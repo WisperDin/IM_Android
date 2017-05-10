@@ -18,6 +18,8 @@ import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
+import com.cst.im.model.PhotoMsgModel;
+import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.tools.FileUtils;
@@ -128,23 +130,42 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //发送一般文件
     @Override
-    public void SendFile(IUser[] dstUser ,File file){
+    public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType){
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
             dst_ID[i] = dstUser[i].getId();
         }
-        IFileMsg fileMsg = new FileMsgModel();
+        IFileMsg fileMsg = null;
+        int fileType = 0;
+        switch(msgType) {
+            case FILE:
+                fileMsg = new FileMsgModel();
+                fileType = FileSweet.FILE_TYPE_FILE;
+                break;
+            case PHOTO:
+                fileMsg = new PhotoMsgModel();
+                fileType = FileSweet.FILE_TYPE_PICTURE;
+                break;
+            case SOUNDS:
+                fileMsg = new SoundMsgModel();
+                fileType = FileSweet.FILE_TYPE_MUSIC;
+                break;
+        }
+        if(msgType==null||fileType==0){
+            Log.w("msgType||fileType","null");
+            return;
+        }
         fileMsg.setFile(file);
         fileMsg.setFileName(file.getName());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
-        fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
+        fileMsg.setMsgType(msgType);
         fileMsg.setMsgDate(Tools.getDate());
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
-            FileSweet fs = new FileSweet(FileSweet.FILE_TYPE_FILE, file);
+            FileSweet fs = new FileSweet(fileType, file);
             //使用文件信息写入到FileMsg中
             fileMsg.setFileSize(fs.getFileParam());
             fileMsg.setFileParam(fs.getFileParam());
@@ -195,12 +216,12 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         });
 
         //更新UI的适配器
-        mDataArrays.add(fileMsg);
+        /*mDataArrays.add(fileMsg);
         handler.post(new Runnable() {
             @Override
             public void run() {
                 iChatView.onSendMsg();
-            }});
+            }});*/
     }
 
 
