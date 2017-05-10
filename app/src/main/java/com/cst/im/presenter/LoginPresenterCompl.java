@@ -3,9 +3,11 @@ package com.cst.im.presenter;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.UI.LoginActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.LoginUserModel;
@@ -65,9 +67,17 @@ public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandl
             public void run() {
                 try {
                     ComService.client.SendData(loginFrame);
-                } catch (IOException | NullPointerException ioe) {
-                    Log.w("send", "send data failed");
+                } catch (IOException | NullPointerException ioe ) {
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            iLoginView.onNetworkError();
+                        }
+                    });
                 }
+
+
             }
         }).start();
 

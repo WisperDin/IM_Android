@@ -9,6 +9,7 @@ import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.UserModel;
 
 import protocol.Protocol;
 import protocol.Protocol.DstUser;
@@ -25,7 +26,17 @@ public class BuildFrame {
     public static final int TextMsg  = 5;
     public static final int FileInfo = 6;
     public static final int GetFriend  = 7;
-    public static final int IsFriend=8;
+    public static final int IsFriend = 8;
+    public static final int PullUserInfo = 9;//获取远程用户信息
+    public static final int PushUserInfo = 10;//上传远程用户信息
+
+    //=====用户信息返回值======//
+    public static final int PullUserInfoSuccess = 300;
+    public static final int PullUserInfoFail = 301;
+    public static final int PushUserInfoSuccess = 302;
+    public static final int PushUserInfoFail = 303;
+
+
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
         frame.setProtoSign(1234);
@@ -181,4 +192,39 @@ public class BuildFrame {
         return null;
     }
 
+    //编码获取用户信息帧
+    public Frame GetPullUserInfoFrame(UserModel userModel){
+        if(userModel.getId() == 0){
+            return null;
+        }
+
+        User.Builder user = User.newBuilder();
+        user.setUserID(userModel.getId());
+        frame.setSrc(user.build());
+        frame.setMsgType(PullUserInfo);
+        return frame.build();
+    }
+
+    //编码获取用户信息帧
+    public Frame GetPushUserInfoFrame(UserModel userModel){
+        if(userModel.getId() == 0){
+            return null;
+        }
+
+        User.Builder user = User.newBuilder();
+        //TODO 头像先不管
+        user.setUserID(userModel.getId());
+        user.setUserName(userModel.getName());
+        user.setAge(userModel.getAge());
+        user.setSex(userModel.getUserSex());
+        user.setRealName(userModel.getUserRealName());
+        user.setPhone(userModel.getUserPhone());
+        user.setEmail(userModel.getUserEmail());
+        user.setAddress(userModel.getUserAddress());
+        user.setSign(userModel.getUserSign());
+
+        frame.setSrc(user.build());
+        frame.setMsgType(PushUserInfo);
+        return frame.build();
+    }
 }

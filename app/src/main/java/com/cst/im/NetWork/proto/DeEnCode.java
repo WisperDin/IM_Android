@@ -10,6 +10,7 @@ import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.UserModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -227,5 +228,26 @@ public class DeEnCode {
         return  fileMsg;
     }
 
+    //编码上传用户信息帧
+    public static byte[] encodePushUserInfo(UserModel userModel){
+        Frame buildFrame = new BuildFrame(BuildFrame.PushUserInfo).GetPushUserInfoFrame(userModel);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try{
+            buildFrame.writeTo(byteArrayOutputStream);
+        }catch (IOException e){
 
+        }
+        return byteArrayOutputStream.toByteArray();
+    }
+    //编码请求用户信息帧
+    public static byte[] encodePullUserInfo(UserModel userModel){
+        Frame buildFrame = new BuildFrame(BuildFrame.PullUserInfo).GetPullUserInfoFrame(userModel);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try{
+            buildFrame.writeTo(byteArrayOutputStream);
+        }catch (IOException e){
+
+        }
+        return byteArrayOutputStream.toByteArray();
+    }
 }

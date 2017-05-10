@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.presenter.IUserSettingPresenter;
-import com.cst.im.presenter.UserSettingPresenter;
+import com.cst.im.presenter.UserSettingPresenterCompl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,22 +23,24 @@ import com.cst.im.model.UserModel;
  */
 
 public class UserInfoActivity extends AppCompatActivity{//用户信息显示
-    public final static int indexUserPicture = 0;   // 第一个为用户头像
-    public final static int indexUserName = 1;      // 第二个为用户名
-    public final static int indexUserSex = 2;       // 第三个为用户性别
-    public final static int indexUserRealName = 3;  // 第四个为用户真实姓名
-    public final static int indexUserPhone = 4;     // 第五个为用户手机号
-    public final static int indexUserEmail = 5;     // 第六个为用户邮箱
-    public final static int indexUserAddress = 6;   // 第七个为用户地址
-    public final static int indexUserSign = 7;      // 第八个为用户签名
+    public final static int indexUserPicture = 0;   // 用户头像
+    public final static int indexUserName = 1;      // 用户名
+    public final static int indexUserAge = 2;       //年龄
+    public final static int indexUserSex = 3;       // 用户性别
+    public final static int indexUserRealName = 4;  // 用户真实姓名
+    public final static int indexUserPhone = 5;     // 用户手机号
+    public final static int indexUserEmail = 6;     // 用户邮箱
+    public final static int indexUserAddress = 7;   // 用户地址
+    public final static int indexUserSign = 8;      // 用户签名
 
     private List<SettingDetails> userInfoList = new ArrayList<>();// 具体显示信息
     private SettingDetailsAdapter adapter;
 
-    IUserSettingPresenter userSettingPresenter = new UserSettingPresenter();
-
+    IUserSettingPresenter userSettingPresenter = new UserSettingPresenterCompl(this);
+    UserModel temperUserModel;//临时用户信息
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        userSettingPresenter.pullRemoteUserInfo();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_detail_parent_layout);
         initUserInfoList();
@@ -62,19 +62,19 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
                         return;
                     }
                     case indexUserSex:{
-                        //TODO 性别修改选择框
                         final AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoActivity.this);
                         builder.setTitle("性别");
                         final String[] sex = {"男","女"};
 
-                        builder.setSingleChoiceItems(sex, 0, new DialogInterface.OnClickListener() {
+                        builder.setSingleChoiceItems(sex, 1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SettingDetails userInfo = userInfoList.get(indexUserSex);
                                 userInfo.setValue(sex[which]);
-                                UserModel.localUser.setUserSex(sex[which]);
-                                UserModel.saveLocalUser();
-                                adapter.notifyDataSetChanged();
+                                temperUserModel = UserModel.localUser;
+                                temperUserModel.setUserSex(sex[which]);
+
+                                userSettingPresenter.pushRemoteUserInfo(temperUserModel);
                                 dialog.dismiss();
                             }
                         });
@@ -94,8 +94,10 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
 
 
     private void initUserInfoList(){//初始化用户数据
+        userInfoList.clear();
         userInfoList.add(new SettingDetails("头像",UserModel.localUser.getUserPicture(),indexUserPicture));
         userInfoList.add(new SettingDetails("用户名",UserModel.localUser.getName(),indexUserName));
+        userInfoList.add(new SettingDetails("年龄",String.valueOf(UserModel.localUser.getAge()),indexUserAge));
         userInfoList.add(new SettingDetails("性别",UserModel.localUser.getUserSex(),indexUserSex));
         userInfoList.add(new SettingDetails("真实姓名",UserModel.localUser.getUserRealName(),indexUserRealName));
         userInfoList.add(new SettingDetails("手机号",UserModel.localUser.getUserPhone(),indexUserPhone));
@@ -108,12 +110,13 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if(resultCode == RESULT_CANCELED){
+            return;
+        }
         switch (requestCode){ //依据返回码获取修改的信息，保存到本地数据库，并更新UI
             // TODO 发送到远程数据库
             case indexUserRealName:{
                 String realName = data.getStringExtra("return_real_name");
-
                 UserModel.localUser.setUserRealName(realName);
                 UserModel.saveLocalUser();
 
@@ -168,5 +171,30 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
         }
 
 
+    }
+
+    public void onNetWorkError(){//网络错误
+        Toast.makeText(this,"网络错误，服务器连接失败",Toast.LENGTH_LONG).show();
+    }
+
+    public void onChangeSuccess(){//修改成功
+        UserModel.localUser = temperUserModel;
+        UserModel.saveLocalUser();
+        Toast.makeText(this,"修改成功",Toast.LENGTH_LONG).show();
+        adapter.notifyDataSetChanged();
+    }
+
+    public void onChangeFail(){//修改成功
+        Toast.makeText(this,"修改失败，请稍后再试",Toast.LENGTH_LONG).show();
+    }
+
+    public void onPullSuccess(){//获取数据成功
+        Toast.makeText(this,"获取数据成功",Toast.LENGTH_LONG).show();
+        initUserInfoList();
+        adapter.notifyDataSetChanged();
+    }
+    public void onPullFail(){//获取数据失败
+        Toast.makeText(this,"获取数据失败",Toast.LENGTH_LONG).show();
+        adapter.notifyDataSetChanged();
     }
 }

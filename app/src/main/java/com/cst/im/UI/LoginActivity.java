@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
     //网络错误提示
     @Override
     public void onNetworkError() {
-
+        Toast.makeText(this,"网络错误，无法连接服务器",Toast.LENGTH_LONG).show();
     }
     //输入时的提醒
     @Override
