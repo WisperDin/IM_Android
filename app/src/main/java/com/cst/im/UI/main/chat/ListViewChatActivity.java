@@ -241,24 +241,28 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) { // 按下
-                    mVoicePressBtn.setText("松开 结束");
 
+                    mVoicePressBtn.setText("松开 结束");
                     // 初始化录音对象
-                    if(RecordUtils.initRecord()){
+                    if (RecordUtils.initRecord()) {
                         //录音之前停止播放
-                        RecordUtils.stopAudio();
+                        if(RecordUtils.player.isPlaying()){
+                            RecordUtils.stopAudio();
+                        }
                         //开始录音
                         RecordUtils.startRecord();
                     }
-                } else if (action == MotionEvent.ACTION_UP) { // 松开
-                    mVoicePressBtn.setText("按住 说话");
 
+                } else if (action == MotionEvent.ACTION_UP) { // 松开
+
+                    mVoicePressBtn.setText("按住 说话");
                     // 停止录音
                     RecordUtils.stopRecord();
                     // 释放录音对象
                     RecordUtils.releaseRecorder();
                     // 播放录音
                     //RecordUtils.playAudio(RecordUtils.getAudioPath());
+
                 }
                 return false;
             }
@@ -293,7 +297,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
     }
-
 
 
     @Override
@@ -477,6 +480,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
      * 发送图片
      */
     int i = 0;
+
     @Override
     public void onSendImg(final IPhotoMsg msg) {
         new Thread(new Runnable() {
@@ -611,8 +615,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             Uri uri = data.getData();
             String absolutePath = UriUtils.getPath(this, uri);
             //发送文件
-            IBaseMsg.MsgType msgType=null;
-            switch (requestCode){
+            IBaseMsg.MsgType msgType = null;
+            switch (requestCode) {
                 case FILE_REQUEST:
                     msgType = IBaseMsg.MsgType.FILE;
                     break;
@@ -621,11 +625,11 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                     msgType = IBaseMsg.MsgType.PHOTO;
                     break;
             }
-            if(msgType==null){
-                Log.w("msgType","null");
+            if (msgType == null) {
+                Log.w("msgType", "null");
                 return;
             }
-            chatPresenter.SendFile(dst, new File(absolutePath),msgType);
+            chatPresenter.SendFile(dst, new File(absolutePath), msgType);
             Toast.makeText(this, absolutePath, Toast.LENGTH_SHORT).show();
             return;
         }

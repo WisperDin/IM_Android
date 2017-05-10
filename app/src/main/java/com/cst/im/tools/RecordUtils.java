@@ -17,9 +17,9 @@ public class RecordUtils {
     private static final String TAG = "Record";
 
     // 录音对象
-    private static MediaRecorder mediaRecorder;
+    public static MediaRecorder mediaRecorder;
     // 音频播放对象
-    private static MediaPlayer player;
+    public static MediaPlayer player;
 
     // 系统的音频文件
     private static File soundFile;
