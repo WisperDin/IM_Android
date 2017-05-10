@@ -26,10 +26,8 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.main.msg.MsgFragment;
-import com.cst.im.dataBase.ChatConst;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
-import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
@@ -59,7 +57,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     private Button mBtnBack;// 返回btn
     private TextView mSendBtn;//发送按钮
     private ListView mListView;//消息列表
-    private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
+    public ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
     public ArrayList<String> imageList = new ArrayList<String>();//adapter图片数据
     public HashMap<Integer, Integer> imagePosition = new HashMap<Integer, Integer>();//图片下标位置
     private SendMessageHandler sendMessageHandler;

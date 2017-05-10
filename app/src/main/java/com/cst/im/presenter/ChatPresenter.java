@@ -78,7 +78,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     @Override
     public void handleChatMsgEvent(final IBaseMsg msgRecv){
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
-        //TODO 出问题
         mDataArrays.add(msgRecv);
         DBManager.InsertMsg(msgRecv);
         int fileType = 0;
@@ -101,8 +100,9 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             case SOUNDS:
                 break;
         }
-        //TODO： 这个路径还要改
-        FileImRequest.Builder().downLoadFile(fileType, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
+        //file name without prefix
+        final String fileNameNoEx = FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName());
+        FileImRequest.Builder().downLoadFile(fileType,fileNameNoEx,new ImRequest.ResultCallBack(){
 
             @Override
             public void fail(int code, String msg) {
@@ -119,8 +119,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //TODO be care the cast
                         Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
-
+                        ArrayList<String> imgList = new ArrayList<String>();
+                        imgList.add(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE)+"/"+fileNameNoEx);
+                        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);
                     }
                 });
             }
@@ -128,7 +131,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                //TODO 出问题
                 iChatView.onRecvMsg();
             }
         });
