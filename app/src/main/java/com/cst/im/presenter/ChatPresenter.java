@@ -16,6 +16,7 @@ import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.PhotoMsgModel;
@@ -95,6 +96,12 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileType = FileSweet.FILE_TYPE_FILE;
                 break;
             case PHOTO:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onReceriveImageText((IPhotoMsg) msgRecv);
+                    }
+                });
                 fileType = FileSweet.FILE_TYPE_PICTURE;
                 break;
             case SOUNDS:

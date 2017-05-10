@@ -157,6 +157,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         return 6;
     }
 
+
     @SuppressLint("InflateParams")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -592,25 +593,27 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         }
 
         if (isPicRefresh) {
-//            holder.image_Msg.setImageBitmap(null);
+            holder.image_Msg.setImageBitmap(null);
             holder.image_group.setVisibility(View.VISIBLE);
-//            final String imageSrc = tbub.getImageLocal() == null ? "" : tbub
-//                    .getImageLocal();
-            final String imageUrlSrc = photoMsgUrl.getPhotoUrl() == null ? "" : photoMsgUrl.getPhotoUrl();
-//            final String imageIconUrl = photoMsgUrl.getImageIconUrl() == null ? ""
-//                    : tbub.getImageIconUrl();
-//            File file = new File(imageSrc);
-//            final boolean hasLocal = !imageSrc.equals("")
-//                    && FileSaveUtil.isFileExists(file);
+            IPhotoMsg photoUrl = ((IPhotoMsg)msg);
+            final String imageSrc = photoUrl.getPhotoUrl() == null ? "" :
+                    photoUrl.getPhotoLocal();
+            final String imageUrlSrc = photoUrl.getPhotoUrl() == null ? "" :
+                    photoUrl.getPhotoUrl();
+            final String imageIconUrl = photoUrl.getPhotoUrl() == null ? ""
+                    : photoUrl.getPhotoUrl();
+            File file = new File(imageSrc);
+            final boolean hasLocal = !imageSrc.equals("")
+                    && FileSaveUtil.isFileExists(file);
             int res;
             res = R.drawable.chat_to_bg_normal;
             //判断本地是否存在此图片
-//            if (hasLocal) {
-//                holder.image_Msg.setLocalImageBitmap(ImageCheckoutUtil.getLoacalBitmap(imageSrc),
-//                        res);
-//            } else {
+            if (hasLocal) {
+                holder.image_Msg.setLocalImageBitmap(ImageCheckoutUtil.getLoacalBitmap(imageSrc),
+                        res);
+            } else {
                 holder.image_Msg.load(imageUrlSrc, res, R.mipmap.cygs_cs);
-//            }
+            }
             holder.image_Msg.setOnClickListener(new View.OnClickListener() {
 
                 @Override
