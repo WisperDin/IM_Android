@@ -78,6 +78,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     @Override
     public void handleChatMsgEvent(final IBaseMsg msgRecv){
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
+        //TODO 出问题
         mDataArrays.add(msgRecv);
         DBManager.InsertMsg(msgRecv);
         //判断数据类型
@@ -93,7 +94,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             case FILE:
                 //TODO： 这个路径还要改
                 FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
-
                     @Override
                     public void fail(int code, String msg) {
                         activity.runOnUiThread(new Runnable() {
@@ -118,7 +118,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     @Override
                     public void run() {
                         //TODO 出问题
-                        //iChatView.onRecvMsg();
+                        iChatView.onRecvMsg();
                     }
                 });
                 break;
