@@ -45,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "%s INT32 NOT NULL," +
             "%s VARCHAR(128)," +
             "%s VARCHAR(30)," +
+                    "%s INT32," +
             "%s VARCHAR(2) ," +
             "%s VARCHAR(30)," +
             "%s VARCHAR(20)," +
@@ -55,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Constant.UserInfo.ID,
             Constant.UserInfo.USER_PICTURE,
             Constant.UserInfo.USER_NAME,
+            Constant.UserInfo.USER_AGE,
             Constant.UserInfo.USER_SEX,
             Constant.UserInfo.USER_REAL_NAME,
             Constant.UserInfo.USER_PHONE,

@@ -59,6 +59,9 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
                     ie.printStackTrace();
                     Log.w("send","delay send data failed");
                 }
+                catch (NullPointerException nil){
+                    Log.w("send","null client");
+                }
             }}).start();
     }
 

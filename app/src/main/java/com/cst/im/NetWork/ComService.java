@@ -11,9 +11,11 @@ import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
+import com.cst.im.model.IUser;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.Tools;
 
 import java.util.ArrayList;
@@ -51,6 +53,10 @@ public class ComService extends TcpService {
     public interface IsFriendHandler{
         void handleIsFriendEvent(IFriend fl);//参数为接收到的消息
     }
+    public interface UserInfoHandler{
+        void handlePullUserInfoEvent(int rslCode,UserModel userModel); // 加载远程用户数据结果
+        void handlePushUserInfoEvent(int rslCode); // 上传本地用户数据结果
+    }
 
 
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
@@ -60,6 +66,8 @@ public class ComService extends TcpService {
     static FriendListHandler FriendListEvent;
     static ChatListHandler chatListEvent;
     static IsFriendHandler isfriendEvent;
+    static UserInfoHandler userInfoHandler;
+
     //static FileMsgHandler fileMsgHandler;
 
     public static void setRegisterCallback(MsgHandler registerCallback){registerEvent =registerCallback;}
@@ -71,6 +79,7 @@ public class ComService extends TcpService {
     public static void setChatListCallback(ChatListHandler chatListCallback) {chatListEvent=chatListCallback;}
     public static void setFriendListCallback(FriendListHandler FriendListCallback){FriendListEvent=FriendListCallback;}
     public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){isfriendEvent=IsFriendCallback;}
+    public static void setUserInfoHandler(UserInfoHandler userInfoHandlerCallback){userInfoHandler = userInfoHandlerCallback;}
     @Override
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
@@ -221,7 +230,46 @@ public class ComService extends TcpService {
 
                 break;
             }*/
+            case BuildFrame.PullUserInfo:{ // 获取远程用户信息
+                Log.d("Service","pullUserInfo");
+                User user = frame.getSrc();
+                if(user.getUserID() != UserModel.localUser.getId()){
+                    Log.w("pull from wrong id",String.format("origin id = %s,local id = %s",user.getUserID(),UserModel.localUser.getId()));
+                    userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoFail,null);
+                    return;
+                }
+                if(frame.getFbAction().getRslCode() == BuildFrame.PullUserInfoFail){//获取远程用户失败
+                    userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoFail,null);
+                    return;
+                }
+                UserModel localUser = new UserModel();
+                localUser.setAge(user.getAge());
+                localUser.setUserRealName(user.getRealName());
+                localUser.setUserSign(user.getSign());
+                localUser.setUserSex(user.getSex());
+                localUser.setUserAddress(user.getAddress());
+                localUser.setUserEmail(user.getEmail());
+                localUser.setUserPhone(user.getPhone());
+                userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoSuccess,localUser);
+            }break;
 
+            case BuildFrame.PushUserInfo:{ //上传用户数据
+                if(frame.getFbAction().getRslCode() == BuildFrame.PushUserInfoFail){//获取远程用户失败
+                    userInfoHandler.handlePushUserInfoEvent(BuildFrame.PushUserInfoFail);
+                    return;
+                }
+                User user = frame.getSrc();
+                UserModel localUser = new UserModel();
+                localUser.setAge(user.getAge());
+                localUser.setUserRealName(user.getRealName());
+                localUser.setUserSign(user.getSign());
+                localUser.setUserSex(user.getSex());
+                localUser.setUserAddress(user.getAddress());
+                localUser.setUserEmail(user.getEmail());
+                localUser.setUserPhone(user.getPhone());
+                userInfoHandler.handlePushUserInfoEvent(BuildFrame.PushUserInfoSuccess);
+
+            }break;
             default:
                 Log.w("OnMessageCome","msgType异常");
                 break;

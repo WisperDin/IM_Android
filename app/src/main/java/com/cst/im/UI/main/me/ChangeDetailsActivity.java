@@ -13,10 +13,15 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.model.LoginUserModel;
+import com.cst.im.model.UserModel;
+import com.cst.im.presenter.IUserSettingPresenter;
 import com.cst.im.presenter.Status;
+import com.cst.im.presenter.UserSettingPresenterCompl;
 
 public class ChangeDetailsActivity extends AppCompatActivity {
-
+    IUserSettingPresenter userSettingPresenter = new UserSettingPresenterCompl(this);
+    Intent returnIntent;
+    UserModel tempuserModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +42,12 @@ public class ChangeDetailsActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent returnIntent = new Intent();
+                returnIntent = new Intent();
+                tempuserModel = UserModel.localUser;
                 if(index == UserInfoActivity.indexUserRealName) { // 真实姓名
                     String name = editText.getText().toString();
                     returnIntent.putExtra("return_real_name",name);
-                    Log.d("RETURN_REAL_NAME", editText.getText().toString());
-                    setResult(RESULT_OK, returnIntent);
-                    Toast.makeText(ChangeDetailsActivity.this, "修改姓名成功", Toast.LENGTH_LONG).show();
-                    finish();
+                    tempuserModel.setUserRealName(name);
                 }
                 if(index == UserInfoActivity.indexUserPhone){ //手机号
                     if(LoginUserModel.checkTypeOfUsername(editText.getText().toString()) != Status.Login.USERNAME_PHONE){
@@ -53,9 +56,7 @@ public class ChangeDetailsActivity extends AppCompatActivity {
                     }
                     returnIntent.putExtra("return_phone",editText.getText().toString());
                     Log.d("RETURN_ADDRESS",editText.getText().toString());
-                    setResult(RESULT_OK,returnIntent);
-                    Toast.makeText(ChangeDetailsActivity.this,"修改手机号成功",Toast.LENGTH_SHORT).show();
-                    finish();
+                    tempuserModel.setUserPhone(editText.getText().toString());
                 }
 
                 if(index == UserInfoActivity.indexUserEmail){
@@ -64,24 +65,37 @@ public class ChangeDetailsActivity extends AppCompatActivity {
                         return;
                     }
                     returnIntent.putExtra("return_email",editText.getText().toString());
-                    setResult(RESULT_OK,returnIntent);
-                    Toast.makeText(ChangeDetailsActivity.this,"修改邮箱成功",Toast.LENGTH_LONG).show();
-                    finish();
+                    tempuserModel.setUserEmail(editText.getText().toString());
+
                 }
 
                 if(index == UserInfoActivity.indexUserAddress){
                     returnIntent.putExtra("return_address",editText.getText().toString());
-                    setResult(RESULT_OK,returnIntent);
-                    Toast.makeText(ChangeDetailsActivity.this,"修改地址成功",Toast.LENGTH_LONG).show();
-                    finish();
+                    tempuserModel.setUserAddress(editText.getText().toString());
+
                 }
                 if(index == UserInfoActivity.indexUserSign){
                     returnIntent.putExtra("return_sign",editText.getText().toString());
-                    setResult(RESULT_OK,returnIntent);
-                    Toast.makeText(ChangeDetailsActivity.this,"修改个性签名成功",Toast.LENGTH_LONG).show();
-                    finish();
+                    tempuserModel.setUserSign(editText.getText().toString());
                 }
+                userSettingPresenter.pushRemoteUserInfo(tempuserModel);
             }
         });
+    }
+
+    public void onChangeSuccess(){//修改成功
+        setResult(RESULT_OK,returnIntent);
+        UserModel.localUser = tempuserModel;
+        Toast.makeText(ChangeDetailsActivity.this,"修改成功",Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    public void onChangeFail(){
+        setResult(RESULT_CANCELED,returnIntent);
+        Toast.makeText(ChangeDetailsActivity.this,"修改失败，请稍后再试",Toast.LENGTH_LONG).show();
+        finish();
+    }
+    public void onNetWorkError(){
+        Toast.makeText(this,"网络错误,无法修改数据",Toast.LENGTH_LONG).show();
     }
 }
