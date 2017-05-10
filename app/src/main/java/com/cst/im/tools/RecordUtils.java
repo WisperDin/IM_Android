@@ -64,6 +64,7 @@ public class RecordUtils {
      */
     private static void initPlayer(String path) {
         try {
+            player = new MediaPlayer();
             player.setDataSource(path);
             player.prepare();
         } catch (IOException e) {
