@@ -11,6 +11,8 @@ import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
+import com.cst.im.model.PhotoMsgModel;
+import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.presenter.Tools;
 
@@ -118,16 +120,29 @@ public class ComService extends TcpService {
                     baseMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
                     baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
                 }else if(frame.getMsgType()==BuildFrame.FileInfo){
-                    if(frame.getFileInfo().getFileName()==""||
+                    if(frame.getFileInfo().getFileName()==""||frame.getFileInfo().getFileType()==0||
                             frame.getFileInfo().getFileParam()==""||frame.getFileInfo().getFileFeature()==""){
                         Log.e(" bad value", "ComService,OnMessageCome FileInfo");
                         return;
                     }
-                    baseMsg = new FileMsgModel();
-                    baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                    switch (frame.getFileInfo().getFileType()){
+                        case 2://图片
+                            baseMsg = new PhotoMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.PHOTO);
+                            break;
+                        case 3://文件
+                            baseMsg = new FileMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                            break;
+                        case 4://声音
+                            baseMsg = new SoundMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.SOUNDS);
+                            break;
+                    }
                     ((FileMsgModel) baseMsg).setFileName(frame.getFileInfo().getFileName());
                     ((FileMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
                     ((FileMsgModel) baseMsg).setFileFeature(frame.getFileInfo().getFileFeature());
+
                 }
                 if(baseMsg==null){
                     Log.e(" bad value", "ComService,baseMsg null");
@@ -145,9 +160,6 @@ public class ComService extends TcpService {
                     chatMsgEvent.handleChatMsgEvent(baseMsg);
                 if(chatListEvent!=null)
                     chatListEvent.handleChatListEvent(baseMsg);
-
-
-
                 break;
             }
 

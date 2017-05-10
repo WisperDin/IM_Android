@@ -50,6 +50,20 @@ public class MsgModelBase implements IBaseMsg {
 
     //消息类型，标志消息是文字，图片，语音，文件等
     public IBaseMsg.MsgType getMsgType(){return  msgType;}
+    public int  getMsgTypeInt(){
+        switch (msgType){
+            case TEXT:
+                return 1;
+            case PHOTO:
+                return 2;
+            case FILE:
+                return 3;
+            case SOUNDS:
+                return 4;
+            default:
+                return 0;
+        }
+    }
     public void setMsgType(IBaseMsg.MsgType msgType){
         this.msgType=msgType;
     }

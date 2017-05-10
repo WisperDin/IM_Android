@@ -18,6 +18,7 @@ message File {
   string fileName = 1;//文件名
   string fileFeature = 2;//文件指纹
   string fileParam = 3;//文件参数
+  int32 fileType = 4;//文件类型
 }
 message Action {
 	int32 rslCode=1;//状态码

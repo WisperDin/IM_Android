@@ -138,6 +138,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setFile(file);
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
+        fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
@@ -192,7 +193,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         });
 
         //更新UI的适配器
-        fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
         mDataArrays.add(fileMsg);
         handler.post(new Runnable() {
             @Override

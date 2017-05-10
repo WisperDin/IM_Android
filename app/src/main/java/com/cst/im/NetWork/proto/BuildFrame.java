@@ -3,7 +3,6 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
-import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
@@ -126,6 +125,8 @@ public class BuildFrame {
         file.setFileName(fileMsg.getFileName());
         file.setFileFeature(fileMsg.getFileFeature());
         file.setFileParam(fileMsg.getFileParam());
+        //文件类型
+        file.setFileType(fileMsg.getMsgTypeInt());
 
         frame.setSrc(src.build());
         frame.setDst(dstGroup.build());
