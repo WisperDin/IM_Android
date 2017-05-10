@@ -8,8 +8,6 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
-
-
 import com.cst.im.view.IFriendView;
 
 import java.io.IOException;
@@ -48,12 +46,18 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
             @Override
             public void run() {
                 try {
+                    //TODO 先避免一下粘包问题，，，
+                    Thread.sleep(100);
                     ComService.client.SendData(GetFriendFrame);
                     Log.w("send","send data chenggong");
                 }
                 catch (IOException ioe)
                 {
+                    ioe.printStackTrace();
                     Log.w("send","send data failed");
+                }catch (InterruptedException ie){
+                    ie.printStackTrace();
+                    Log.w("send","delay send data failed");
                 }
             }}).start();
     }
