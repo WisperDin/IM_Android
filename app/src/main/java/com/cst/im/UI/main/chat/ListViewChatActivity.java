@@ -253,6 +253,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mBtnBack.setOnClickListener(this);
         mSendBtn.setOnClickListener(this);
         mFileBtn.setOnClickListener(this);
+        mPictureBtn.setOnClickListener(this);
     }
 
     // 弹出键盘
@@ -419,7 +420,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             case R.id.chat_picture://发送图片
                 Log.d("Viewing", "Photo----");
                 GetImgFromGallery();
-
                 break;
         }
     }
