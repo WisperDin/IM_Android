@@ -136,9 +136,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         IFileMsg fileMsg = new FileMsgModel();
         fileMsg.setFile(file);
+        fileMsg.setFileName(file.getName());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(IBaseMsg.MsgType.FILE);
+        fileMsg.setMsgDate(Tools.getDate());
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
