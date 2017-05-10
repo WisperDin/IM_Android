@@ -1,12 +1,12 @@
 package com.cst.im.NetWork.Okhttp.impl;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.Okhttp.helper.ProgressHelper;
 import com.cst.im.NetWork.Okhttp.listener.ProgressListener;
 import com.cst.im.NetWork.Okhttp.progress.ProgressRequestBody;
+import com.cst.im.tools.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -158,7 +158,7 @@ public class FileImRequest implements ImRequest {
                 try {
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
-                    File file = new File(getFilePath(type),name);
+                    File file = new File(FileUtils.getFilePath(type),name);
                     fos = new FileOutputStream(file);
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
@@ -224,7 +224,7 @@ public class FileImRequest implements ImRequest {
                 try {
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
-                    File file = new File(getFilePath(type),name);
+                    File file = new File(FileUtils.getFilePath(type),name);
                     fos = new FileOutputStream(file);
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
@@ -259,7 +259,7 @@ public class FileImRequest implements ImRequest {
             Log.w("execute","already call"+ise.getMessage());
         }
     }
-    private String getFilePath(int MedioType){
+    /*private String getFilePath(int MedioType){
         String Root = Environment.getExternalStorageDirectory().getAbsolutePath()+"/IM";
         File file=null;
         switch (MedioType){
@@ -284,10 +284,10 @@ public class FileImRequest implements ImRequest {
         return file.getAbsolutePath();
 
         //////////////////////TODO 这里有问题？
-        /*if(file!=null && !file.exists())
+        *//*if(file!=null && !file.exists())
             file.mkdirs();
         else
             return "";
-        return file.getAbsolutePath();*/
-    }
+        return file.getAbsolutePath();*//*
+    }*/
 }
