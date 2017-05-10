@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,7 @@ import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
+import com.cst.im.presenter.Tools;
 import com.cst.im.tools.RecordUtils;
 import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
@@ -242,72 +244,57 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         });
 
 
-
         /** 按住说话录音，松开停止录音 */
         mVoicePressBtn.setOnTouchListener(new View.OnTouchListener() {
-            long startVoiceT,endVoiceT;
+            long startVoiceT, endVoiceT;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
-                if (action == MotionEvent.ACTION_DOWN) { // 按下
-                    startVoiceT =  System.currentTimeMillis();
-                    mVoicePressBtn.setText("松开 结束");
-                    // 初始化录音对象
-                    if (RecordUtils.initRecord()) {
-                        //录音之前停止播放
-                        if(RecordUtils.player.isPlaying()){
-                            RecordUtils.stopAudio();
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        startVoiceT = System.currentTimeMillis();
+                        mVoicePressBtn.setText("松开 结束");
+                        // 初始化录音对象
+                        if (RecordUtils.initRecord()) {
+                            //录音之前停止播放
+                            if (RecordUtils.player.isPlaying()) {
+                                RecordUtils.stopAudio();
+                            }
+                            //开始录音
+                            RecordUtils.startRecord();
                         }
-                        //开始录音
-                        RecordUtils.startRecord();
-                    }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        endVoiceT = System.currentTimeMillis();
+                        mVoicePressBtn.setText("按住 说话");
 
-                } else if (action == MotionEvent.ACTION_UP) { // 松开
-                    endVoiceT = System.currentTimeMillis();
-                    mVoicePressBtn.setText("按住 说话");
+                        if ((endVoiceT - startVoiceT) < 500 /*/ 1000 < 2*/) { //录音时间过短
+                            Log.d("Record", "startTime : " + String.valueOf(startVoiceT));
+                            Log.d("Record", "endTime : " + String.valueOf(endVoiceT));
+                            Toast.makeText(ListViewChatActivity.this, "录音时长过短", Toast.LENGTH_SHORT).show();
+                            // 释放录音对象
+                            RecordUtils.releaseRecorder();
 
-                    /*if((endVoiceT - startVoiceT)/1000 < 3){
-                        Log.d("Record","startTime : " + String.valueOf(startVoiceT));
-                        Log.d("Record","endTime : " + String.valueOf(endVoiceT));
-                        Toast.makeText(ListViewChatActivity.this,"录音时长过短",Toast.LENGTH_SHORT).show();
-                        return false;
-                    }*/
-                    // 停止录音
-                    RecordUtils.stopRecord();
-                    // 释放录音对象
-                    RecordUtils.releaseRecorder();
+                        } else if ((endVoiceT - startVoiceT) > 10 * 1000) { //录音时间大于10s
+                            Toast.makeText(ListViewChatActivity.this, "录音时长过长", Toast.LENGTH_SHORT).show();
+                            // 释放录音对象
+                            RecordUtils.releaseRecorder();
+                        } else { //录音时间合适
+                            // 停止录音
+                            RecordUtils.stopRecord();
+                            // 释放录音对象
+                            RecordUtils.releaseRecorder();
 
-                    /* TODO:准备发送 */
-                    try {
-/*                        String filePath = RecordUtils.getAudioPath();
+                        /* 准备发送 */
+                            chatPresenter.SendFile(dst, new File(RecordUtils.getAudioPath()), IBaseMsg.MsgType.SOUNDS);
 
-                        // 设置录音的时长
-                        RecordUtils.player.setDataSource(filePath);
-                        int duration = RecordUtils.player.getDuration();
-                        Log.d("Record","duration : " + String.valueOf(duration));
-                        soundMsg.setUserVoiceTime(duration);*/
+                            // 播放录音
+                            //RecordUtils.playAudio(RecordUtils.getAudioPath());
 
-                        // 设置 URL
-/*                        File file = new File(filePath);
-                        URL url;
-                        url = file.toURL();
-                        Log.d("Record","URL : " + url.toString());
-                        soundMsg.setSoundUrl(url.toString());*/
-
-                        // 设置时间戳
-/*                        soundMsg.setMsgDate(Tools.getDate());
-                        Log.d("Record","Time : " + Tools.getDate());
-                        IBaseMsg.MsgType msgType = null;*/
-
-                        //msgType = IBaseMsg.MsgType.SOUNDS;
-                        chatPresenter.SendFile(dst, new File(RecordUtils.getAudioPath()) ,IBaseMsg.MsgType.SOUNDS);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    // 播放录音
-                    //RecordUtils.playAudio(RecordUtils.getAudioPath());
-
+                        }
+                        break;
                 }
                 return false;
             }
@@ -498,11 +485,12 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             public void run() {
                 chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
+                // ListViewChatActivity.this.content = content;
+                //receriveHandler.sendEmptyMessageDelayed(0, 1000);
             }
         }).start();
 
     }
-
 
     /**
      * 发送图片
@@ -579,6 +567,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
      */
 
     String filePath = "";
+
     @Override
     public void onReceriveImageText(final IPhotoMsg msg) {
         new Thread(new Runnable() {
@@ -599,9 +588,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     }
 
 
-
-
-//    /**
+    //    /**
 //     * 接收语音
 //     */
     float seconds = 0.0f;

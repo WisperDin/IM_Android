@@ -186,23 +186,23 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 try{
                     ((SoundMsgModel) fileMsg).setSoundUrl(file.toURL().toString());
 
-                    //时长
+                    // 设置时长
                     String filePath = RecordUtils.getAudioPath();
-                    RecordUtils.player.setDataSource(filePath);
-                    int duration = RecordUtils.player.getDuration();
-                    //Log.d("Record","duration : " + String.valueOf(duration));
-                    ((SoundMsgModel) fileMsg).setUserVoiceTime(duration);
+                    int duration = RecordUtils.getDuration(filePath);
+                    Log.d("Record", "duration : " + String.valueOf(duration));
+                    ((SoundMsgModel) fileMsg).setUserVoiceTime(duration/1000.0f);
 
                     // 设置时间戳
                     ((SoundMsgModel) fileMsg).setMsgDate(Tools.getDate());
                     Log.d("Record","Time : " + Tools.getDate());
+
                 }catch (MalformedURLException mie){
                     mie.printStackTrace();
                     return;
-                }catch (IOException ioe){
+                }/*catch (IOException ioe){
                     ioe.printStackTrace();
                     return;
-                }
+                }*/
 
 
                 iChatView.onSendVoice(((SoundMsgModel) fileMsg));
