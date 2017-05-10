@@ -335,11 +335,12 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && ((FaceRelativeLayout) findViewById(R.id.FaceRelativeLayout))
-                .hideFaceView()) {
+        //TODO EMOJI
+/*        if (keyCode == KeyEvent.KEYCODE_BACK
+                *//*&& ((FaceRelativeLayout) findViewById(R.id.FaceRelativeLayout))
+                .hideFaceView()*//*) {
             return true;
-        }
+        }*/
         return super.onKeyDown(keyCode, event);
     }
 
