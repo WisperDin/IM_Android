@@ -67,6 +67,10 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     public void Isfriend(int ownerid,int IsFriendId) {
         IFriend Isfriend=new IFriendModel(ownerid,IsFriendId);
         final byte[] GetFriendFrame = DeEnCode.encodeIsFriendFrame(Isfriend);
+        if(GetFriendFrame==null){
+            Log.w("GetFriendFrame","null");
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {

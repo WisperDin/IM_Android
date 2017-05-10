@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
-import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
@@ -93,6 +92,10 @@ public class DeEnCode {
     //编码-判断是否为好友帧
     public static byte[] encodeIsFriendFrame(IFriend Isfriend) {
         Frame frame = new BuildFrame(BuildFrame.IsFriend).IsFriend(Isfriend);
+        if(frame==null){
+            Log.w("encodeIsFriendFrame","frame null");
+            return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
