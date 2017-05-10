@@ -1,6 +1,9 @@
 package com.cst.im.tools;
 
+import android.os.Environment;
 import android.util.Log;
+
+import com.cst.im.FileAccess.FileSweet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +15,39 @@ import java.text.DecimalFormat;
  */
 
 public class FileUtils {
+    public static String getFilePath(int MedioType){
+        String Root = Environment.getExternalStorageDirectory().getAbsolutePath()+"/IM";
+        File file=null;
+        switch (MedioType){
+            case FileSweet.FILE_TYPE_FILE:
+                file =new File(Root+"/files");
+                break;
+            case FileSweet.FILE_TYPE_MUSIC:
+                file =new File(Root+"/musics");
+                break;
+            case FileSweet.FILE_TYPE_PICTURE:
+                file =new File(Root+"/pictures");
+                break;
+            case FileSweet.FILE_TYPE_VIDEO:
+                file =new File(Root+"/videos");
+                break;
+        }
+        if(file==null){
+            return "";
+        }
+        if(!file.exists())
+            file.mkdirs();
+        return file.getAbsolutePath();
+
+        //////////////////////TODO 这里有问题？
+        /*if(file!=null && !file.exists())
+            file.mkdirs();
+        else
+            return "";
+        return file.getAbsolutePath();*/
+    }
+
+
     /*
  * Java文件操作 获取不带扩展名的文件名
  *

@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
-import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
@@ -17,10 +16,8 @@ import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
-import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
-import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
@@ -51,8 +48,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
 
-       /* //test
-        FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
+       //test
+       /* FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_PICTURE, FileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
 
             @Override
             public void fail(int code, String msg) {
@@ -84,6 +81,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //TODO 出问题
         mDataArrays.add(msgRecv);
         DBManager.InsertMsg(msgRecv);
+        int fileType = 0;
         //判断数据类型
         switch(msgRecv.getMsgType()) {
             case TEXT:
@@ -95,19 +93,45 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 break;
             case FILE:
-                //TODO： 这个路径还要改
-                FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_FILE, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
+                fileType = FileSweet.FILE_TYPE_FILE;
+                break;
+            case PHOTO:
+                fileType = FileSweet.FILE_TYPE_PICTURE;
+                break;
+            case SOUNDS:
+                break;
+        }
+        //TODO： 这个路径还要改
+        FileImRequest.Builder().downLoadFile(fileType, FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName()),new ImRequest.ResultCallBack(){
 
+            @Override
+            public void fail(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
                     @Override
-                    public void fail(int code, String msg) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    public void run() {
+                        Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
                     }
+                });
+            }
 
+            @Override
+            public void success(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+        });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                //TODO 出问题
+                iChatView.onRecvMsg();
+            }
+        });
                     @Override
                     public void success(int code, String msg) {
                         activity.runOnUiThread(new Runnable() {
