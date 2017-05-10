@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-
 
 import com.cst.im.R;
 import com.cst.im.model.IFriendModel;
@@ -54,6 +53,10 @@ public class FriendViewFragment extends Fragment implements
     public void InitView(ImageView img,ListView lv){
         MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
+        if(IFriendModel.iFriendModel==null){
+            Log.w("FriendViewFragment","InitView iFriendModel null");
+            return;
+        }
         for(int i = 0; i< IFriendModel.iFriendModel.getfriendlist().size(); i++){
             addfriend.SortAndAdd(IFriendModel.iFriendModel.getfriendlist().get(i));
         }

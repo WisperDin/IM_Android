@@ -165,10 +165,20 @@ public class ComService extends TcpService {
 
             case BuildFrame.GetFriend://好友列表信息
             {
+                if(frame.getDst().getDstCount()<=0) {
+                    Log.w("onMessageCome","GetFriend null");
+                    return;
+                }
+
                 Log.d("OnMessage", "feedbackofFriendlist");
                 ArrayList<String> list = new ArrayList<String>();
                 HashMap<String ,Integer> NameAndID = new HashMap<String , Integer>();
                 for (int i = 0; i < frame.getDst().getDstCount(); i++) {
+                    if(frame.getDst().getDst(i).getUserName()==""||frame.getDst().getDst(i).getUserID()==0){
+                        Log.w("onMessageCome","GetFriend bad value");
+                        return;
+                    }
+
                     list.add(frame.getDst().getDst(i).getUserName());
                     NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
