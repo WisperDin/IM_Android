@@ -35,16 +35,12 @@ import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
-import com.cst.im.presenter.Tools;
 import com.cst.im.tools.RecordUtils;
 import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +51,6 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
-import static java.lang.System.currentTimeMillis;
 
 
 public class ListViewChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
@@ -284,27 +279,28 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 
                     /* TODO:准备发送 */
                     try {
-                        String filePath = RecordUtils.getAudioPath();
+/*                        String filePath = RecordUtils.getAudioPath();
 
                         // 设置录音的时长
                         RecordUtils.player.setDataSource(filePath);
                         int duration = RecordUtils.player.getDuration();
                         Log.d("Record","duration : " + String.valueOf(duration));
-                        soundMsg.setUserVoiceTime(duration);
+                        soundMsg.setUserVoiceTime(duration);*/
 
                         // 设置 URL
-                        File file = new File(filePath);
+/*                        File file = new File(filePath);
                         URL url;
                         url = file.toURL();
                         Log.d("Record","URL : " + url.toString());
-                        soundMsg.setSoundUrl(url.toString());
+                        soundMsg.setSoundUrl(url.toString());*/
 
                         // 设置时间戳
-                        soundMsg.setMsgDate(Tools.getDate());
+/*                        soundMsg.setMsgDate(Tools.getDate());
                         Log.d("Record","Time : " + Tools.getDate());
-                        IBaseMsg.MsgType msgType = null;
-                        msgType = IBaseMsg.MsgType.SOUNDS;
-                        chatPresenter.SendFile(dst, new File(filePath) ,msgType);
+                        IBaseMsg.MsgType msgType = null;*/
+
+                        //msgType = IBaseMsg.MsgType.SOUNDS;
+                        chatPresenter.SendFile(dst, new File(RecordUtils.getAudioPath()) ,IBaseMsg.MsgType.SOUNDS);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

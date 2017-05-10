@@ -23,11 +23,13 @@ import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.tools.FileUtils;
+import com.cst.im.tools.RecordUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,7 +163,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //发送一般文件
     @Override
-    public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType){
+    public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType)  {
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
@@ -181,6 +183,28 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 break;
             case SOUNDS:
                 fileMsg = new SoundMsgModel();
+                try{
+                    ((SoundMsgModel) fileMsg).setSoundUrl(file.toURL().toString());
+
+                    //时长
+                    String filePath = RecordUtils.getAudioPath();
+                    RecordUtils.player.setDataSource(filePath);
+                    int duration = RecordUtils.player.getDuration();
+                    //Log.d("Record","duration : " + String.valueOf(duration));
+                    ((SoundMsgModel) fileMsg).setUserVoiceTime(duration);
+
+                    // 设置时间戳
+                    ((SoundMsgModel) fileMsg).setMsgDate(Tools.getDate());
+                    Log.d("Record","Time : " + Tools.getDate());
+                }catch (MalformedURLException mie){
+                    mie.printStackTrace();
+                    return;
+                }catch (IOException ioe){
+                    ioe.printStackTrace();
+                    return;
+                }
+
+
                 iChatView.onSendVoice(((SoundMsgModel) fileMsg));
                 fileType = FileSweet.FILE_TYPE_MUSIC;
                 break;
