@@ -16,7 +16,6 @@ import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
-import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
 import com.cst.im.model.PhotoMsgModel;
@@ -91,15 +90,21 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         iChatView.onRecvMsg();
                     }
                 });
-                break;
+                return;
             case FILE:
                 fileType = FileSweet.FILE_TYPE_FILE;
+/*                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onRecvMsg();
+                    }
+                });*/
                 break;
             case PHOTO:
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iChatView.onReceriveImageText((IPhotoMsg) msgRecv);
+                        iChatView.onReceriveImageText((PhotoMsgModel) msgRecv);
                     }
                 });
                 fileType = FileSweet.FILE_TYPE_PICTURE;
@@ -129,18 +134,23 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         //TODO be care the cast
                         Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
                         ArrayList<String> imgList = new ArrayList<String>();
-                        imgList.add(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE)+"/"+fileNameNoEx);
+                        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+                        if(!file.exists()){
+                            Log.e("file","open failed");
+                        }
+                        imgList.add(file.getAbsolutePath());
                         ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);
                     }
                 });
             }
         });
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                iChatView.onRecvMsg();
-            }
-        });
+/*        ArrayList<String> imgList = new ArrayList<String>();
+        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+        if(!file.exists()){
+            Log.e("file","open failed");
+        }
+        imgList.add(file.getAbsolutePath());
+        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
     }
     //发送一般文件
     @Override
