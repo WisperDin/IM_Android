@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.im.R;
+import com.cst.im.dataBase.Constant;
 import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.IUserSettingPresenter;
@@ -44,6 +45,20 @@ public class ChangeDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 returnIntent = new Intent();
                 tempuserModel = UserModel.localUser;
+                if(index == UserInfoActivity.indexUserAge)//年龄
+                {
+                    int age = UserModel.localUser.getAge();
+                    try{
+                        age = Integer.parseInt(editText.getText().toString());
+                    }catch (Exception e){
+                        Toast.makeText(ChangeDetailsActivity.this,"年龄格式不正确",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if(age <= 0 || age >=200)
+                        return;
+                    returnIntent.putExtra("return_age",age);
+                    tempuserModel.setAge(age);
+                }
                 if(index == UserInfoActivity.indexUserRealName) { // 真实姓名
                     String name = editText.getText().toString();
                     returnIntent.putExtra("return_real_name",name);

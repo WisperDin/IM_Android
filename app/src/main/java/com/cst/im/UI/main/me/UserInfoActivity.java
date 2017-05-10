@@ -66,7 +66,7 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
                         builder.setTitle("性别");
                         final String[] sex = {"男","女"};
 
-                        builder.setSingleChoiceItems(sex, 1, new DialogInterface.OnClickListener() {
+                        builder.setSingleChoiceItems(sex, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SettingDetails userInfo = userInfoList.get(indexUserSex);
@@ -114,7 +114,17 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
             return;
         }
         switch (requestCode){ //依据返回码获取修改的信息，保存到本地数据库，并更新UI
-            // TODO 发送到远程数据库
+            case indexUserAge:{
+                int age = data.getIntExtra("return_age",0);
+                UserModel.localUser.setAge(age);
+                UserModel.saveLocalUser();
+
+                SettingDetails settingDetails = userInfoList.get(indexUserAge);
+                settingDetails.setValue(String.valueOf(age));
+                adapter.notifyDataSetChanged();
+            }break;
+
+
             case indexUserRealName:{
                 String realName = data.getStringExtra("return_real_name");
                 UserModel.localUser.setUserRealName(realName);
@@ -181,10 +191,11 @@ public class UserInfoActivity extends AppCompatActivity{//用户信息显示
         UserModel.localUser = temperUserModel;
         UserModel.saveLocalUser();
         Toast.makeText(this,"修改成功",Toast.LENGTH_LONG).show();
+        initUserInfoList();
         adapter.notifyDataSetChanged();
     }
 
-    public void onChangeFail(){//修改成功
+    public void onChangeFail(){//修改失败
         Toast.makeText(this,"修改失败，请稍后再试",Toast.LENGTH_LONG).show();
     }
 
