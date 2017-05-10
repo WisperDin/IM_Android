@@ -133,13 +133,13 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     public void run() {
                         //TODO be care the cast
                         Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
-                        ArrayList<String> imgList = new ArrayList<String>();
+                       // ArrayList<String> imgList = new ArrayList<String>();
                         File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
                         if(!file.exists()){
                             Log.e("file","open failed");
                         }
-                        imgList.add(file.getAbsolutePath());
-                        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);
+                        //imgList.add(file.getAbsolutePath());
+                        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
                     }
                 });
             }
@@ -247,9 +247,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             public void run() {
                 iChatView.onSendMsg();
             }});*/
-        ArrayList<String> imgList = new ArrayList<String>();
+/*        ArrayList<String> imgList = new ArrayList<String>();
         imgList.add(file.getAbsolutePath());
-        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);
+        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
+        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
     }
 
 

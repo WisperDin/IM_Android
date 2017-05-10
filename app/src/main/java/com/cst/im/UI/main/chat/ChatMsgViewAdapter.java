@@ -8,6 +8,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
+import android.text.SpannableString;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.text.SpannableString;
+
 import com.cst.im.R;
 import com.cst.im.dataBase.ChatConst;
 import com.cst.im.model.IBaseMsg;
-import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
@@ -39,8 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import pl.droidsonroids.gif.GifTextView;
 
 /**
  * Created by wzb on 2017/5/9.
@@ -126,6 +124,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     public void setImageList(ArrayList<String> imageList) {
         this.imageList = imageList;
     }
+    public ArrayList<String> getImageList() {
+        return  imageList;
+    }
+
     public void setImagePosition(HashMap<Integer,Integer> imagePosition) {
         this.imagePosition = imagePosition;
     }
