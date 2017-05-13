@@ -78,10 +78,12 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             tv.setText("用户不存在");
             return;
         }
-        if(friendModel.getfriendlist().contains(username)){
-            img.setVisibility(View.INVISIBLE);
-            tv.setText("你们已经是好友");
-            return;
+        if (friendModel != null) {
+            if (friendModel.getfriendlist().contains(username)) {
+                img.setVisibility(View.INVISIBLE);
+                tv.setText("你们已经是好友");
+                return;
+            }
         }
         img.setVisibility(View.VISIBLE);
         tv.setText(username);

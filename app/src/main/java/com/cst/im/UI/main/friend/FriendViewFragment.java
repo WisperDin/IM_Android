@@ -18,6 +18,7 @@ import com.cst.im.model.FriendModel;
 
 import java.util.ArrayList;
 
+import static com.cst.im.model.UserModel.localUser;
 
 
 public class FriendViewFragment extends Fragment implements
@@ -39,11 +40,13 @@ public class FriendViewFragment extends Fragment implements
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SearchFriend.class);
-                Bundle bundle=new Bundle();
-                bundle.putInt("srcId", FriendModel.friendModel.getId());
-                intent.putExtras(bundle);
-                getActivity().startActivity(intent);
+                if (localUser != null) {
+                    Intent intent = new Intent(getActivity(), SearchFriend.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("srcId", localUser.getId());
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                }
             }
         });
         return view;
