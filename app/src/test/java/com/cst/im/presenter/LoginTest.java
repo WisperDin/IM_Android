@@ -1,8 +1,5 @@
 package com.cst.im.presenter;
 
-import com.cst.im.view.ILoginView;
-
-import org.junit.Before;
 //import org.mockito.Mock;
 
 /**
@@ -10,9 +7,9 @@ import org.junit.Before;
  */
 
 public class LoginTest {
-    //登录业务逻辑
+/*    //登录业务逻辑
     private LoginPresenterCompl loginPresenter;
-    //@Mock
+    @Mock
     private ILoginView iLoginView;
 
     @Before
@@ -28,8 +25,7 @@ public class LoginTest {
 //
 //
 //    @Test
-//    public void login_Success() throws Exception {
-//        int errCode = loginPresenter.doLogin("mvp","mvp");
-//        assertEquals(errCode, 0);
-//    }
+    public void login_Success() throws Exception {
+        loginPresenter.doLogin("mvp","mvp");
+    }*/
 }

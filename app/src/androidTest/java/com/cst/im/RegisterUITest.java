@@ -5,7 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.cst.im.NetWork.ComService;
-import com.cst.im.UI.LoginActivity;
+import com.cst.im.UI.RegisterActivity;
 import com.cst.im.dataBase.DBManager;
 
 import org.junit.Before;
@@ -27,13 +27,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class LoginUITest {
+public class RegisterUITest {
 
 
 
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
-           LoginActivity.class);
+    public ActivityTestRule<RegisterActivity> mActivityRule = new ActivityTestRule<>(
+            RegisterActivity.class);
 
     @Before
     public void setUp(){
@@ -44,36 +44,23 @@ public class LoginUITest {
         DBManager.getIntance(mActivityRule.getActivity());
     }
 
-    //验证点击登录成功事件
+    //验证点击注册成功事件
 
     @Test
-    public void loginWithCorrectPassword()throws InterruptedException {
+    public void Register()throws InterruptedException {
 
-        onView(withId(R.id.username)).perform(typeText("lzy"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText("123"),closeSoftKeyboard());
-        onView(withId(R.id.login_button)).perform(click());
+        onView(withId(R.id.register_username)).perform(typeText("UITEST"),closeSoftKeyboard());
+        onView(withId(R.id.register_password)).perform(typeText("123"),closeSoftKeyboard());
+        onView(withId(R.id.register_button)).perform(click());
 
-        onView(withText("登录成功")).inRoot(new ToastMatcher())
+        //第二次启动，，账号已经注册了
+        onView(withText("注册成功")).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
 
 
         //Thread.sleep(5000);
     }
 
-
-    //验证点击登录失败事件
-    @Test
-    public void loginWithWrongPassword()throws InterruptedException {
-
-        onView(withId(R.id.username)).perform(typeText("mvp"),closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText("abc"),closeSoftKeyboard());
-        onView(withId(R.id.login_button)).perform(click());
-
-        //Thread.sleep(5000);
-        onView(withText("该用户未注册")).inRoot(new ToastMatcher())
-                .check(matches(isDisplayed()));
-        //Thread.sleep(2000);
-    }
 
 
 

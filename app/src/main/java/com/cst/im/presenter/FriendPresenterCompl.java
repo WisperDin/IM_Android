@@ -47,7 +47,7 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
             public void run() {
                 try {
                     //TODO 先避免一下粘包问题，，，
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                     ComService.client.SendData(GetFriendFrame);
                     Log.w("send","send data chenggong");
                 }
