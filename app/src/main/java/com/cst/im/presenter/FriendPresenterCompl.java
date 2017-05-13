@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.model.FriendModel;
 import com.cst.im.model.IFriend;
-import com.cst.im.model.IFriendModel;
 import com.cst.im.view.IFriendView;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.HashMap;
  * Created by sun on 2017/5/4.
  */
 
-public class IFriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler,ComService.IsFriendHandler {
+public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler,ComService.IsFriendHandler {
 
     Handler handler;
     IFriend ifriend;
@@ -28,10 +28,10 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     ArrayList<String> friendlist=new ArrayList<String>();
     HashMap<String ,Integer> friendNAndID = new HashMap<String , Integer>();
 
-    public IFriendPresenterCompl(IFriendView friendview ) {
+    public FriendPresenterCompl(IFriendView friendview ) {
         this.ifriendview =  friendview;
         handler = new Handler(Looper.getMainLooper());
-        ifriend=new IFriendModel(friendlist,friendNAndID);
+        ifriend=new FriendModel(friendlist,friendNAndID);
         //监听收到消息的接口
         ComService.setFriendListCallback(this);
         ComService.setIsfriendCallback(this);
@@ -40,7 +40,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     //发送请求获取好友列表
     @Override
     public void Getfriendlist(int id) {
-        IFriend friendget=new IFriendModel(id);
+        IFriend friendget=new FriendModel(id);
         final byte[] GetFriendFrame = DeEnCode.encodeGetFriendListFrame(friendget);
         new Thread(new Runnable() {
             @Override
@@ -68,7 +68,7 @@ public class IFriendPresenterCompl implements IFriendPresenter,ComService.Friend
     //发送请求获取好友列表
     @Override
     public void Isfriend(int ownerid,int IsFriendId) {
-        IFriend Isfriend=new IFriendModel(ownerid,IsFriendId);
+        IFriend Isfriend=new FriendModel(ownerid,IsFriendId);
         final byte[] GetFriendFrame = DeEnCode.encodeIsFriendFrame(Isfriend);
         if(GetFriendFrame==null){
             Log.w("GetFriendFrame","null");

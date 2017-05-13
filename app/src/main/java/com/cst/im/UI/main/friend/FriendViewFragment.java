@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.cst.im.R;
-import com.cst.im.model.IFriendModel;
+import com.cst.im.model.FriendModel;
 
 import java.util.ArrayList;
 
@@ -41,7 +41,7 @@ public class FriendViewFragment extends Fragment implements
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SearchFriend.class);
                 Bundle bundle=new Bundle();
-                bundle.putInt("srcId",IFriendModel.iFriendModel.getId());
+                bundle.putInt("srcId", FriendModel.friendModel.getId());
                 intent.putExtras(bundle);
                 getActivity().startActivity(intent);
             }
@@ -53,13 +53,13 @@ public class FriendViewFragment extends Fragment implements
     public void InitView(ImageView img,ListView lv){
         adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
-        if(IFriendModel.iFriendModel==null){
-            Log.w("FriendViewFragment","InitView iFriendModel null");
+        if(FriendModel.friendModel ==null){
+            Log.w("FriendViewFragment","InitView friendModel null");
             return;
         }
-        int size=IFriendModel.iFriendModel.getfriendlist().size();
+        int size= FriendModel.friendModel.getfriendlist().size();
         for(int i = 0; i< size; i++){
-            addfriend.SortAndAdd(IFriendModel.iFriendModel.getfriendlist().get(i));
+            addfriend.SortAndAdd(FriendModel.friendModel.getfriendlist().get(i));
         }
         for (int i = 0; i < addfriend.getTittle().length; i++) {
             //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
@@ -93,7 +93,7 @@ public class FriendViewFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), friendinformationActivity.class);
         Bundle bundle=new Bundle();
         bundle.putString("dstName",NameSequencebylistview.get(position));
-        bundle.putInt("dstId",IFriendModel.iFriendModel.getFriendNameAndID().get(NameSequencebylistview.get(position)));
+        bundle.putInt("dstId", FriendModel.friendModel.getFriendNameAndID().get(NameSequencebylistview.get(position)));
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
 
