@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
 
     }
     @Override
+    public void onReaultCodebyAddFriend(int code,int id,String name){
+
+    }
+    @Override
     protected void onNewIntent(Intent intent) {//退出登录
         super.onNewIntent(intent);
         Intent intent1 = new Intent(this, SplashActivity.class);

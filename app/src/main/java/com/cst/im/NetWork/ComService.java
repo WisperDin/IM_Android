@@ -42,15 +42,21 @@ public class ComService extends TcpService {
         void handleChatListEvent(IBaseMsg msgRecv);//参数为接收到的消息
     }
 
+
 /*    public interface FileMsgHandler{
         void handleFileMsgEvent(IBaseMsg msgRecv);//参数为接收到的文件简要信息
     }*/
 
-    public interface FriendListHandler{
-        void handleFriendLisEvent(IFriend fl);//参数为接收到的消息
+    public interface AddFriendHandler {
+        void handleAddFriendEvent(IFriend f1);
     }
-    public interface IsFriendHandler{
-        void handleIsFriendEvent(IFriend fl);//参数为接收到的消息
+
+    public interface FriendListHandler {
+        void handleFriendLisEvent(IFriend fl);
+    }
+
+    public interface IsFriendHandler {
+        void handleIsFriendEvent(IFriend fl);
     }
     public interface UserInfoHandler{
         void handlePullUserInfoEvent(int rslCode,UserModel userModel); // 加载远程用户数据结果
@@ -65,6 +71,7 @@ public class ComService extends TcpService {
     static FriendListHandler FriendListEvent;
     static ChatListHandler chatListEvent;
     static IsFriendHandler isfriendEvent;
+    static AddFriendHandler addfriendEvent;
     static UserInfoHandler userInfoHandler;
 
     //static FileMsgHandler fileMsgHandler;
@@ -78,6 +85,7 @@ public class ComService extends TcpService {
     public static void setChatListCallback(ChatListHandler chatListCallback) {chatListEvent=chatListCallback;}
     public static void setFriendListCallback(FriendListHandler FriendListCallback){FriendListEvent=FriendListCallback;}
     public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){isfriendEvent=IsFriendCallback;}
+    public static void setaddfriendCallback(AddFriendHandler addFriendCallback){addfriendEvent=addFriendCallback;}
     public static void setUserInfoHandler(UserInfoHandler userInfoHandlerCallback){userInfoHandler = userInfoHandlerCallback;}
     @Override
     public void OnTcpStop() {
@@ -205,6 +213,15 @@ public class ComService extends TcpService {
                     IsFriend.SetRealtCode(1);
                 }
                 isfriendEvent.handleIsFriendEvent(IsFriend);
+                break;
+            }
+
+            case BuildFrame.AddFriend://添加好友
+            {
+                Log.d("OnMessage", "feedbackofAddFriend");
+                IFriend addFriend=new FriendModel(frame.getDst().getDst(0).getUserID(),frame.getDst().getDst(0).getUserName());
+                addFriend.SetRealtCode(frame.getFbAction().getRslCode());
+                addfriendEvent.handleAddFriendEvent(addFriend);
                 break;
             }
             /*case BuildFrame.FileInfo://文件简要消息

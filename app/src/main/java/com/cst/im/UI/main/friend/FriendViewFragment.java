@@ -65,11 +65,12 @@ public class FriendViewFragment extends Fragment implements
             addfriend.SortAndAdd(FriendModel.friendModel.getfriendlist().get(i));
         }
         for (int i = 0; i < addfriend.getTittle().length; i++) {
-            //忽略第二个参数，加了图片也不会显示出来，没用的，不用它会出bug
+            //查看某个字母下的用户
             if (addfriend.getFriendname().get(addfriend.getTittle()[i]).size() != 0) {
                 adapter.addSeparatorItem(addfriend.getTittle()[i], R.drawable.friend_icon);
                 NameSequencebylistview.add(addfriend.getTittle()[i]);
-                for (int k = 0; k <addfriend.getFriendname().get(addfriend.getTittle()[i]).size(); k++) {
+                int length=addfriend.getFriendname().get(addfriend.getTittle()[i]).size();
+                for (int k = 0; k <length; k++) {
                     adapter.addItem(addfriend.getFriendname().get(addfriend.getTittle()[i]).get(k), R.drawable.friend_icon);
                     NameSequencebylistview.add(addfriend.getFriendname().get(addfriend.getTittle()[i]).get(k));
                 }

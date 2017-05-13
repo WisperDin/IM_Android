@@ -10,4 +10,5 @@ import java.util.HashMap;
 public interface IFriendView {
     void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID);
     void onReaultCode(int code,String name);
+    void onReaultCodebyAddFriend(int code,int id,String name);
 }
