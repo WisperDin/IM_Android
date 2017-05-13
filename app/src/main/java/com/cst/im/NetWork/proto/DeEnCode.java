@@ -24,6 +24,10 @@ public class DeEnCode {
     public static byte[] encodeLoginFrame(ILoginUser loginUser) {
         Frame frame = new BuildFrame(BuildFrame.Login).GetLoginFrame(loginUser);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(frame==null){
+            Log.w("frame null","encodeLoginFrame");
+            return null;
+        }
         try {
             frame.writeTo(baos);
         } catch (IOException e) {
@@ -48,6 +52,10 @@ public class DeEnCode {
             txtMsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
             Frame frame = new BuildFrame(BuildFrame.TextMsg).GetChatMsgFrame(txtMsg);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            if(frame==null){
+                Log.w("frame null","encodeChatMsgFrame");
+                return null;
+            }
             try {
                 frame.writeTo(baos);
             } catch (IOException e) {
@@ -60,6 +68,10 @@ public class DeEnCode {
     //编码-获取好友列表帧
     public static byte[] encodeGetFriendListFrame(IFriend friendL) {
         Frame frame = new BuildFrame(BuildFrame.GetFriend).GetFriendList(friendL);
+        if(frame==null){
+            Log.w("frame null","encodeGetFriendListFrame");
+            return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
@@ -72,7 +84,7 @@ public class DeEnCode {
     public static byte[] encodeIsFriendFrame(IFriend Isfriend) {
         Frame frame = new BuildFrame(BuildFrame.IsFriend).IsFriend(Isfriend);
         if(frame==null){
-            Log.w("encodeIsFriendFrame","frame null");
+            Log.w("frame null","encodeIsFriendFrame");
             return null;
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -86,6 +98,10 @@ public class DeEnCode {
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
         Frame frame = new BuildFrame(BuildFrame.FileInfo).GetFileInfoFrame(fileMsg);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(frame==null){
+            Log.w("frame null","encodeFileMsgFrameHead");
+            return null;
+        }
         try {
             frame.writeTo(baos);
         } catch (IOException e) {
@@ -132,6 +148,10 @@ public class DeEnCode {
     public static byte[] encodeRegisterFrame(ILoginUser userToRegister){
         Frame frame = new BuildFrame(BuildFrame.Register).GetRegisterFrame(userToRegister);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(frame==null){
+            Log.w("frame null","encodeRegisterFrame");
+            return null;
+        }
         try {
             frame.writeTo(baos);
         } catch (IOException e) {
@@ -142,6 +162,10 @@ public class DeEnCode {
     public static byte[] encodePushUserInfo(UserModel userModel){
         Frame buildFrame = new BuildFrame(BuildFrame.PushUserInfo).GetPushUserInfoFrame(userModel);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if(buildFrame==null){
+            Log.w("frame null","encodePushUserInfo");
+            return null;
+        }
         try{
             buildFrame.writeTo(byteArrayOutputStream);
         }catch (IOException e){
@@ -153,6 +177,10 @@ public class DeEnCode {
     public static byte[] encodePullUserInfo(UserModel userModel){
         Frame buildFrame = new BuildFrame(BuildFrame.PullUserInfo).GetPullUserInfoFrame(userModel);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if(buildFrame==null){
+            Log.w("frame null","encodePullUserInfo");
+            return null;
+        }
         try{
             buildFrame.writeTo(byteArrayOutputStream);
         }catch (IOException e){
