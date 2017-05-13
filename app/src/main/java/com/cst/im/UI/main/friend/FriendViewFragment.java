@@ -26,7 +26,7 @@ public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemLongClickListener {
     MyCustomAdapter adapter=null;
     private  ArrayList<Integer> letter = new ArrayList<Integer>();//储存标题上的大写字母的位置
-     ArrayList<String> NameSequencebylistview= new ArrayList<String>();//记录item上的名字
+     ArrayList<String> NameSequencebylistview;//记录item上的名字
     ListView Friendlistview;
     ImageView img_search;
     @Nullable
@@ -56,6 +56,7 @@ public class FriendViewFragment extends Fragment implements
 
 
     public void InitView(ImageView img,ListView lv){
+        NameSequencebylistview= new ArrayList<String>();
         adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
         if(FriendModel.friendModel ==null){
