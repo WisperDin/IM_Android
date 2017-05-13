@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.presenter.IFriendPresenter;
@@ -103,7 +104,13 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     }
     @Override
     public void onReaultCodebyAddFriend(int code,int id,String name){
-
+        if(code==200){
+            friendModel.getfriendlist().add(name);
+            friendModel.getFriendNameAndID().put(name,id);
+            Toast.makeText(this,"添加成功",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this,"添加失败",Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

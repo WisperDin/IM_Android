@@ -19,7 +19,7 @@ import java.util.HashMap;
  * Created by sun on 2017/5/4.
  */
 
-public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler,ComService.IsFriendHandler {
+public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendListHandler,ComService.IsFriendHandler ,ComService.AddFriendHandler{
 
     Handler handler;
     IFriend ifriend;
@@ -35,6 +35,7 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         //监听收到消息的接口
         ComService.setFriendListCallback(this);
         ComService.setIsfriendCallback(this);
+        ComService.setaddfriendCallback(this);
     }
 
     @Override
