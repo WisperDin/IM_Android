@@ -3,12 +3,12 @@ package com.cst.im.NetWork.proto;
 import android.util.Log;
 
 import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
-import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.IUser;
 import com.cst.im.model.UserModel;
 
 import protocol.Protocol;
@@ -59,11 +59,14 @@ public class BuildFrame {
             return frame.build();
         }
         Log.e(" bad value", "BuildFrame,GetLoginFrame");
-        System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
     }
 
     public Frame GetRegisterFrame(ILoginUser userToRegister){
+        if (userToRegister.getUsername()==null||userToRegister.getPassword()==null||userToRegister.getUsername()==""){
+            Log.e(" bad value", "BuildFrame,GetRegisterFrame");
+            return  null;
+        }
         User.Builder src = User.newBuilder();
         src.setUserName(userToRegister.getUsername());
         src.setUserPwd(userToRegister.getPassword());
@@ -111,7 +114,6 @@ public class BuildFrame {
 //            }
         }
         Log.e(" bad value", "BuildFrame,GetLoginFrame");
-        System.out.println("BuildFrame,GetLoginFrame bad value");
         return null;
     }
     //获取文件简要消息帧
@@ -121,7 +123,6 @@ public class BuildFrame {
                 fileMsg.getFile()==null||fileMsg.getFileName()==null||fileMsg.getFileName()==""||
                 fileMsg.getFileFeature()==null||fileMsg.getFileParam()==null){
             Log.e(" bad value", "BuildFrame,GetFileInfoFrame");
-            System.out.println("BuildFrame,GetFileInfoFrame bad value");
             return null;
         }
         //发送源
@@ -169,7 +170,6 @@ public class BuildFrame {
             return frame.build();
         }
         Log.e(" bad value", "BuildFrame,GetFriendListFrame");
-        System.out.println("BuildFrame,GetFriendListFrame bad value");
         return null;
     }
 
@@ -188,24 +188,23 @@ public class BuildFrame {
             return frame.build();
         }
         Log.e(" bad value", "BuildFrame,IsFriendFrame");
-        System.out.println("BuildFrame,IsFriendFrame bad value");
         return null;
     }
 
-    //编码获取用户信息帧
-    public Frame GetPullUserInfoFrame(UserModel userModel){
-        if(userModel.getId() == 0){
+    //编码获取用户信息请求帧
+    public Frame GetPullUserInfoFrame(IUser userInfo){
+        if(userInfo.getId() == 0){
+            Log.e(" bad value", "BuildFrame,GetPullUserInfoFrame");
             return null;
         }
-
         User.Builder user = User.newBuilder();
-        user.setUserID(userModel.getId());
+        user.setUserID(userInfo.getId());
         frame.setSrc(user.build());
         frame.setMsgType(PullUserInfo);
         return frame.build();
     }
 
-    //编码获取用户信息帧
+    //编码用户信息帧
     public Frame GetPushUserInfoFrame(UserModel userModel){
         if(userModel.getId() == 0){
             return null;
