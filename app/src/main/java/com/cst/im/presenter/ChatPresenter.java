@@ -8,23 +8,28 @@ import android.widget.Toast;
 
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.NetWork.ComService;
+import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
-import com.cst.im.NetWork.Okhttp.impl.UiImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
-import com.cst.im.UI.main.chat.ChatActivity;
+import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
+import com.cst.im.model.PhotoMsgModel;
+import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
 import com.cst.im.model.UserModel;
+import com.cst.im.tools.FileUtils;
+import com.cst.im.tools.RecordUtils;
 import com.cst.im.view.IChatView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +41,38 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private List<IBaseMsg> mDataArrays = new ArrayList<IBaseMsg>();// 消息对象数组
     private IChatView iChatView;
     private  Handler handler;
+    private final Activity activity;
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
         this.iChatView =  chatView;
+        this.activity= ((ListViewChatActivity) chatView);
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
+
+       //test
+       /* FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_PICTURE, FileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
+
+            @Override
+            public void fail(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void success(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });*/
     }
 
 
@@ -51,6 +82,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
         mDataArrays.add(msgRecv);
         DBManager.InsertMsg(msgRecv);
+        int fileType = 0;
         //判断数据类型
         switch(msgRecv.getMsgType()) {
             case TEXT:
@@ -60,46 +92,145 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         iChatView.onRecvMsg();
                     }
                 });
-                break;
+                return;
             case FILE:
-                handler.post(new Runnable() {
+                fileType = FileSweet.FILE_TYPE_FILE;
+/*                handler.post(new Runnable() {
                     @Override
                     public void run() {
                         iChatView.onRecvMsg();
                     }
-                });
+                });*/
                 break;
             case PHOTO:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onReceriveImageText((PhotoMsgModel) msgRecv);
+                    }
+                });
+                fileType = FileSweet.FILE_TYPE_PICTURE;
                 break;
             case SOUNDS:
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iChatView.onReceriveSoundText((SoundMsgModel) msgRecv);
+                    }
+                });
+                fileType = FileSweet.FILE_TYPE_VIDEO;
                 break;
         }
+        //file name without prefix
+        final String fileNameNoEx = FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName());
+        FileImRequest.Builder().downLoadFile(fileType,fileNameNoEx,new ImRequest.ResultCallBack(){
+
+            @Override
+            public void fail(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "下载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void success(int code, String msg) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO be care the cast
+                        Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
+                       // ArrayList<String> imgList = new ArrayList<String>();
+                        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+                        if(!file.exists()){
+                            Log.e("file","open failed");
+                        }
+                        //imgList.add(file.getAbsolutePath());
+                        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
+                    }
+                });
+            }
+        });
+/*        ArrayList<String> imgList = new ArrayList<String>();
+        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+        if(!file.exists()){
+            Log.e("file","open failed");
+        }
+        imgList.add(file.getAbsolutePath());
+        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
     }
     //发送一般文件
     @Override
-    public void SendFile(IUser[] dstUser ,File file){
+    public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType)  {
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
             dst_ID[i] = dstUser[i].getId();
         }
-        IFileMsg fileMsg = new FileMsgModel();
+        IFileMsg fileMsg = null;
+        int fileType = 0;
+        switch(msgType) {
+            case FILE:
+                fileMsg = new FileMsgModel();
+                fileType = FileSweet.FILE_TYPE_FILE;
+                break;
+            case PHOTO:
+                fileMsg = new PhotoMsgModel();
+                iChatView.onSendImg(((PhotoMsgModel) fileMsg));
+                fileType = FileSweet.FILE_TYPE_PICTURE;
+                break;
+            case SOUNDS:
+                fileMsg = new SoundMsgModel();
+                try{
+                    ((SoundMsgModel) fileMsg).setSoundUrl(file.toURL().toString());
+
+                    // 设置时长
+                    String filePath = RecordUtils.getAudioPath();
+                    int duration = RecordUtils.getDuration(filePath);
+                    Log.d("Record", "duration : " + String.valueOf(duration));
+                    ((SoundMsgModel) fileMsg).setUserVoiceTime(duration/1000.0f);
+
+                    // 设置时间戳
+                    ((SoundMsgModel) fileMsg).setMsgDate(Tools.getDate());
+                    Log.d("Record","Time : " + Tools.getDate());
+
+                }catch (MalformedURLException mie){
+                    mie.printStackTrace();
+                    return;
+                }/*catch (IOException ioe){
+                    ioe.printStackTrace();
+                    return;
+                }*/
+
+
+                iChatView.onSendVoice(((SoundMsgModel) fileMsg));
+                fileType = FileSweet.FILE_TYPE_MUSIC;
+                break;
+        }
+        if(msgType==null||fileType==0){
+            Log.w("msgType||fileType","null");
+            return;
+        }
         fileMsg.setFile(file);
+        fileMsg.setFileName(file.getName());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
+        fileMsg.setMsgType(msgType);
+        fileMsg.setMsgDate(Tools.getDate());
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
-            FileSweet fs = new FileSweet(FileSweet.FILE_TYPE_FILE, file);
+            FileSweet fs = new FileSweet(fileType, file);
             //使用文件信息写入到FileMsg中
             fileMsg.setFileSize(fs.getFileParam());
             fileMsg.setFileParam(fs.getFileParam());
             fileMsg.setFileFeature(fs.getFeature());
-            UiImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
+            FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
                 @Override
                 public void fail(int code, String msg) {
                     // TODO: 2017/5/8 给某个View做点事
-                    final Activity activity = ((ChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -112,8 +243,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 public void success(int code, String msg) {
                     // TODO: 2017/5/8 某个View做点事
                     // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
-
-                    final Activity activity = ((ChatActivity) iChatView);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -143,6 +272,17 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });
 
+        //更新UI的适配器
+        mDataArrays.add(fileMsg);
+        /*handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iChatView.onSendMsg();
+            }});*/
+/*        ArrayList<String> imgList = new ArrayList<String>();
+        imgList.add(file.getAbsolutePath());
+        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
+        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
     }
 
 

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -128,8 +127,6 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ILoginUser loginUser = DBManager.queryLoginUser();
-
-
                 if(loginUser.getId() == 0){
                     Log.d("Splash","need Login");
                     jumpToLogin();
@@ -149,7 +146,7 @@ public class SplashActivity extends AppCompatActivity {
 
         databaseHelper = DBManager.getIntance(this);
 
-        //需要获取存储空间访问权限
+/*        //需要获取存储空间访问权限
         // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 //TODO:其他权限的申请还没有
@@ -170,7 +167,9 @@ public class SplashActivity extends AppCompatActivity {
             }
         }else {
             Init();
-        }
+        }*/
+        //TODO 先不请求权限
+        Init();
 
 
 

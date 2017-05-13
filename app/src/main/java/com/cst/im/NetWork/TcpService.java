@@ -30,13 +30,14 @@ public abstract class TcpService extends Service {
 //        client = new TcpClient("172.18.149.95",6666);
             //client = new TcpClient("192.168.1.113",6666);
 //        client = new TcpClient("192.168.191.1",6666);
-        client = new TcpClient("172.18.7.173",6666);
+        client = new TcpClient("192.168.1.101",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     client.start();
                 } catch (IOException e) {
+                    client = null;
                     e.printStackTrace();
                 }
             }
@@ -73,12 +74,23 @@ public abstract class TcpService extends Service {
             new Thread(new ReceiveThread()).start();
         }
         //发送消息
-        public void SendData(byte[] data) throws IOException {
+        public void SendData(final byte[] data) throws IOException {
             if(socket==null)
-                return;
-            OutputStream out=socket.getOutputStream();
-            out.write(data);
-            out.flush();
+                throw  new IOException();
+            Runnable r= new Runnable(){
+                @Override
+                public void run() {
+                    OutputStream out= null;
+                    try {
+                        out = socket.getOutputStream();
+                        out.write(data);
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            new Thread(r).start();
         }
 
         public void stop(){
@@ -109,19 +121,14 @@ public abstract class TcpService extends Service {
                             for (int i= 0 ;i<count;i++){
                                 System.out.print(buffer[i]+" ");
                             }
-                            if (buffer[0]==DeEnCode.SpecialFrameHead){
-                                //特殊帧
-                                DeEnCode.decodeSpFrame(buffer);
-                            }else{
-                                //解码
-                                final Frame frame =  DeEnCode.decodeFrame(buffer);
-                                //放到线程池执行
-                                msgPool.execute(new Runnable() {
+                            //解码
+                            final Frame frame =  DeEnCode.decodeFrame(buffer);
+                            //放到线程池执行
+                            msgPool.execute(new Runnable() {
                                     @Override
                                     public void run() {OnMessageCome(frame);
                                     }
                                 });
-                            }
                             //复制有效字节到新的字节数组中
                             //TODO:以后要注意粘帧的情况
 //                            byte[] frameData = new byte[count];

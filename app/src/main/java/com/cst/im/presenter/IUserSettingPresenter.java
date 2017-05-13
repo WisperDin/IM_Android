@@ -1,6 +1,7 @@
 package com.cst.im.presenter;
 
 import com.cst.im.UI.main.me.SettingDetails;
+import com.cst.im.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,11 @@ import java.util.List;
 
 public interface IUserSettingPresenter {
 
-    List<SettingDetails> loadLocalUserInfo(int id);//加载本地数据
 
-    List<SettingDetails> pullRemoteUserInfo(int id);//加载远程数据
+    void pullRemoteUserInfo();//加载远程数据
 
-    void pushRemoteUserInfo (int id,List<SettingDetails> settingDetailsList); //更新远程数据
+    void pushRemoteUserInfo (UserModel userModel); //更新远程数据
 
-    void pushLocalUserInfo (int id,List<SettingDetails> settingDetailsList); // 更新本地数据
 
 
 }

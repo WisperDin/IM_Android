@@ -19,12 +19,23 @@ public interface IBaseMsg {
     String getMsgDate();
     void setMsgDate(String msgDate);
     //消息类型，标志消息是文字，图片，语音，文件等
+    //分别为1，2，3，4
     enum MsgType{
         TEXT,PHOTO,FILE,SOUNDS
     }
     MsgType  getMsgType();
+    int  getMsgTypeInt();
     void setMsgType(MsgType msgType);
 
     boolean sendOrRecv();
     void sendOrRecv(boolean isComMsg);
+
+    int getSendState();
+    void setSendState(int sendState);
+
+    int getType();
+    void setType(int type);
+
+    String getPhotoLocal();
+    void setPhotoLocal(String imageLocal);
 }

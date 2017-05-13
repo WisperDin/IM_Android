@@ -14,6 +14,9 @@ public class MsgModelBase implements IBaseMsg {
     String src_name; //发送源用户名
     String dst_name;//发送目的名
     boolean isComMeg = true;// 是否为收到的消息
+    public int sendState;
+    private int type;
+    String photoLocal;
 
 
 
@@ -47,6 +50,20 @@ public class MsgModelBase implements IBaseMsg {
 
     //消息类型，标志消息是文字，图片，语音，文件等
     public IBaseMsg.MsgType getMsgType(){return  msgType;}
+    public int  getMsgTypeInt(){
+        switch (msgType){
+            case TEXT:
+                return 1;
+            case PHOTO:
+                return 2;
+            case FILE:
+                return 3;
+            case SOUNDS:
+                return 4;
+            default:
+                return 0;
+        }
+    }
     public void setMsgType(IBaseMsg.MsgType msgType){
         this.msgType=msgType;
     }
@@ -61,9 +78,29 @@ public class MsgModelBase implements IBaseMsg {
 
     public  MsgModelBase(){}
 
-    public  MsgModelBase(int dst_id , String name){
-        this.srcID = dst_id;
-        this.dst_name = name;
+
+    public int getSendState() {
+        return this.sendState;
+    }
+
+    public void setSendState(int sendState) {
+        this.sendState = sendState;
+    }
+
+
+    //消息类型
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public String getPhotoLocal() {
+        return this.photoLocal;
+    }
+
+    public void setPhotoLocal(String photoLocal) {
+        this.photoLocal = photoLocal;
     }
 
 }

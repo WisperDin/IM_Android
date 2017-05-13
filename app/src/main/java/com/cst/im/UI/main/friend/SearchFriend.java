@@ -1,8 +1,7 @@
 package com.cst.im.UI.main.friend;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cst.im.R;
-import com.cst.im.model.IFriendModel;
 import com.cst.im.presenter.IFriendPresenter;
 import com.cst.im.presenter.IFriendPresenterCompl;
 import com.cst.im.view.IFriendView;
@@ -43,8 +41,9 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             @Override
             public void onClick(View v) {
 
-                if(judgetextIsNum(et.getText().toString())==0){
-                IsFriend.Isfriend(localUser.getId(),Integer.parseInt(et.getText().toString()));
+                int IsFriendId =Integer.parseInt(et.getText().toString());
+                if(judgetextIsNum(et.getText().toString())==0&&IsFriendId!=0){
+                IsFriend.Isfriend(localUser.getId(),IsFriendId);
                 }
                 else{
                     tv.setVisibility(View.VISIBLE);
@@ -59,6 +58,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
         if(text.length()==0){
             return -1;
         }
+        //控制输入的都是数字
         for(int i=0;i<text.length();i++){
             if(text.charAt(i)-'0'>9||text.charAt(i)-'0'<0){
                 return -1;

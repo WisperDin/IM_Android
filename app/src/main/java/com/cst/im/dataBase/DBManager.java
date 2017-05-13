@@ -44,8 +44,9 @@ public class DBManager {
         //判断接受/发送状态
         switch(msg.getMsgType()){
             case TEXT:
+                //设置数据库发送状态
                 String status;
-                if(!msg.sendOrRecv()){
+                if(msg.getType() == 1 || msg.getType() == 3 || msg.getType() == 5){
                     status = Constant.SEND;
                 }
                 else {
@@ -108,7 +109,8 @@ public class DBManager {
                         entity.setMsgDate(time);
                         entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.sendOrRecv(false);// 自己发送的消息
+                        entity.setType(0);
+                        //entity.sendOrRecv(false);// 自己发送的消息
                         cursor.moveToNext();
                     }
                     else{
@@ -117,7 +119,8 @@ public class DBManager {
                         entity.setMsgDate(time);
                         entity.setText(msg);
                         mDataArrays.add(entity);
-                        entity.sendOrRecv(true);// 收到的消息
+                        entity.setType(1);
+                        //entity.sendOrRecv(true);// 收到的消息
                         cursor.moveToNext();
                     }
 
@@ -195,6 +198,7 @@ public class DBManager {
             userModel.setId(cursor.getInt(cursor.getColumnIndex(Constant.UserInfo.ID)));
             userModel.setUserPicture(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_PICTURE)));
             userModel.setName(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_NAME)));
+            userModel.setAge(cursor.getInt(cursor.getColumnIndex(Constant.UserInfo.USER_AGE)));
             userModel.setUserSex(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_SEX)));
             userModel.setUserRealName(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_REAL_NAME)));
             userModel.setUserPhone(cursor.getString(cursor.getColumnIndex(Constant.UserInfo.USER_PHONE)));
@@ -212,18 +216,19 @@ public class DBManager {
         return userModel;
     }
 
-    public static void initLocalUserInfo(UserModel userModel){
+    public static void initLocalUserInfo(UserModel userModel){ // 初始化本地用户信息
         SQLiteDatabase sdb = helper.getWritableDatabase();
 
         if(userModel.getId() == 0){
             return ;
         }
-        String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s,%s,%s) " +
-                        "           VALUES (%s,'%s','%s','%s','%s','%s','%s','%s','%s')"
+        String sql = String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) " +
+                        "           VALUES (%s,'%s','%s',%s,'%s','%s','%s','%s','%s','%s')"
                 ,Constant.UserInfo.TABLE_NAME ,
                 Constant.UserInfo.ID,
                 Constant.UserInfo.USER_PICTURE,
                 Constant.UserInfo.USER_NAME,
+                Constant.UserInfo.USER_AGE,
                 Constant.UserInfo.USER_SEX,
                 Constant.UserInfo.USER_REAL_NAME,
                 Constant.UserInfo.USER_PHONE,
@@ -233,6 +238,7 @@ public class DBManager {
                 userModel.getId(),
                 userModel.getUserPicture(),
                 userModel.getName(),
+                userModel.getAge(),
                 userModel.getUserSex(),
                 userModel.getUserRealName(),
                 userModel.getUserPhone(),
@@ -254,6 +260,7 @@ public class DBManager {
                         "%s = '%s'," +
                 "%s = '%s'," +
                 "%s = '%s'," +
+                "%s = %s," +
                 "%s = '%s'," +
                 "%s = '%s'," +
                 "%s = '%s'," +
@@ -264,6 +271,7 @@ public class DBManager {
                 Constant.UserInfo.ID,userModel.getId(),
                 Constant.UserInfo.USER_PICTURE, userModel.getUserPicture(),
                 Constant.UserInfo.USER_NAME, userModel.getName(),
+                Constant.UserInfo.USER_AGE,userModel.getAge(),
                 Constant.UserInfo.USER_SEX,userModel.getUserSex(),
                 Constant.UserInfo.USER_REAL_NAME,userModel.getUserRealName(),
                 Constant.UserInfo.USER_PHONE,userModel.getUserPhone(),

@@ -1,7 +1,5 @@
 package com.cst.im.dataBase;
 
-import java.util.SimpleTimeZone;
-
 /**
  * Created by wzb on 2017/4/29.
  * 定义数据库字段
@@ -9,9 +7,9 @@ import java.util.SimpleTimeZone;
 
 public class Constant {
     public static final String DATABASE_NAME = "Info.db";//数据库名
-    public static final int DATABASE_VERSION = 3;//数据库版本名，如果修改或添加了本地数据库的表请加一
+    public static final int DATABASE_VERSION = 4;//数据库版本名，如果修改或添加了本地数据库的表请加一
     /*
-    数据库版本3:加入了用户信息的表保存用户的简单个人信息
+    数据库版本3:修改了用户信息的表保存用户的简单个人信息
      */
     public class Chat{
         public static final String TABLE_NAME = "LocalMessage"; //数据库表名
@@ -31,11 +29,10 @@ public class Constant {
     public class UserInfo{
         public static final String TABLE_NAME = "LocalUserInfo";
         public static final String ID = "user_id";                  // 用户ID，查询用户唯一凭证
-        public static final String PASSWORD = "password";
         public static final String USER_PICTURE = "user_picture";    //用户头像,保存一个本地地址
         public static final String USER_NAME = "username";
         public static final String USER_SEX = "user_sex";
-
+        public static final String USER_AGE = "user_age";
         public static final String USER_REAL_NAME = "user_real_name"; //用户真实姓名,附带实名认证功能
         public static final String USER_PHONE = "user_phone";        // 用户手机
         public static final String USER_EMAIL = "user_email";

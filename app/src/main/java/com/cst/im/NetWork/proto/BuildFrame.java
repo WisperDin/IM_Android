@@ -2,11 +2,14 @@ package com.cst.im.NetWork.proto;
 
 import android.util.Log;
 
+import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.UserModel;
 
 import protocol.Protocol;
 import protocol.Protocol.DstUser;
@@ -23,7 +26,17 @@ public class BuildFrame {
     public static final int TextMsg  = 5;
     public static final int FileInfo = 6;
     public static final int GetFriend  = 7;
-    public static final int IsFriend=8;
+    public static final int IsFriend = 8;
+    public static final int PullUserInfo = 9;//获取远程用户信息
+    public static final int PushUserInfo = 10;//上传远程用户信息
+
+    //=====用户信息返回值======//
+    public static final int PullUserInfoSuccess = 300;
+    public static final int PullUserInfoFail = 301;
+    public static final int PushUserInfoSuccess = 302;
+    public static final int PushUserInfoFail = 303;
+
+
     public  BuildFrame(int msgType) {
         frame = Frame.newBuilder();
         frame.setProtoSign(1234);
@@ -68,7 +81,6 @@ public class BuildFrame {
             //接收者
             User.Builder dst = User.newBuilder();
             dst.setUserID(chatMsg.getDst_IDAt(0));
-
             DstUser.Builder dstGroup = DstUser.newBuilder();
             dstGroup.addDst(dst);
             //要发送的信息，先模拟字符串发送
@@ -78,6 +90,8 @@ public class BuildFrame {
             frame.setSrc(src.build());
             frame.setDst(dstGroup.build());
             frame.setMsg(msg);
+            //设置消息布局类型<文本>
+            txtMsg.setType(ChatMsgViewAdapter.TO_USER_MSG);
             return frame.build();
 //            switch(chatMsg.getMsgType()){
 //                case TEXT:
@@ -123,6 +137,20 @@ public class BuildFrame {
         file.setFileName(fileMsg.getFileName());
         file.setFileFeature(fileMsg.getFileFeature());
         file.setFileParam(fileMsg.getFileParam());
+        Log.d("fileMsg.getMsgType()" , "_______________"+fileMsg.getMsgType()+"_________________________");
+        switch (fileMsg.getMsgType()){
+            case FILE:
+                Log.d("文件" , "_____________简要信息______________");
+                break;
+            case SOUNDS:
+                fileMsg.setType(ChatMsgViewAdapter.TO_USER_VOICE);
+                break;
+            case PHOTO:
+                fileMsg.setType(ChatMsgViewAdapter.TO_USER_IMG);
+                break;
+        }
+        //文件类型
+        file.setFileType(fileMsg.getMsgTypeInt());
 
         frame.setSrc(src.build());
         frame.setDst(dstGroup.build());
@@ -164,4 +192,39 @@ public class BuildFrame {
         return null;
     }
 
+    //编码获取用户信息帧
+    public Frame GetPullUserInfoFrame(UserModel userModel){
+        if(userModel.getId() == 0){
+            return null;
+        }
+
+        User.Builder user = User.newBuilder();
+        user.setUserID(userModel.getId());
+        frame.setSrc(user.build());
+        frame.setMsgType(PullUserInfo);
+        return frame.build();
+    }
+
+    //编码获取用户信息帧
+    public Frame GetPushUserInfoFrame(UserModel userModel){
+        if(userModel.getId() == 0){
+            return null;
+        }
+
+        User.Builder user = User.newBuilder();
+        //TODO 头像先不管
+        user.setUserID(userModel.getId());
+        user.setUserName(userModel.getName());
+        user.setAge(userModel.getAge());
+        user.setSex(userModel.getUserSex());
+        user.setRealName(userModel.getUserRealName());
+        user.setPhone(userModel.getUserPhone());
+        user.setEmail(userModel.getUserEmail());
+        user.setAddress(userModel.getUserAddress());
+        user.setSign(userModel.getUserSign());
+
+        frame.setSrc(user.build());
+        frame.setMsgType(PushUserInfo);
+        return frame.build();
+    }
 }

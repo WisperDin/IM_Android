@@ -11,7 +11,11 @@ import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
 import com.cst.im.model.IFriendModel;
+import com.cst.im.model.IUser;
+import com.cst.im.model.PhotoMsgModel;
+import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
+import com.cst.im.model.UserModel;
 import com.cst.im.presenter.Tools;
 
 import java.util.ArrayList;
@@ -49,6 +53,10 @@ public class ComService extends TcpService {
     public interface IsFriendHandler{
         void handleIsFriendEvent(IFriend fl);//参数为接收到的消息
     }
+    public interface UserInfoHandler{
+        void handlePullUserInfoEvent(int rslCode,UserModel userModel); // 加载远程用户数据结果
+        void handlePushUserInfoEvent(int rslCode); // 上传本地用户数据结果
+    }
 
 
     static CopyOnWriteArrayList<MsgHandler> msgListeners;
@@ -58,6 +66,8 @@ public class ComService extends TcpService {
     static FriendListHandler FriendListEvent;
     static ChatListHandler chatListEvent;
     static IsFriendHandler isfriendEvent;
+    static UserInfoHandler userInfoHandler;
+
     //static FileMsgHandler fileMsgHandler;
 
     public static void setRegisterCallback(MsgHandler registerCallback){registerEvent =registerCallback;}
@@ -69,6 +79,7 @@ public class ComService extends TcpService {
     public static void setChatListCallback(ChatListHandler chatListCallback) {chatListEvent=chatListCallback;}
     public static void setFriendListCallback(FriendListHandler FriendListCallback){FriendListEvent=FriendListCallback;}
     public static void setIsfriendCallback(IsFriendHandler IsFriendCallback){isfriendEvent=IsFriendCallback;}
+    public static void setUserInfoHandler(UserInfoHandler userInfoHandlerCallback){userInfoHandler = userInfoHandlerCallback;}
     @Override
     public void OnTcpStop() {
         // TODO: 2017/4/26 tcp连接断开处理
@@ -100,32 +111,57 @@ public class ComService extends TcpService {
             case BuildFrame.TextMsg://聊天消息
             case BuildFrame.FileInfo://文件简要消息
             {
+                //检查是否空
+                if (frame.getDst().getDstCount()<=0){
+                    Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
+                    return;
+                }
                 System.out.println("chatMsg");
                 IBaseMsg baseMsg = null;
                 //实例化对象
                 if(frame.getMsgType()==BuildFrame.TextMsg){
+                    if(frame.getMsg().getMsg()==""){
+                        Log.e(" bad value", "ComService,OnMessageCome TextMsg");
+                        return;
+                    }
                     baseMsg = new TextMsgModel();
                     ((TextMsgModel)baseMsg).setText(frame.getMsg().getMsg());
                     baseMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
                     baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
                 }else if(frame.getMsgType()==BuildFrame.FileInfo){
-                    baseMsg = new FileMsgModel();
-                    baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                    if(frame.getFileInfo().getFileName()==""||frame.getFileInfo().getFileType()==0||
+                            frame.getFileInfo().getFileParam()==""||frame.getFileInfo().getFileFeature()==""){
+                        Log.e(" bad value", "ComService,OnMessageCome FileInfo");
+                        return;
+                    }
+                    switch (frame.getFileInfo().getFileType()){
+                        case 2://图片
+                            baseMsg = new PhotoMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.PHOTO);
+                            break;
+                        case 3://文件
+                            baseMsg = new FileMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                            break;
+                        case 4://声音
+                            baseMsg = new SoundMsgModel();
+                            baseMsg.setMsgType(IBaseMsg.MsgType.SOUNDS);
+                            break;
+                    }
+                    ((FileMsgModel) baseMsg).setFileName(frame.getFileInfo().getFileName());
+                    ((FileMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
+                    ((FileMsgModel) baseMsg).setFileFeature(frame.getFileInfo().getFileFeature());
+
                 }
                 if(baseMsg==null){
                     Log.e(" bad value", "ComService,baseMsg null");
                     return;
                 }
                 //初始化一些公有的东西
-                //检查是否空
-                if (frame.getSrc().getUserName()!=""&&frame.getDst().getDstCount()>0&&frame.getMsg().getMsg()!=""){
-                    Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
-                }
                 int dst[] = new int[frame.getDst().getDstCount()];
                 for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
                     dst[i] = frame.getDst().getDst(i).getUserID();
                 }
-                baseMsg.sendOrRecv(true);
                 baseMsg.setSrc_ID(frame.getSrc().getUserID());
                 baseMsg.setDst_ID(dst);
                 baseMsg.setMsgDate(Tools.getDate());
@@ -133,18 +169,25 @@ public class ComService extends TcpService {
                     chatMsgEvent.handleChatMsgEvent(baseMsg);
                 if(chatListEvent!=null)
                     chatListEvent.handleChatListEvent(baseMsg);
-
-
-
                 break;
             }
 
             case BuildFrame.GetFriend://好友列表信息
             {
+                if(frame.getDst().getDstCount()<=0) {
+                    Log.w("onMessageCome","GetFriend null");
+                    return;
+                }
+
                 Log.d("OnMessage", "feedbackofFriendlist");
                 ArrayList<String> list = new ArrayList<String>();
                 HashMap<String ,Integer> NameAndID = new HashMap<String , Integer>();
                 for (int i = 0; i < frame.getDst().getDstCount(); i++) {
+                    if(frame.getDst().getDst(i).getUserName()==""||frame.getDst().getDst(i).getUserID()==0){
+                        Log.w("onMessageCome","GetFriend bad value");
+                        return;
+                    }
+
                     list.add(frame.getDst().getDst(i).getUserName());
                     NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
@@ -187,7 +230,46 @@ public class ComService extends TcpService {
 
                 break;
             }*/
+            case BuildFrame.PullUserInfo:{ // 获取远程用户信息
+                Log.d("Service","pullUserInfo");
+                User user = frame.getSrc();
+                if(user.getUserID() != UserModel.localUser.getId()){
+                    Log.w("pull from wrong id",String.format("origin id = %s,local id = %s",user.getUserID(),UserModel.localUser.getId()));
+                    userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoFail,null);
+                    return;
+                }
+                if(frame.getFbAction().getRslCode() == BuildFrame.PullUserInfoFail){//获取远程用户失败
+                    userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoFail,null);
+                    return;
+                }
+                UserModel localUser = new UserModel();
+                localUser.setAge(user.getAge());
+                localUser.setUserRealName(user.getRealName());
+                localUser.setUserSign(user.getSign());
+                localUser.setUserSex(user.getSex());
+                localUser.setUserAddress(user.getAddress());
+                localUser.setUserEmail(user.getEmail());
+                localUser.setUserPhone(user.getPhone());
+                userInfoHandler.handlePullUserInfoEvent(BuildFrame.PullUserInfoSuccess,localUser);
+            }break;
 
+            case BuildFrame.PushUserInfo:{ //上传用户数据
+                if(frame.getFbAction().getRslCode() == BuildFrame.PushUserInfoFail){//获取远程用户失败
+                    userInfoHandler.handlePushUserInfoEvent(BuildFrame.PushUserInfoFail);
+                    return;
+                }
+                User user = frame.getSrc();
+                UserModel localUser = new UserModel();
+                localUser.setAge(user.getAge());
+                localUser.setUserRealName(user.getRealName());
+                localUser.setUserSign(user.getSign());
+                localUser.setUserSex(user.getSex());
+                localUser.setUserAddress(user.getAddress());
+                localUser.setUserEmail(user.getEmail());
+                localUser.setUserPhone(user.getPhone());
+                userInfoHandler.handlePushUserInfoEvent(BuildFrame.PushUserInfoSuccess);
+
+            }break;
             default:
                 Log.w("OnMessageCome","msgType异常");
                 break;

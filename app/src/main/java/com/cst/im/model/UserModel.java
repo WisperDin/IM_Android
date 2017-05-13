@@ -21,6 +21,17 @@ public class UserModel implements IUser{
     private String userEmail = "";
     private String userAddress = "";
     private String userSign = "";
+    private int age = 0;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+
 
     //本地用户
     public static UserModel localUser;
@@ -30,6 +41,7 @@ public class UserModel implements IUser{
     public static void saveLocalUser(){//把信息保存到本地
         DBManager.pushLocalUserInfo(localUser);
     }
+
 
 
 

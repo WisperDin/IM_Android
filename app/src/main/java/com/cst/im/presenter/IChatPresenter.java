@@ -1,5 +1,6 @@
 package com.cst.im.presenter;
 
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IUser;
 
 import java.io.File;
@@ -11,6 +12,6 @@ public interface IChatPresenter {
     void  SendMsg(IUser[] dstUser, String contString);
 
     //发送一般文件
-    void SendFile(IUser[] dstUser,File file);
+    void SendFile(IUser[] dstUser, File file, IBaseMsg.MsgType msgType);
 
 }

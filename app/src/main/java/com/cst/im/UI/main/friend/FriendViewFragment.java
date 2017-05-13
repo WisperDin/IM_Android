@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-
 
 import com.cst.im.R;
 import com.cst.im.model.IFriendModel;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener {
-
+    MyCustomAdapter adapter=null;
     private  ArrayList<Integer> letter = new ArrayList<Integer>();//储存标题上的大写字母的位置
      ArrayList<String> NameSequencebylistview= new ArrayList<String>();//记录item上的名字
     @Nullable
@@ -52,9 +51,14 @@ public class FriendViewFragment extends Fragment implements
 
 
     public void InitView(ImageView img,ListView lv){
-        MyCustomAdapter adapter = new MyCustomAdapter(this.getActivity());
+        adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
-        for(int i = 0; i< IFriendModel.iFriendModel.getfriendlist().size(); i++){
+        if(IFriendModel.iFriendModel==null){
+            Log.w("FriendViewFragment","InitView iFriendModel null");
+            return;
+        }
+        int size=IFriendModel.iFriendModel.getfriendlist().size();
+        for(int i = 0; i< size; i++){
             addfriend.SortAndAdd(IFriendModel.iFriendModel.getfriendlist().get(i));
         }
         for (int i = 0; i < addfriend.getTittle().length; i++) {
@@ -72,7 +76,11 @@ public class FriendViewFragment extends Fragment implements
         lv.setAdapter(adapter);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,

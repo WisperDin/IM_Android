@@ -4,8 +4,18 @@ message User {
   string userName = 1;
   string userPwd = 2;
   int32 userID = 3;//用户唯一标识
-  
+
   //用户信息
+
+  string sex = 4;
+  string address = 5;
+  string email = 6;
+  string phone = 7;
+  int32 age = 8;
+  string sign = 9;
+  string realName = 10;
+  string picture = 11;
+
 }
 message Msg {
 	string msg = 1;
@@ -18,6 +28,7 @@ message File {
   string fileName = 1;//文件名
   string fileFeature = 2;//文件指纹
   string fileParam = 3;//文件参数
+  int32 fileType = 4;//文件类型
 }
 message Action {
 	int32 rslCode=1;//状态码
@@ -29,12 +40,12 @@ message Frame {
   int64 msgLength = 2;
   int32 msgType = 3 ;
   int64 senderTime = 4;
-  
+
   User src = 5;
   DstUser dst = 6;
   Msg msg = 7;
 
   File fileInfo = 8;
-  
+
   Action fbAction = 9;
 }

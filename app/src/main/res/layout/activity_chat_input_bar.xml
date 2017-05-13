@@ -11,13 +11,26 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/voice_text_switch_iv"
+        android:id="@+id/voice_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:adjustViewBounds="true"
+        android:clickable="true"
         android:padding="8dp"
-        android:src="@drawable/chat_voice" />
+        android:src="@drawable/chat_voice_btn2"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/voice_keyboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:src="@drawable/keyboard"
+        android:padding="8dp"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -34,13 +47,21 @@
             android:layout_height="wrap_content"
             android:background="@drawable/chat_edit_bg"
             android:gravity="center_vertical|left"
+            android:maxLines="1"
             android:minHeight="30dp"
             android:padding="5dp"
-            android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:visibility="visible"
             tools:ignore="TextFields" />
+
+        <Button
+            android:id="@+id/voice_press_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/chat_voice_btn_selector"
+            android:text="@string/press_say"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/send_voice_btn"
@@ -68,14 +89,14 @@
             android:adjustViewBounds="true"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/chat_emoj_icon" />
+            android:src="@drawable/chat_emoji4" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="50dp"
-        android:layout_marginRight="5dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginRight="5dp">
 
         <ImageView
             android:id="@+id/plus_iv"
@@ -84,8 +105,8 @@
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
             android:clickable="true"
-            android:padding="8dp"
-            android:src="@drawable/chatting_plus_btn"
+            android:padding="7dp"
+            android:src="@drawable/chat_plus3"
             android:visibility="visible" />
 
         <TextView

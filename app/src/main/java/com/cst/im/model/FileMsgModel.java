@@ -11,6 +11,7 @@ public class FileMsgModel extends MsgModelBase implements IFileMsg {
     String fileSize;
     String fileParam;
     String fileFeathre;
+    String fileName;
     //文件
     public File getFile(){return file;}
     public void setFile(File file){
@@ -19,8 +20,9 @@ public class FileMsgModel extends MsgModelBase implements IFileMsg {
 
     @Override
     public String getFileName() {
-        return file.getName();
+        return fileName;
     }
+    public void setFileName(String fileName){this.fileName=fileName;}
 
     //文件尺寸
     public String getFileSize(){return fileSize;}
