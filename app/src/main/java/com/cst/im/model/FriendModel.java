@@ -27,6 +27,8 @@ public class FriendModel implements IFriend{
 
     private int resultcode;
 
+
+
     //好友姓名列表
     private ArrayList <String> friendlist=new ArrayList<String>();
 
@@ -38,9 +40,14 @@ public class FriendModel implements IFriend{
         friendModel =new FriendModel(friendlist,NameAndID);
     }
 
+
     public FriendModel(int ownerid, int friendid){
         this.id=ownerid;
         this.searchId=friendid;
+    }
+    public FriendModel(int ownerid, String name){
+        this.id=ownerid;
+        this.ownername=name;
     }
     public FriendModel(String name){
         this.ownername = name;
@@ -70,6 +77,9 @@ public class FriendModel implements IFriend{
     public HashMap<String, Integer> getFriendNameAndID() {
         return friendNameAndID;
     }
+
+
+    //用于判断是否为好友
     @Override
     public int SearchId(){
         return searchId;

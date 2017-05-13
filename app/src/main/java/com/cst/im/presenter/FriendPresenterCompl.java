@@ -37,30 +37,47 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         ComService.setIsfriendCallback(this);
     }
 
+    @Override
+    public void AddFriend(int ownerid,int friendid){
+        IFriend Addfriend=new FriendModel(ownerid,friendid);
+        final byte[] AddFriendFrame = DeEnCode.encodeAddFriendFrame(Addfriend);
+        if( AddFriendFrame==null){
+            Log.w("GetFriendFrame","null");
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData( AddFriendFrame);
+                    Log.w("send","send data chenggong");
+                }
+                catch (IOException ioe)
+                {
+                    Log.w("send","send data failed");
+                }
+            }}).start();
+    }
+
     //发送请求获取好友列表
     @Override
     public void Getfriendlist(int id) {
         IFriend friendget=new FriendModel(id);
         final byte[] GetFriendFrame = DeEnCode.encodeGetFriendListFrame(friendget);
+        if( GetFriendFrame==null){
+            Log.w("GetFriendFrame","null");
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    //TODO 先避免一下粘包问题，，，
-                    Thread.sleep(500);
-                    ComService.client.SendData(GetFriendFrame);
+                    ComService.client.SendData( GetFriendFrame);
                     Log.w("send","send data chenggong");
                 }
                 catch (IOException ioe)
                 {
-                    ioe.printStackTrace();
                     Log.w("send","send data failed");
-                }catch (InterruptedException ie){
-                    ie.printStackTrace();
-                    Log.w("send","delay send data failed");
-                }
-                catch (NullPointerException nil){
-                    Log.w("send","null client");
                 }
             }}).start();
     }
@@ -69,8 +86,8 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
     @Override
     public void Isfriend(int ownerid,int IsFriendId) {
         IFriend Isfriend=new FriendModel(ownerid,IsFriendId);
-        final byte[] GetFriendFrame = DeEnCode.encodeIsFriendFrame(Isfriend);
-        if(GetFriendFrame==null){
+        final byte[] IsFriendFrame = DeEnCode.encodeIsFriendFrame(Isfriend);
+        if( IsFriendFrame==null){
             Log.w("GetFriendFrame","null");
             return;
         }
@@ -78,7 +95,7 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
             @Override
             public void run() {
                 try {
-                    ComService.client.SendData(GetFriendFrame);
+                    ComService.client.SendData( IsFriendFrame);
                     Log.w("send","send data chenggong");
                 }
                 catch (IOException ioe)
@@ -94,8 +111,6 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
             @Override
             public void run() {
                 Log.w("send","Get data success");
-                System.out.println(msgRecv.getfriendlist().toString());
-                //数据传输-》loginactivity用到
                 ifriendview.onRecvMsg(msgRecv.getfriendlist(),msgRecv.getFriendNameAndID());
             }});
 
@@ -107,9 +122,19 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
             @Override
             public void run() {
                 Log.w("send","Get data success");
-                System.out.println(msgRecv.getfriendlist().toString());
-                //数据传输-》loginactivity用到
                 ifriendview.onReaultCode(msgRecv.ReaultCode(),msgRecv.getname());
+            }});
+
+    }
+
+
+    @Override
+    public void handleAddFriendEvent(final IFriend msgRecv) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("send","Get data success");
+                ifriendview.onReaultCodebyAddFriend(msgRecv.ReaultCode(),msgRecv.getId(),msgRecv.getname());
             }});
 
     }

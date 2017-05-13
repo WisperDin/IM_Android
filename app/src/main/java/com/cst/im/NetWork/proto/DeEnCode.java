@@ -94,6 +94,23 @@ public class DeEnCode {
         }
         return baos.toByteArray();
     }
+
+    //编码-添加好友帧
+    public static byte[] encodeAddFriendFrame(IFriend addfriend) {
+        Frame frame = new BuildFrame(BuildFrame.AddFriend).IsFriend(addfriend);
+        if(frame==null){
+            Log.w("frame null","encodeIsFriendFrame");
+            return null;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
+
+
     //编码文件简要信息帧
     public static byte[] encodeFileMsgFrameHead(IFileMsg fileMsg){
         Frame frame = new BuildFrame(BuildFrame.FileInfo).GetFileInfoFrame(fileMsg);

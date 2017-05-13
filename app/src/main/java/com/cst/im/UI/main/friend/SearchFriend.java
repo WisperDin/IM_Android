@@ -28,6 +28,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     TextView tv;
     ImageView img;
     private IFriendPresenter IsFriend=new FriendPresenterCompl(this);
+    private IFriendPresenter AddFriend=new FriendPresenterCompl(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +52,18 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
                 }
             }
         });
+        img.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                int IsFriendId =Integer.parseInt(et.getText().toString());
+                AddFriend.AddFriend(localUser.getId(),IsFriendId);
+            }
+        });
     }
 
 
-    public int  judgetextIsNum(String text){
+    private int  judgetextIsNum(String text){
         if(text.length()==0){
             return -1;
         }
@@ -90,6 +99,10 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     }
     @Override
     public void onRecvMsg(ArrayList<String> list, HashMap<String ,Integer> NameAndID){
+
+    }
+    @Override
+    public void onReaultCodebyAddFriend(int code,int id,String name){
 
     }
 

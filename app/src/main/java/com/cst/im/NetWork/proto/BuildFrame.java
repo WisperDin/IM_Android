@@ -29,6 +29,7 @@ public class BuildFrame {
     public static final int IsFriend = 8;
     public static final int PullUserInfo = 9;//获取远程用户信息
     public static final int PushUserInfo = 10;//上传远程用户信息
+    public static final int AddFriend=11;
 
     //=====用户信息返回值======//
     public static final int PullUserInfoSuccess = 300;
