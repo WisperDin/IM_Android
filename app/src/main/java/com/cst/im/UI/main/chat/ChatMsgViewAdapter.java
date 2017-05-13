@@ -755,7 +755,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         holder.voice_time.setText(f1 + "\"");
         ViewGroup.LayoutParams lParams = holder.voice_image
                 .getLayoutParams();
-        lParams.width = (int) (mMinItemWith + mMaxItemWith / 60f
+        lParams.width = (int) (mMinItemWith + mMaxItemWith / 10f
                 * soundMsgUrl.getUserVoiceTime());
         holder.voice_image.setLayoutParams(lParams);
     }

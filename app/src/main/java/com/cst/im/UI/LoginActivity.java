@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,11 +13,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cst.im.FileAccess.FileAccess;
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
 import com.cst.im.UI.main.MainActivity;
@@ -126,9 +123,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
                 startActivity(it);
                 LoginActivity.this.finish();
                 Toast.makeText(this,"登录成功", Toast.LENGTH_SHORT).show();
-
-                //TODO 不知道放哪好，暂时放这里，访问应用程序cache需要上下文
-                FileAccess.InitContext(this);
                 break;
             case Status.Login.LOGINFAILED:
                 Toast.makeText(this,"登录失败",Toast.LENGTH_SHORT).show();

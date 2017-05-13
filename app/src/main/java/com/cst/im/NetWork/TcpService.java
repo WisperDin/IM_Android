@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.cst.im.NetWork.proto.DeEnCode;
 
@@ -31,7 +30,7 @@ public abstract class TcpService extends Service {
 //        client = new TcpClient("172.18.149.95",6666);
             //client = new TcpClient("192.168.1.113",6666);
 //        client = new TcpClient("192.168.191.1",6666);
-        client = new TcpClient("192.168.191.1",6666);
+        client = new TcpClient("192.168.1.101",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -111,19 +110,14 @@ public abstract class TcpService extends Service {
                             for (int i= 0 ;i<count;i++){
                                 System.out.print(buffer[i]+" ");
                             }
-                            if (buffer[0]==DeEnCode.SpecialFrameHead){
-                                //特殊帧
-                                DeEnCode.decodeSpFrame(buffer);
-                            }else{
-                                //解码
-                                final Frame frame =  DeEnCode.decodeFrame(buffer);
-                                //放到线程池执行
-                                msgPool.execute(new Runnable() {
+                            //解码
+                            final Frame frame =  DeEnCode.decodeFrame(buffer);
+                            //放到线程池执行
+                            msgPool.execute(new Runnable() {
                                     @Override
                                     public void run() {OnMessageCome(frame);
                                     }
                                 });
-                            }
                             //复制有效字节到新的字节数组中
                             //TODO:以后要注意粘帧的情况
 //                            byte[] frameData = new byte[count];
