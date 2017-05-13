@@ -74,12 +74,23 @@ public abstract class TcpService extends Service {
             new Thread(new ReceiveThread()).start();
         }
         //发送消息
-        public void SendData(byte[] data) throws IOException {
+        public void SendData(final byte[] data) throws IOException {
             if(socket==null)
                 throw  new IOException();
-            OutputStream out=socket.getOutputStream();
-            out.write(data);
-            out.flush();
+            Runnable r= new Runnable(){
+                @Override
+                public void run() {
+                    OutputStream out= null;
+                    try {
+                        out = socket.getOutputStream();
+                        out.write(data);
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            new Thread(r).start();
         }
 
         public void stop(){
