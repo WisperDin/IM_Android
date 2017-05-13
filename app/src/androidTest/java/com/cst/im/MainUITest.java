@@ -21,6 +21,8 @@ import java.util.HashMap;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -90,13 +92,19 @@ public class MainUITest {
     //验证点击消息导航栏
     @Test
     public void ClickFriend() throws InterruptedException {
-        Thread.sleep(1000);
+        Thread.sleep(500);
         SwitchBottomNav(Nav.Friend);
         //检查listview是否出现
         onView(withId(R.id.lv_friend)).check(matches(isDisplayed()));
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.lv_friend)).atPosition(1).perform(click());
-        Thread.sleep(5000);
+        //点击发信息(好友信息那里)
+        onView(withId(R.id.bt_msg)).perform(click());
+        //输入文字
+        onView(withId(R.id.send_edt)).perform(typeText("UItestMsg"),closeSoftKeyboard());
+        //点击发信息
+        onView(withId(R.id.btn_send)).perform(click());
+        Thread.sleep(1000);
     }
 
     //验证点击个人消息
@@ -108,6 +116,10 @@ public class MainUITest {
         onView(withId(R.id.lv_setting)).check(matches(isDisplayed()));
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(0).perform(click());
+
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(0).perform(click());
+
         Thread.sleep(5000);
     }
 
