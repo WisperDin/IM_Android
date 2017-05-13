@@ -10,6 +10,7 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.UI.main.MainActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FriendModel;
+import com.cst.im.model.UserModel;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,6 +39,7 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(AndroidJUnit4.class)
 public class MainUITest {
 
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
@@ -52,11 +54,14 @@ public class MainUITest {
         //假的好友列表
         ArrayList<String> friendlist = new ArrayList<String>();
         HashMap<String ,Integer> friendNameAndID = new HashMap<String , Integer>();
-
         friendlist.add("lzy");
         friendNameAndID.put("lzy",1);
         FriendModel.InitFriendModel(friendlist,friendNameAndID);
-        Thread.sleep(1000);
+
+        if(UserModel.localUser==null){
+            UserModel.localUser = new UserModel("lzy","123",1);
+        }
+        //Thread.sleep(1000);
 
     }
     enum Nav{
@@ -113,6 +118,15 @@ public class MainUITest {
         onView(withId(R.id.btn_send)).perform(click());
     }
 
+    //发送文件给好友
+    //权限阻止了这个操作
+    private void SendFileToFriend()throws InterruptedException{
+        //点击加号
+        onView(withId(R.id.plus_iv)).perform(click());
+        //点击文件图标
+        onView(withId(R.id.chat_picture)).perform(click());
+    }
+
     //点击一个好友，向那个好友发送消息
     @Test
     public void ChatWithFriendFromFriendList() throws InterruptedException {
@@ -139,6 +153,16 @@ public class MainUITest {
         Thread.sleep(1000);
     }
 
+
+    //点击一个好友，向那个好友发送文件
+    @Test
+    public void SendFileToFriendFromFriendList() throws InterruptedException {
+        //点击好友
+        ClickFriend();
+        //发送文件
+        SendFileToFriend();
+        Thread.sleep(10000);
+    }
 /*
     @Test
     public void ChatWithFriendInMsgList{
