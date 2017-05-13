@@ -26,13 +26,15 @@ public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemLongClickListener {
     MyCustomAdapter adapter=null;
     private  ArrayList<Integer> letter = new ArrayList<Integer>();//储存标题上的大写字母的位置
-     ArrayList<String> NameSequencebylistview= new ArrayList<String>();//记录item上的名字
+     ArrayList<String> NameSequencebylistview;//记录item上的名字
+    ListView Friendlistview;
+    ImageView img_search;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
-        ListView Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
-        ImageView img_search=(ImageView)view.findViewById(R.id.img_search);
+        Friendlistview = (ListView)  view.findViewById(R.id.lv_friend);
+        img_search=(ImageView)view.findViewById(R.id.img_search);
         InitView(img_search,Friendlistview);
         Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
         Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
@@ -54,6 +56,7 @@ public class FriendViewFragment extends Fragment implements
 
 
     public void InitView(ImageView img,ListView lv){
+        NameSequencebylistview= new ArrayList<String>();
         adapter = new MyCustomAdapter(this.getActivity());
         AddFriendName addfriend=new AddFriendName();
         if(FriendModel.friendModel ==null){
@@ -83,7 +86,7 @@ public class FriendViewFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        InitView(img_search,Friendlistview);
     }
 
     @Override
