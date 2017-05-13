@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.cst.im.NetWork.proto.DeEnCode;
 
@@ -30,7 +31,7 @@ public abstract class TcpService extends Service {
 //        client = new TcpClient("172.18.149.95",6666);
             //client = new TcpClient("192.168.1.113",6666);
 //        client = new TcpClient("192.168.191.1",6666);
-        client = new TcpClient("192.168.1.101",6666);
+        client = new TcpClient("192.168.191.1",6666);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,6 +78,10 @@ public abstract class TcpService extends Service {
         public void SendData(final byte[] data) throws IOException {
             if(socket==null)
                 throw  new IOException();
+            if(data==null){
+                Log.w("SendData","data null");
+                throw  new IOException();
+            }
             Runnable r= new Runnable(){
                 @Override
                 public void run() {
