@@ -2,7 +2,7 @@ package com.cst.im.DeEncode;
 
 import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.IFriend;
-import com.cst.im.model.IFriendModel;
+import com.cst.im.model.FriendModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class IsFriendFrameTest {
         //初始化帧
         BuildFrame isFriendFrame = new BuildFrame(BuildFrame.IsFriend);
         //准备帧需要的实体
-        IFriend friend = new IFriendModel(1,1);
+        IFriend friend = new FriendModel(1,1);
         //构建帧
         Protocol.Frame frame = isFriendFrame.IsFriend(friend);
         //打印

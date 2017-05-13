@@ -11,17 +11,16 @@ import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.UI.SplashActivity;
-import com.cst.im.UI.main.chat.FaceConversionUtil;
 import com.cst.im.UI.main.discovery.DiscoveryFragment;
 import com.cst.im.UI.main.friend.FriendViewFragment;
 import com.cst.im.UI.main.me.SettingFragment;
 import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
-import com.cst.im.model.IFriendModel;
+import com.cst.im.model.FriendModel;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.IFriendPresenter;
-import com.cst.im.presenter.IFriendPresenterCompl;
+import com.cst.im.presenter.FriendPresenterCompl;
 import com.cst.im.presenter.ILoginPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
 import com.cst.im.presenter.Status;
@@ -34,7 +33,7 @@ import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity implements IFriendView,ILoginView {
-    private IFriendPresenter myfriend=new IFriendPresenterCompl(this);
+    private IFriendPresenter myfriend=new FriendPresenterCompl(this);
     ILoginPresenter loginPresenter;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
 
     @Override
     public void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID){
-        IFriendModel.InitFriendModel(list,NameAndID);
+        FriendModel.InitFriendModel(list,NameAndID);
         System.out.println("运行");
     }
     @Override

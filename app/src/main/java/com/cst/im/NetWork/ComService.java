@@ -8,10 +8,9 @@ import android.util.Log;
 
 import com.cst.im.NetWork.proto.BuildFrame;
 import com.cst.im.model.FileMsgModel;
+import com.cst.im.model.FriendModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFriend;
-import com.cst.im.model.IFriendModel;
-import com.cst.im.model.IUser;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
@@ -191,8 +190,8 @@ public class ComService extends TcpService {
                     list.add(frame.getDst().getDst(i).getUserName());
                     NameAndID.put(frame.getDst().getDst(i).getUserName(),frame.getDst().getDst(i).getUserID());
                 }
-                IFriend myfriend = new IFriendModel(list,NameAndID);
-                IFriendModel.InitFriendModel(list,NameAndID);
+                IFriend myfriend = new FriendModel(list,NameAndID);
+                FriendModel.InitFriendModel(list,NameAndID);
                 FriendListEvent.handleFriendLisEvent(myfriend);
                 break;
             }
@@ -201,7 +200,7 @@ public class ComService extends TcpService {
             case BuildFrame.IsFriend://判断是否为好友
             {
                 Log.d("OnMessage", "feedbackofIsFriend");
-                IFriend IsFriend=new IFriendModel(frame.getDst().getDst(0).getUserName());
+                IFriend IsFriend=new FriendModel(frame.getDst().getDst(0).getUserName());
                 if(frame.getDst().getDst(0).getUserID()!=0){
                     IsFriend.SetRealtCode(1);
                 }

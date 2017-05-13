@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import com.cst.im.R;
 import com.cst.im.presenter.IFriendPresenter;
-import com.cst.im.presenter.IFriendPresenterCompl;
+import com.cst.im.presenter.FriendPresenterCompl;
 import com.cst.im.view.IFriendView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.cst.im.model.IFriendModel.iFriendModel;
+import static com.cst.im.model.FriendModel.friendModel;
 import static com.cst.im.model.UserModel.localUser;
 
 public class SearchFriend extends AppCompatActivity implements IFriendView {
@@ -27,7 +27,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     Button bt;
     TextView tv;
     ImageView img;
-    private IFriendPresenter IsFriend=new IFriendPresenterCompl(this);
+    private IFriendPresenter IsFriend=new FriendPresenterCompl(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +78,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             tv.setText("用户不存在");
             return;
         }
-        if(iFriendModel.getfriendlist().contains(username)){
+        if(friendModel.getfriendlist().contains(username)){
             img.setVisibility(View.INVISIBLE);
             tv.setText("你们已经是好友");
             return;

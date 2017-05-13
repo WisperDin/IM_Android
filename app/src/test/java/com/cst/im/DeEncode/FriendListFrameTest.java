@@ -1,8 +1,8 @@
 package com.cst.im.DeEncode;
 
 import com.cst.im.NetWork.proto.BuildFrame;
+import com.cst.im.model.FriendModel;
 import com.cst.im.model.IFriend;
-import com.cst.im.model.IFriendModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class FriendListFrameTest {
         //初始化帧
         BuildFrame friendFrame = new BuildFrame(BuildFrame.GetFriend);
         //准备帧需要的实体
-        IFriend friend = new IFriendModel(1);
+        IFriend friend = new FriendModel(1);
 
         //构建帧
         Protocol.Frame frame = friendFrame.GetFriendList(friend);

@@ -8,7 +8,7 @@ import java.util.HashMap;
  * Created by sun on 2017/5/4.
  */
 
-public class IFriendModel implements IFriend{
+public class FriendModel implements IFriend{
 
 
     private String ownername;
@@ -33,26 +33,26 @@ public class IFriendModel implements IFriend{
     //好友ID，名字的map
     private HashMap<String ,Integer> friendNameAndID = new HashMap<String , Integer>();
 
-    public static  IFriendModel iFriendModel;
+    public static FriendModel friendModel;
     public static void InitFriendModel(ArrayList<String> friendlist,HashMap<String ,Integer> NameAndID){
-        iFriendModel=new  IFriendModel(friendlist,NameAndID);
+        friendModel =new FriendModel(friendlist,NameAndID);
     }
 
-    public IFriendModel(int ownerid,int friendid){
+    public FriendModel(int ownerid, int friendid){
         this.id=ownerid;
         this.searchId=friendid;
     }
-    public IFriendModel(String name){
+    public FriendModel(String name){
         this.ownername = name;
     }
-    public IFriendModel(int userid){
+    public FriendModel(int userid){
         this.id = userid;
     }
-    public IFriendModel(ArrayList<String> friendlist,HashMap<String ,Integer> NameAndID){
+    public FriendModel(ArrayList<String> friendlist, HashMap<String ,Integer> NameAndID){
         this.friendlist = friendlist;
         this.friendNameAndID=NameAndID;
     }
-    public IFriendModel(){};
+    public FriendModel(){};
 
 
     //用于获取好友列表
