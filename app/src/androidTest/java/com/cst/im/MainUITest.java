@@ -2,6 +2,7 @@ package com.cst.im;
 
 import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -25,6 +26,7 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.anything;
 
@@ -55,6 +57,7 @@ public class MainUITest {
         friendNameAndID.put("lzy",1);
         FriendModel.InitFriendModel(friendlist,friendNameAndID);
         Thread.sleep(1000);
+
     }
     enum Nav{
         MsgList,
@@ -62,6 +65,8 @@ public class MainUITest {
         discover,
         me
     }
+    //基础操作:--------------------------------------------------------------
+    //切换页面
     private void SwitchBottomNav(final Nav nav){
         //到UI线程运行
         mActivityRule.getActivity().runOnUiThread(
@@ -87,11 +92,9 @@ public class MainUITest {
 
                     }
                 });
-
     }
-    //验证点击消息导航栏
-    @Test
-    public void ClickFriend() throws InterruptedException {
+    //点击一个好友
+    private void ClickFriend()throws InterruptedException{
         Thread.sleep(500);
         SwitchBottomNav(Nav.Friend);
         //检查listview是否出现
@@ -100,12 +103,48 @@ public class MainUITest {
         onData(anything()).inAdapterView(withId(R.id.lv_friend)).atPosition(1).perform(click());
         //点击发信息(好友信息那里)
         onView(withId(R.id.bt_msg)).perform(click());
+    }
+
+    //和好友聊天
+    private void ChatWithFriend()throws InterruptedException{
         //输入文字
         onView(withId(R.id.send_edt)).perform(typeText("UItestMsg"),closeSoftKeyboard());
         //点击发信息
         onView(withId(R.id.btn_send)).perform(click());
+    }
+
+    //点击一个好友，向那个好友发送消息
+    @Test
+    public void ChatWithFriendFromFriendList() throws InterruptedException {
+        //点击好友
+        ClickFriend();
+        //聊天
+        ChatWithFriend();
         Thread.sleep(1000);
     }
+    //点击从点击好友，发信息生成的消息列表
+    @Test
+    public void ClickMsgListFromClickFriend() throws InterruptedException {
+        ClickFriend();
+        //两次返回键，从聊天返回到主界面
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(isRoot()).perform(ViewActions.pressBack());
+        //切换到消息列表
+        SwitchBottomNav(Nav.MsgList);
+        //点击消息列表
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.chat_list)).atPosition(0).perform(click());
+        //聊天
+        ChatWithFriend();
+        Thread.sleep(1000);
+    }
+
+/*
+    @Test
+    public void ChatWithFriendInMsgList{
+
+    }
+*/
 
     //验证点击个人消息
     @Test
@@ -118,7 +157,13 @@ public class MainUITest {
         onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(0).perform(click());
 
         //点击listview中的某一项
-        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(0).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(4).perform(click());
+
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText("UItestInfo"),closeSoftKeyboard());
+
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
 
         Thread.sleep(5000);
     }
