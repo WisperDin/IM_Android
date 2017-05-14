@@ -22,8 +22,8 @@ public class FileUtils {
             case FileSweet.FILE_TYPE_FILE:
                 file =new File(Root+"/files");
                 break;
-            case FileSweet.FILE_TYPE_MUSIC:
-                file =new File(Root+"/musics");
+            case FileSweet.FILE_TYPE_SOUND:
+                file =new File(Root+"/sounds");
                 break;
             case FileSweet.FILE_TYPE_PICTURE:
                 file =new File(Root+"/pictures");

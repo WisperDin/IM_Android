@@ -120,7 +120,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         iChatView.onReceriveSoundText((SoundMsgModel) msgRecv);
                     }
                 });
-                fileType = FileSweet.FILE_TYPE_VIDEO;
+                fileType = FileSweet.FILE_TYPE_SOUND;
                 break;
         }
         //file name without prefix
@@ -219,7 +219,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
 
 
                 iChatView.onSendVoice(((SoundMsgModel) fileMsg));
-                fileType = FileSweet.FILE_TYPE_MUSIC;
+                fileType = FileSweet.FILE_TYPE_SOUND;
                 break;
         }
         if(msgType==null||fileType==0){

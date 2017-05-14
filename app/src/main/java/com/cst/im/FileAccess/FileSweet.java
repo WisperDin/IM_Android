@@ -23,7 +23,7 @@ public class FileSweet {
      * 文件固有类型
      */
     final static public int FILE_TYPE_PICTURE=1;
-    final static public int FILE_TYPE_MUSIC=2;
+    final static public int FILE_TYPE_SOUND =2;
     final static public int FILE_TYPE_VIDEO=3;
     final static public int FILE_TYPE_FILE=4;
     /**
@@ -78,7 +78,7 @@ public class FileSweet {
     File file;
     /**
      * 生成一个file对象，
-     * @param fileType{@link FILE_TYPE_PICTURE,FILE_TYPE_MUSIC,FILE_TYPE_VIDEO,FILE_TYPE_FILE}.
+     * @param fileType{@link FILE_TYPE_PICTURE,FILE_TYPE_SOUND,FILE_TYPE_VIDEO,FILE_TYPE_FILE}.
      * @param filePath
      * @throws InvalidParameterException
      */
@@ -123,7 +123,7 @@ public class FileSweet {
                     throw new FileNotFoundException(e.toString());
                 }
                 break;
-            case FILE_TYPE_MUSIC:
+            case FILE_TYPE_SOUND:
                 sb.append(this.fileName);
                 break;
             case FILE_TYPE_VIDEO:
