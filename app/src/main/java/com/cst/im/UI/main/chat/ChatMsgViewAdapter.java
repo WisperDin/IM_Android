@@ -35,8 +35,9 @@ import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.PhotoMsgModel;
+import com.cst.im.tools.FileUtils;
+
 import java.io.File;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -624,15 +625,16 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
-                File file = new File(fileMsg.getFileUrl());
+                //TODO 这里是直接打开下载目录的文件路径（其实暗含了默认接受下载的逻辑，若需要做选择性接收，这里需要改）
+                File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_FILE),fileMsg.getFileName());
                 if (file != null && file.exists()) {
                     // 文件存在，直接打开
                     DealFileTypeUtils.openFile(file, (Activity) context);
                 } else {
-                    // 下载
+/*                    // 下载
                     context.startActivity(new Intent(context,
                             ShowNormalFileActivity.class).putExtra("msgbody",
-                            (Serializable) fileMsg));
+                            (Serializable) fileMsg));*/
                 }
             }
         });
