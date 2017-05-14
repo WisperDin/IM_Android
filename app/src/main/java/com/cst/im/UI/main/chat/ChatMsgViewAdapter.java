@@ -571,47 +571,33 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 drawable = (AnimationDrawable) holder.voice_anim
                         .getBackground();
                 drawable.start();
-                File file = new File(com.cst.im.tools.FileUtils.getFilePath(FileSweet.FILE_TYPE_VIDEO));
-                String voicePath = null;
+                File file = new File(com.cst.im.tools.FileUtils.getFilePath(FileSweet.FILE_TYPE_SOUND),soundMsgUrl.getFileName());
+                if(!file.exists()){
+                    Log.e("fromVoiceUserLayout","file not exists");
+                    return;
+                }
                 try{
-                    voicePath = file.toURL().getPath();
-                    Log.d("VoicePath" , "+++++++++++++++++"+voicePath+"+++++++++++++++++++");
+                        soundMsgUrl.setSoundUrl(file.toURL().toString()); ;
                 }catch (MalformedURLException mue){
                     Log.w("to url","failed");
                     return;
                 }
-                if(voicePath==null){
+                if(soundMsgUrl.getSoundUrl()==null){
                     Log.w("url","null");
                     return;
                 }
-//                String voicePaths = soundMsgUrl.getSoundUrl() == null ? ""
-//                        : soundMsgUrl.getSoundUrl();
-                //soundMsgUrl.setSoundUrl(voicePath);
-                //String voicePath = soundMsgUrl.getSoundUrl()== null ? "" : soundMsgUrl.getSoundUrl();
-                //File file = new File(voicePath);
-                if (!(!voicePath.equals("") && FileSaveUtil
-                        .isFileExists(file))) {
-                    voicePath = soundMsgUrl.getSoundUrl() == null ? ""
-                            : soundMsgUrl.getSoundUrl();
-                }
+                //处理是否已读
                 if (voiceIsRead != null) {
                     voiceIsRead.voiceOnClick(position);
                 }
-                File voiceFile = new File(voicePath,soundMsgUrl.getFileName());
-                try{
-                    MediaManager.playSound(voiceFile.toURL().toString() ,
-                            new MediaPlayer.OnCompletionListener() {
+                MediaManager.playSound(soundMsgUrl.getSoundUrl(), new MediaPlayer.OnCompletionListener() {
 
-                                @Override
-                                public void onCompletion(MediaPlayer mp) {
-                                    voicePlayPosition = -1;
-                                    holder.voice_anim
-                                            .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
-                                }
-                            });
-                }catch (MalformedURLException mue){
-
-                }
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        voicePlayPosition = -1;
+                        holder.voice_anim.setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+                    }
+                });
 
             }
 
