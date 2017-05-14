@@ -209,28 +209,24 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 try{
                     //设置URL路径
                     ((SoundMsgModel) fileMsg).setSoundUrl(file.toURL().toString());
-
-                    // 设置时长
-                    String filePath = RecordUtils.getAudioPath();
-                    int duration = RecordUtils.getDuration(filePath);
-                    Log.d("Record", "duration : " + String.valueOf(duration));
-                    float voiceTime = duration/1000.0f;
-                    ((SoundMsgModel) fileMsg).setUserVoiceTime(voiceTime);
-
-                    // 设置时间戳
-                    ((SoundMsgModel) fileMsg).setMsgDate(Tools.getDate());
-                    Log.d("Record","Time : " + Tools.getDate());
-                    //参数为时长
-                    fileMsg.setFileParam(Float.toString(voiceTime));
-
                 }catch (MalformedURLException mie){
                     mie.printStackTrace();
+                    Log.e("setSoundUrl","failed");
                     return;
-                }/*catch (IOException ioe){
-                    ioe.printStackTrace();
-                    return;
-                }*/
+                }
+                // 设置时长
+                String filePath = RecordUtils.getAudioPath();
+                int duration = RecordUtils.getDuration(filePath);
+                Log.d("Record", "duration : " + String.valueOf(duration));
+                float voiceTime = duration/1000.0f;
+                ((SoundMsgModel) fileMsg).setUserVoiceTime(voiceTime);
 
+                // 设置时间戳
+                ((SoundMsgModel) fileMsg).setMsgDate(Tools.getDate());
+                Log.d("Record","Time : " + Tools.getDate());
+
+                //参数为时长
+                fileMsg.setFileParam(Float.toString(voiceTime));
 
                 iChatView.onSendVoice(((SoundMsgModel) fileMsg));
                 fileType = FileSweet.FILE_TYPE_SOUND;
@@ -241,7 +237,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             return;
         }
         fileMsg.setFile(file);
-        fileMsg.setFileName(file.getName());
         fileMsg.setSrc_ID(UserModel.localUser.getId());
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(msgType);
@@ -265,10 +260,9 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             return;
         }
         fs.setFileParam(fileMsg.getFileParam());
-        //使用文件信息写入到FileMsg中
-        //fileMsg.setFileSize(fs.getFileParam());
-        //fileMsg.setFileParam(fs.getFileParam());
         fileMsg.setFileFeature(fs.getFeature());
+        //文件名
+        fileMsg.setFileName(fs.getFileName());//注，语音文件的文件名为文件指纹
             FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
                 @Override
                 public void fail(int code, String msg) {

@@ -128,6 +128,7 @@ public class FileSweet {
                 }
                 break;
             case FILE_TYPE_SOUND:
+                this.fileName = feature;//语音的文件名直接为指纹
                 sb.append(this.fileName);
                 break;
             case FILE_TYPE_VIDEO:
