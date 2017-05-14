@@ -265,7 +265,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         FileSweet fs = null;
         try {
             fs = new FileSweet(fileType, file);
-
+            //注，语音文件的文件名为文件指纹
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -274,37 +274,38 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             return;
         }
         fs.setFileParam(fileMsg.getFileParam());
-        fileMsg.setFileFeature(fs.getFeature());
-        //文件名
-        fileMsg.setFileName(fs.getFileName());//注，语音文件的文件名为文件指纹
-            FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
-                @Override
-                public void fail(int code, String msg) {
-                    // TODO: 2017/5/8 给某个View做点事
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "上传失败", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+        FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
+            @Override
+            public void fail(int code, String msg) {
+                // TODO: 2017/5/8 给某个View做点事
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "上传失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
-                @Override
-                public void success(int code, String msg) {
-                    // TODO: 2017/5/8 某个View做点事
-                    // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+            @Override
+            public void success(int code, String msg) {
+                // TODO: 2017/5/8 某个View做点事
+                // TODO: 2017/5/8 如果操作不了UI的话调到主线程操作，如果！
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
 
 
         //发送文件简要信息帧到服务器
+        //文件指纹
+        fileMsg.setFileFeature(fs.getFeature());
+        //文件名,如果是语音文件就用指纹代替
+        fileMsg.setFileName(msgType== IBaseMsg.MsgType.SOUNDS ? fs.getFeature():file.getName());
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
         if(fileHeadToSend==null){
             Log.w("file","fileHeadToSend null");

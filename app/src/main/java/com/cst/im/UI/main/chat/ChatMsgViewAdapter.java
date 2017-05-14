@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableString;
@@ -626,10 +627,13 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 //TODO 这里是直接打开下载目录的文件路径（其实暗含了默认接受下载的逻辑，若需要做选择性接收，这里需要改）
-                File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_FILE),fileMsg.getFileName());
+
+                File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_FILE),FileUtils.getFileNameNoEx(fileMsg.getFileName()));
+                String fileMIME = DealFileTypeUtils.getMIMEType(fileMsg.getFileName());
                 if (file != null && file.exists()) {
                     // 文件存在，直接打开
-                    DealFileTypeUtils.openFile(file, (Activity) context);
+                    //再传一个后缀
+                    DealFileTypeUtils.openFile(Uri.fromFile(file),fileMIME,(Activity) context);
                 } else {
 /*                    // 下载
                     context.startActivity(new Intent(context,
