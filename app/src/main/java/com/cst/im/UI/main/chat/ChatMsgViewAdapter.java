@@ -310,7 +310,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder3 = (ToUserMsgViewHolder) view.getTag();
                 }
-                toMsgUserLayout((ToUserMsgViewHolder) holder3, msg, i);
+                toMsgUserLayout(holder3, msg, i);
                 break;
             case TO_USER_IMG:
                 ToUserImgViewHolder holder4;
@@ -402,7 +402,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         TextView tv_ack;
         // 显示送达回执状态
         TextView tv_delivered;
-
         TextView tv_file_name;
         TextView tv_file_size;
         TextView tv_file_download_state;
@@ -435,7 +434,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private void fromMsgUserLayout(final FromUserMsgViewHolder holder, final IBaseMsg msg, final int position) {
-        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         /* time */
         if (position != 0) {
             String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
@@ -456,7 +455,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private void fromImgUserLayout(final FromUserImageViewHolder holder, final IBaseMsg msg, final int position) {
-        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         /* time */
         if (position != 0) {
             String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
@@ -511,7 +510,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
     private void fromVoiceUserLayout(final FromUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
         //final ISoundMsg soundUrl = ((ISoundMsg)msg);
-        holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         /* time */
         if (position != 0) {
             String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
@@ -576,6 +575,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 String voicePath = null;
                 try{
                     voicePath = file.toURL().getPath();
+                    Log.d("VoicePath" , "+++++++++++++++++"+voicePath+"+++++++++++++++++++");
                 }catch (MalformedURLException mue){
                     Log.w("to url","failed");
                     return;
@@ -584,7 +584,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                     Log.w("url","null");
                     return;
                 }
-                soundMsgUrl.setSoundUrl(voicePath);
+//                String voicePaths = soundMsgUrl.getSoundUrl() == null ? ""
+//                        : soundMsgUrl.getSoundUrl();
+                //soundMsgUrl.setSoundUrl(voicePath);
                 //String voicePath = soundMsgUrl.getSoundUrl()== null ? "" : soundMsgUrl.getSoundUrl();
                 //File file = new File(voicePath);
                 if (!(!voicePath.equals("") && FileSaveUtil
@@ -595,16 +597,22 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 if (voiceIsRead != null) {
                     voiceIsRead.voiceOnClick(position);
                 }
-                MediaManager.playSound(voicePath ,
-                        new MediaPlayer.OnCompletionListener() {
+                File voiceFile = new File(voicePath,soundMsgUrl.getFileName());
+                try{
+                    MediaManager.playSound(voiceFile.toURL().toString() ,
+                            new MediaPlayer.OnCompletionListener() {
 
-                            @Override
-                            public void onCompletion(MediaPlayer mp) {
-                                voicePlayPosition = -1;
-                                holder.voice_anim
-                                        .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
-                            }
-                        });
+                                @Override
+                                public void onCompletion(MediaPlayer mp) {
+                                    voicePlayPosition = -1;
+                                    holder.voice_anim
+                                            .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
+                                }
+                            });
+                }catch (MalformedURLException mue){
+
+                }
+
             }
 
         });
@@ -621,7 +629,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
     private void fromFileUserLayout(final FromUserFileViewHolder holder, final IBaseMsg msg, final int position){
 
-        holder.head_iv.setBackgroundResource(R.mipmap.tongbao_hiv);
+        holder.head_iv.setBackgroundResource(R.mipmap.ic_default);
         final IFileMsg fileMsg = ((FileMsgModel)msg);
 //        final String filePath = fileMsg.getFileUrl();
         holder.tv_file_name.setText(fileMsg.getFileName());
@@ -650,7 +658,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
     }
     private void toFileUserLayout(final FromUserFileViewHolder holder, final IBaseMsg msg, final int position){
-        holder.head_iv.setBackgroundResource(R.mipmap.tongbao_hiv);
+        holder.head_iv.setBackgroundResource(R.mipmap.ic_default);
         /* time */
 //        final NormalFileMessageBody fileMessageBody = (NormalFileMessageBody) message
 //                .getBody();
@@ -709,9 +717,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 //    }
 
     private void toMsgUserLayout(final ToUserMsgViewHolder holder, final IBaseMsg msg, final int position) {
-        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         holder.headicon.setImageDrawable(context.getResources()
-                .getDrawable(R.mipmap.grzx_tx_s));
+                .getDrawable(R.mipmap.ic_default));
         /* time */
         if (position != 0) {
             String showTime = getTime(msg.getMsgDate(), coll.get(position - 1).getMsgDate());
@@ -733,7 +741,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
     private void toImgUserLayout(final ToUserImgViewHolder holder, final IBaseMsg msg, final int position) {
         IPhotoMsg photoMsgUrl = ((PhotoMsgModel)msg);
-        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         switch (msg.getSendState()) {
             case ChatConst.SENDING:
                 an = AnimationUtils.loadAnimation(context,
@@ -774,7 +782,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 break;
         }
         holder.headicon.setImageDrawable(context.getResources()
-                .getDrawable(R.mipmap.grzx_tx_s));
+                .getDrawable(R.mipmap.ic_default));
 
         /* time */
         if (position != 0) {
@@ -830,7 +838,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private void toVoiceUserLayout(final ToUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
-        holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);
+        holder.headicon.setBackgroundResource(R.mipmap.ic_default);
         switch (msg.getSendState()) {
             case ChatConst.SENDING:
                 an = AnimationUtils.loadAnimation(context,
@@ -871,7 +879,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 break;
         }
         holder.headicon.setImageDrawable(context.getResources()
-                .getDrawable(R.mipmap.grzx_tx_s));
+                .getDrawable(R.mipmap.ic_default));
 
         /* time */
         if (position != 0) {

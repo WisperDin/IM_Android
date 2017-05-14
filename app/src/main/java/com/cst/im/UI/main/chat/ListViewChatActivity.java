@@ -655,29 +655,6 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 
     }
 
-
-    /**
-     * 为了模拟接收延迟
-     */
-//    private Handler receriveHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case 0:
-//                    receriveMsgText(content);
-//                    break;
-//                case 1:
-//                    receriveImageText(filePath);
-//                    break;
-//                case 2:
-//                    //receriveVoiceText(seconds, voiceFilePath);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {

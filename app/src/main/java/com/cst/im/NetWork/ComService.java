@@ -145,18 +145,20 @@ public class ComService extends TcpService {
                         case 2://图片
                             baseMsg = new PhotoMsgModel();
                             baseMsg.setMsgType(IBaseMsg.MsgType.PHOTO);
+                            ((PhotoMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
                             break;
                         case 3://文件
                             baseMsg = new FileMsgModel();
                             baseMsg.setMsgType(IBaseMsg.MsgType.FILE);
+                            ((FileMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
                             break;
                         case 4://声音
                             baseMsg = new SoundMsgModel();
                             baseMsg.setMsgType(IBaseMsg.MsgType.SOUNDS);
+                            ((SoundMsgModel) baseMsg).setUserVoiceTime(Float.parseFloat(frame.getFileInfo().getFileParam()));
                             break;
                     }
                     ((FileMsgModel) baseMsg).setFileName(frame.getFileInfo().getFileName());
-                    ((FileMsgModel) baseMsg).setFileSize(frame.getFileInfo().getFileParam());
                     ((FileMsgModel) baseMsg).setFileFeature(frame.getFileInfo().getFileFeature());
 
                 }
