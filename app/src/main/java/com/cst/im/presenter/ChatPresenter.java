@@ -11,6 +11,7 @@ import com.cst.im.NetWork.ComService;
 import com.cst.im.NetWork.Okhttp.impl.FileImRequest;
 import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
 import com.cst.im.UI.main.chat.ListViewChatActivity;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
@@ -143,12 +144,17 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         //TODO be care the cast
                         Toast.makeText(activity, "下载成功", Toast.LENGTH_SHORT).show();
                        // ArrayList<String> imgList = new ArrayList<String>();
-                        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
-                        if(!file.exists()){
-                            Log.e("file","open failed");
+
+                        if(msgRecv.getMsgType()== IBaseMsg.MsgType.PHOTO){//只有图片才需要添加到imgList
+                            File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+                            if(!file.exists()){
+                                Log.e("file","open failed");
+                            }
+                            ChatMsgViewAdapter chatMsgAdapter = ((ListViewChatActivity) activity).mAdapter;
+                            chatMsgAdapter.getImageList().add(file.getAbsolutePath());
+                            chatMsgAdapter.getImagePosition().put(chatMsgAdapter.getCount()-1,chatMsgAdapter.getImageList().size()-1);
                         }
-                        //imgList.add(file.getAbsolutePath());
-                        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
+
                     }
                 });
             }
@@ -180,6 +186,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileMsg = new PhotoMsgModel();
                 iChatView.onSendImg(((PhotoMsgModel) fileMsg));
                 fileType = FileSweet.FILE_TYPE_PICTURE;
+
+                //添加图片到imgList
+                ChatMsgViewAdapter chatMsgAdapter = ((ListViewChatActivity) activity).mAdapter;
+                chatMsgAdapter.getImageList().add(file.getAbsolutePath());
+                chatMsgAdapter.getImagePosition().put(chatMsgAdapter.getCount()-1,chatMsgAdapter.getImageList().size()-1);
                 break;
             case SOUNDS:
                 fileMsg = new SoundMsgModel();
@@ -219,6 +230,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(msgType);
         fileMsg.setMsgDate(Tools.getDate());
+        //更新适配器的数据
+        mDataArrays.add(fileMsg);
+
+
         //使用http上传文件
         // TODO: 2017/5/8 delete it just test,cjwddz
         try {
@@ -254,6 +269,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
         //发送文件简要信息帧到服务器
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
         if(fileHeadToSend==null){
@@ -272,17 +289,6 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });
 
-        //更新UI的适配器
-        mDataArrays.add(fileMsg);
-        /*handler.post(new Runnable() {
-            @Override
-            public void run() {
-                iChatView.onSendMsg();
-            }});*/
-/*        ArrayList<String> imgList = new ArrayList<String>();
-        imgList.add(file.getAbsolutePath());
-        ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
-        ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
     }
 
 

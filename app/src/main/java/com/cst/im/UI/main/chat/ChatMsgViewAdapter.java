@@ -48,6 +48,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     private Context context;
     //private List<ChatMessageBean> userList = new ArrayList<ChatMessageBean>();
     private ArrayList<String> imageList = new ArrayList<String>();
+    //key是position，value是在imageList中的位置
     private HashMap<Integer,Integer> imagePosition = new HashMap<Integer,Integer>();
     public static final int FROM_USER_MSG = 0;//接收消息类型
     public static final int TO_USER_MSG = 1;//发送消息类型
@@ -128,9 +129,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         return  imageList;
     }
 
-    public void setImagePosition(HashMap<Integer,Integer> imagePosition) {
-        this.imagePosition = imagePosition;
-    }
+    public void setImagePosition(HashMap<Integer,Integer> imagePosition) {this.imagePosition = imagePosition;}
+    public HashMap<Integer,Integer> getImagePosition() {return  imagePosition;}
 
     @Override
     public int getCount() {
