@@ -5,9 +5,15 @@ package com.cst.im.model;
  */
 
 public interface ILoginUser {
-    short checkTypeOfUsername(String username);
-    boolean checkPasswordValidity(String password);
-    int checkUserValidity(String name, String passwd);
+    int getId();
+    void setId(int id);
+    String getUsername();
+    void setUsername(String username);
+    String getPassword();
+    void setPassword(String password);
+
+
+
 
 
 }

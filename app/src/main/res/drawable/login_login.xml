@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@color/colorLoginButtonPress"/>
-    <item android:drawable="@color/colorLoginButton"/>
+
+    <item android:drawable="@color/colorLoginButtonPress" android:state_pressed="true">
+        <shape>
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+
+    <item android:drawable="@color/colorLoginButton">
+        <shape>
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+
 </selector>

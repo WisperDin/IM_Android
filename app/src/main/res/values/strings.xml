@@ -11,7 +11,7 @@
     <string name="error_username_3">用户名已存在</string>
     <string name="error_password">密码长度不正确(6~30字符的英文,数字)</string>
     <string name="error_login">登录失败，请检查网络</string>
-    <string name="prompt_message_login">一键注册</string>
+    <string name="prompt_message_login">注册</string>
     <string name="prompt_other_login">---其他登录---</string>
     <string name="prompt_forget_password"><u>忘记密码?</u></string>
 
@@ -21,10 +21,16 @@
     <string name="title_discovery">Discovery</string>
     <string name="title_me">Me</string>
 
+    <!-- Chat -->
+    <string name="press_say">按住说话</string>
+    <string name="btn_send">发送</string>
+
     <!-- Settings -->
+    <string name="setting_name">settting</string>
+    <string name="userinfo">User</string>
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
+    <!-- DeEnCode General settings -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
@@ -47,7 +53,7 @@
         <item>-1</item>
     </string-array>
 
-    <!-- Example settings for Data & Sync -->
+    <!-- DeEnCode settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
@@ -84,7 +90,7 @@
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
-    <!-- Example settings for Notifications -->
+    <!-- DeEnCode settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
 
     <string name="pref_title_new_message_notifications">New message notifications</string>
@@ -93,5 +99,17 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- 录音 -->
+    <string name="normal">按住 说话</string>
+    <string name="recording">松开 结束</string>
+    <string name="want_to_cancle">松开手指，取消发送</string>
+    <string name="shouzhishanghua">手指上滑，取消发送</string>
+    <string name="tooshort">录音时间过短</string>
+    <string name="toolong">录音时间过长</string>
+
+    <!--文件-->
+    <string name="text_ack_msg">已读</string>
+    <string name="text_delivered_msg">送达</string>
 
 </resources>

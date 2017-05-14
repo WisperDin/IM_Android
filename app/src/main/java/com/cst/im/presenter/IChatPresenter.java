@@ -1,12 +1,17 @@
 package com.cst.im.presenter;
 
-import com.cst.im.model.IMsg;
+import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IUser;
 
-import java.util.List;
+import java.io.File;
 
 public interface IChatPresenter {
     //加载历史消息
-    List<IMsg>  LoadHisMsg();
+    //List<IMsg>  LoadHisMsg();
     //发送新的消息
-    void  SendMsg(String contString);
+    void  SendMsg(IUser[] dstUser, String contString);
+
+    //发送一般文件
+    void SendFile(IUser[] dstUser, File file, IBaseMsg.MsgType msgType);
+
 }

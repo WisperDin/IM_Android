@@ -1,5 +1,9 @@
 package com.cst.im.model;
 
+import android.util.Log;
+
+import com.cst.im.presenter.Status;
+
 import java.util.regex.Pattern;
 
 /**
@@ -8,14 +12,17 @@ import java.util.regex.Pattern;
 
 public class LoginUserModel implements ILoginUser {
 
-
+    int id;
     String username;
     String password;
+
     public LoginUserModel(String username, String password){
         this.username = username;
         this.password = password;
     }
+    public LoginUserModel(){
 
+    }
     public String getPassword() {
         return password;
     }
@@ -33,32 +40,30 @@ public class LoginUserModel implements ILoginUser {
         this.username = username;
     }
 
-    @Override
-    public short checkTypeOfUsername(String username){
+    public static short checkTypeOfUsername(String username){
 
         Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
         Pattern phonePattern = Pattern.compile("^1(3|4|5|7|8)[0-9]\\d{8}$");
         Pattern usernamePattern = Pattern.compile(".*[a-zA-Z]+.*");
-        if(username.length() < 4 || username.length() > 22){ //用户名不合格
-            return 0;
+        if(username.length() < 3 || username.length() > 16){ //用户名不合格
+            return Status.Login.USERNAME_INVALID;
         }
         else if(phonePattern.matcher(username).find()){ //手机号
-            return 1;
+            return Status.Login.USERNAME_PHONE;
         }
         else if(emailPattern.matcher(username).find()){ // 邮箱
-            return 2;
+            return Status.Login.USERNAME_EMAIL;
         }
         else if (usernamePattern.matcher(username).find()){ //用户名
-            return 3;
+            return Status.Login.USERNAME_ACCOUNT;
         }
         else{
-            return 0;
+            return Status.Login.USERNAME_INVALID;
         }
     }
 
-    @Override
-    public boolean checkPasswordValidity(String password) {
-        if(4 < password.length()&&password.length() < 22){
+    public static boolean checkPasswordValidity(String password) {
+        if(2 < password.length() && password.length() < 16){
             return true;
         }
         else{
@@ -66,11 +71,13 @@ public class LoginUserModel implements ILoginUser {
         }
     }
 
-    @Override
-    public int checkUserValidity(String name, String passwd){
-        if (name==null||passwd==null||!name.equals(getUsername())||!passwd.equals(getPassword())){
-            return -1;
-        }
-        return 0;
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

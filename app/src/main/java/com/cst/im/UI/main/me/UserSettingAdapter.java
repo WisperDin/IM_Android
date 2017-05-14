@@ -32,6 +32,7 @@ public class UserSettingAdapter extends ArrayAdapter<Settings> {
         ImageView image = (ImageView)view.findViewById(R.id.image);
         TextView name = (TextView)view.findViewById(R.id.name);
         image.setImageResource(settings.getImageId());
+
         name.setText(settings.getName());
         return view;
     }

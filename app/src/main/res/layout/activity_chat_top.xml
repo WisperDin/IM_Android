@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="#0099ff"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:background="#0099ff"
+        android:drawableLeft="@drawable/top_back"
+        android:text="chat"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+    <!--android:paddingLeft="10dp"-->
+    <TextView
+        android:id="@+id/opposite_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="#ffffff"
+        android:textSize="20.0sp" />
+</RelativeLayout>

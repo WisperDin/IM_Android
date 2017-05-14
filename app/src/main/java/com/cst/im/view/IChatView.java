@@ -1,9 +1,22 @@
 package com.cst.im.view;
 
+
+import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IFileMsg;
+import com.cst.im.model.IPhotoMsg;
+import com.cst.im.model.ISoundMsg;
+
 /**
  * Created by ASUS on 2017/4/23.
  */
 
 public interface IChatView {
-    public void onSendMsg();
+     void onSendMsg();
+     void onRecvMsg();
+     void onSendImg(IPhotoMsg msg);
+     void onReceriveImageText(IPhotoMsg msg);
+     void onSendVoice(final ISoundMsg soundMsg);
+     void onReceriveSoundText(final ISoundMsg soundMsg);
+     void onSendFileMsg(final IFileMsg fileMsg);
+     void onReceriveFileText(final IFileMsg fileMsg);
 }

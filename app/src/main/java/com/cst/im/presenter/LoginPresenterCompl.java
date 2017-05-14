@@ -2,32 +2,87 @@ package com.cst.im.presenter;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.cst.im.NetWork.ComService;
+import com.cst.im.NetWork.proto.DeEnCode;
+import com.cst.im.UI.LoginActivity;
+import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.ILoginUser;
-import com.cst.im.model.IUser;
 import com.cst.im.model.LoginUserModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.view.ILoginView;
+
+import java.io.IOException;
+
 /**
  */
 
-public class LoginPresenterCompl implements ILoginPresenter {
+public class LoginPresenterCompl implements ILoginPresenter, ComService.MsgHandler {
+    ILoginUser loginUser ;
     ILoginView iLoginView;
-    ILoginUser user;
-    Handler    handler;
+
+    Handler handler;
 
     public LoginPresenterCompl(ILoginView iLoginView) {
         this.iLoginView = iLoginView;
-        initUser();
+
         handler = new Handler(Looper.getMainLooper());
+        ComService.setLoginCallback(this);
     }
+
+    /*
+    保存登录信息到本地数据库
+    用户名则保存登录名和登录密码
+     */
     @Override
     public void saveLoginInf() {
-
+        DBManager.saveLoginUser(loginUser);
+        DBManager.initLocalUserInfo(new UserModel(loginUser.getUsername(),loginUser.getPassword(),loginUser.getId()));
     }
+
+
+
+    //参数为反馈的状态码与状态信息
     @Override
-    public int doLogin(String name, String passwd) {
-        Boolean isLoginSuccess = true;
+    public void handleFbEvent(final int rslCode,final int id) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                loginUser.setId(id);
+                iLoginView.onLoginResult(rslCode,id);
+            }
+        });
+    }
+
+    @Override
+    public void doLogin(String name, String passwd) {
+        loginUser = new LoginUserModel(name, passwd);
+        //编码登录帧
+        final byte[] loginFrame = DeEnCode.encodeLoginFrame(loginUser);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData(loginFrame);
+                } catch (IOException | NullPointerException ioe ) {
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            iLoginView.onNetworkError();
+                        }
+                    });
+                }
+
+
+            }
+        }).start();
+
+        //测试中，现在一启动程序就自动发一条登录帧到服务器
+/*        Boolean isLoginSuccess = true;
         final int code = user.checkUserValidity(name,passwd);
 
         if (code!=0) isLoginSuccess = false;
@@ -36,12 +91,13 @@ public class LoginPresenterCompl implements ILoginPresenter {
             @Override
             public void run() {
             iLoginView.onLoginResult(result, code);
-        }});
-        return code;
+        }});*/
+        //return 1;
     }
-    private void initUser(){
-        user = new LoginUserModel("mvp","mvp");
-    }
+
+//    private void initUser() {
+//        loginUser = new LoginUserModel("mvp", "mvp");
+//    }
 
     @Override
     public boolean doOtherLogin() {
@@ -60,11 +116,20 @@ public class LoginPresenterCompl implements ILoginPresenter {
 
     @Override
     public short judgeUsername(String username) {
-        return user.checkTypeOfUsername(username);
+        return LoginUserModel.checkTypeOfUsername(username);
     }
 
     @Override
     public boolean judgePassword(String password) {
-        return user.checkPasswordValidity(password);
+        return LoginUserModel.checkPasswordValidity(password);
     }
+
+    @Override
+    public boolean canLogin(String username, String password) {
+        if(judgeUsername(username) != Status.Login.USERNAME_INVALID && judgePassword(password))
+            return true;
+        return false;
+    }
+
+
 }

@@ -4,14 +4,13 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".UI.LoginActivity"
-    android:background="@drawable/login_background7"
-    >
+    tools:context=".UI.LoginActivity">
 
     <!--登录-->
 
@@ -19,34 +18,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        >
+        android:layout_marginTop="40dp"
+        android:orientation="vertical">
         <!--图标-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-
             android:animateLayoutChanges="true"
-            >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/top_picture"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_gravity="center_horizontal"
-                android:visibility="visible"
                 android:background="@drawable/login_brand"
-                />
+                android:visibility="visible" />
+
             <TextView
                 android:layout_width="64dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:textSize="28sp"
-                android:textColor="#ffffff"
-                android:text="@string/app_name"/>
+                android:text="@string/app_name"
+                android:textColor="#000000"
+                android:textSize="28sp" />
 
         </LinearLayout>
         <!--信息输入-->
@@ -54,38 +50,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
             android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="72dp"
-
+            android:layout_weight="0.5"
+            android:animateLayoutChanges="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:animateLayoutChanges="true"
-            android:background="@drawable/inf_background"
-            >
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:background="@drawable/login_et_bg"
+                android:orientation="horizontal">
 
-                >
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/login_username"/>
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/account" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/usernameWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    >
+                    android:layout_marginBottom="10dp">
 
                     <EditText
                         android:id="@+id/username"
@@ -95,152 +88,165 @@
                         android:background="@null"
                         android:hint="@string/prompt_username"
                         android:maxLines="1"
-                        android:textColor="@android:color/background_light" />
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textColor="#000000"
+                        android:textCursorDrawable="@null" />
 
 
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
-            <ImageView
+
+            <!--<ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#ffffff"
+                android:background="#ffffff" />-->
 
-                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:layout_marginTop="10dp"
+                android:background="@drawable/login_et_bg"
+                android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/login_password"/>
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/password" />
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/passwordWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    >
+                    android:layout_marginBottom="10dp">
 
                     <EditText
                         android:id="@+id/password"
-
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:background="@null"
                         android:hint="@string/prompt_password"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:textColor="@android:color/background_light" />
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textColor="#000000"
+                        android:textCursorDrawable="@null" />
                 </android.support.design.widget.TextInputLayout>
+
                 <ImageView
                     android:id="@+id/show_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 
 
-
         </LinearLayout>
-        <Button
 
+        <Button
+            android:id="@+id/login_button"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="6dp"
             android:layout_marginEnd="24dp"
-
-            android:id="@+id/login_button"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_login"
             android:hint="@string/action_sign_in"
-            android:textSize="16sp"
             android:textColorHint="#ffffff"
-            android:background="@drawable/login_login"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
-
 
 
     <!--注册及第三方登录-->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000000"
-        android:layout_marginTop="24dp"
+        android:layout_marginEnd="72dp"
         android:layout_marginStart="72dp"
-        android:layout_marginEnd="72dp"/>
+        android:layout_marginTop="24dp"
+        android:background="#BDBDBD" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="24dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/login_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_message_login"
-                android:textSize="16sp"
-                android:textColorHint="#ffffff"
-                android:background="@drawable/login_login_by_message"/>
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
 
-        </LinearLayout>+`
-        <TextView
-            android:layout_marginTop="16dp"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/register_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:hint="@string/prompt_message_login"
+                android:textColorHint="#1565C0"
+                android:textColorLink="#1565C0"
+                android:textSize="19sp" />
+
+        </LinearLayout>
+
+
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:text="@string/prompt_other_login"
-            android:textSize="18dp"
             android:textColor="#ffffff"
-            android:layout_gravity="center"/>
+            android:textSize="18dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/qq_login"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="24dp"
-                android:background="@drawable/login_login_by_qq"
-                />
+                android:background="@drawable/login_login_by_qq" />
+
             <ImageButton
                 android:id="@+id/wechat_login"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="@drawable/login_login_by_wechat"
-                />
+                android:background="@drawable/login_login_by_wechat" />
+
             <ImageButton
                 android:id="@+id/weibo_login"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="24dp"
-                android:background="@drawable/login_login_by_weibo"
-                />
+                android:background="@drawable/login_login_by_weibo" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/forget_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="#ffffff"
-            android:text="@string/prompt_forget_password"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:text="@string/prompt_forget_password"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />-->
 
     </LinearLayout>
 

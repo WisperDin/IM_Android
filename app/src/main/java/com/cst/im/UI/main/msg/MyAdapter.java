@@ -22,6 +22,7 @@ public class MyAdapter extends BaseAdapter{
     //多个ChatItem对象，用于存放消息列表的数据
     private LinkedList<ChatItem> chatItems;
     private Context context;
+
     //初始化消息列表
     public MyAdapter(LinkedList<ChatItem> chatItems,Context context)
     {
@@ -54,6 +55,7 @@ public class MyAdapter extends BaseAdapter{
             holder.t_name=(TextView) view.findViewById(R.id.item_name);
             holder.t_msg=(TextView) view.findViewById(R.id.item_msg);
             holder.t_time=(TextView) view.findViewById(R.id.item_time);
+            holder.red=(ImageView) view.findViewById(R.id.item_red);
             view.setTag(holder);
         }else {
             holder=(ViewHolder)view.getTag();
@@ -62,6 +64,16 @@ public class MyAdapter extends BaseAdapter{
         holder.t_name.setText(chatItems.get(i).getName());
         holder.t_msg.setText(chatItems.get(i).getLastMsg());
         holder.t_time.setText(chatItems.get(i).getLastTime());
+        if(!chatItems.get(i).isRead()) {
+            holder.red.setImageResource(chatItems.get(i).getRedIcon());
+        }else {
+            holder.red.setImageResource(0);
+        }
+        if(!chatItems.get(i).isHasTop()){
+            view.setBackgroundResource(0);
+        }else{
+            view.setBackgroundResource(R.color.LightGray);
+        }
         return view;
     }
     static class ViewHolder{
@@ -69,5 +81,6 @@ public class MyAdapter extends BaseAdapter{
         TextView t_name;
         TextView t_msg;
         TextView t_time;
+        ImageView red;
     }
 }

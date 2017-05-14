@@ -1,12 +1,11 @@
 package com.cst.im.view;
 
-import android.widget.EditText;
-
 /**
  * Created by ASUS on 2017/4/23.
  */
 public interface ILoginView {
-    public void onLoginResult(Boolean result, int code);
+    //参数为状态码与状态信息
+    public void onLoginResult(final int rslCode,final int id);
     void onNetworkError();
     void onEditTip();
 }

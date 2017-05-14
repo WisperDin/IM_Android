@@ -8,7 +8,7 @@
         android:id="@+id/item2"
         android:layout_width="fill_parent"
         android:layout_height="30dip"
-        android:background="#3c4857"
+        android:background="#EEE9E9"
         android:gravity="center_vertical" />
 
     <ImageView
