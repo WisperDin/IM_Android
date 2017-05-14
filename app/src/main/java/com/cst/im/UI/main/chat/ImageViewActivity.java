@@ -35,7 +35,7 @@ public class ImageViewActivity extends FragmentActivity {
             if (bundle.containsKey("images")) {
                 imageList = bundle.getStringArrayList("images");
                 //test
-                //imageList.add(com.cst.im.tools.FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE)+"/1");
+                //imageList.add(com.cst.im.tools.EmojiFileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE)+"/1");
             }
             if (bundle.containsKey("clickedIndex")) {
                 currentPage = bundle.getInt("clickedIndex");

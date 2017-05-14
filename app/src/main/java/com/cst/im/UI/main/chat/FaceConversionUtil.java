@@ -10,8 +10,8 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 
 import com.cst.im.R;
+import com.cst.im.tools.EmojiFileUtils;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -142,7 +142,7 @@ public class FaceConversionUtil {
     }
 
     public void getFileText(Context context) {
-        ParseData(FileUtils.getEmojiFile(context), context);
+        ParseData(EmojiFileUtils.getEmojiFile(context), context);
     }
 
     /**

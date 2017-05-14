@@ -17,4 +17,6 @@ public interface IChatView {
      void onReceriveImageText(IPhotoMsg msg);
      void onSendVoice(final ISoundMsg soundMsg);
      void onReceriveSoundText(final ISoundMsg soundMsg);
+     void onSendFileMsg(final IFileMsg fileMsg);
+     void onReceriveFileText(final IFileMsg fileMsg);
 }

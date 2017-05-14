@@ -142,6 +142,7 @@ public class BuildFrame {
         Log.d("fileMsg.getMsgType()" , "_______________"+fileMsg.getMsgType()+"_________________________");
         switch (fileMsg.getMsgType()){
             case FILE:
+                fileMsg.setType(ChatMsgViewAdapter.TO_USE_FILE);
                 Log.d("文件" , "_____________简要信息______________");
                 break;
             case SOUNDS:

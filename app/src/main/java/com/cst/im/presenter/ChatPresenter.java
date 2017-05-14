@@ -95,13 +95,14 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 return;
             case FILE:
-                fileType = FileSweet.FILE_TYPE_FILE;
-/*                handler.post(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iChatView.onRecvMsg();
+                        iChatView.onReceriveFileText((FileMsgModel)msgRecv);
                     }
-                });*/
+                });
+                fileType = FileSweet.FILE_TYPE_FILE;
+
                 break;
             case PHOTO:
                 handler.post(new Runnable() {
@@ -180,6 +181,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         switch(msgType) {
             case FILE:
                 fileMsg = new FileMsgModel();
+                iChatView.onSendFileMsg(fileMsg);
                 fileType = FileSweet.FILE_TYPE_FILE;
                 break;
             case PHOTO:
