@@ -171,6 +171,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     //发送一般文件
     @Override
     public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType)  {
+        //参数检查
+        if(dstUser==null||dstUser.length<=0||file==null||!file.exists()){
+            Log.e("SendFile","param error");
+            return;
+        }
         //将dstUser的ID取出
         int dst_ID[] = new int[dstUser.length];
         for(int i = 0 ; i <dstUser.length ; i++){
@@ -188,6 +193,15 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileSize = FileUtils.getAutoFileOrFilesSize(file);
                 fileMsg.setFileSize(fileSize);
                 fileMsg.setFileParam(fileSize);
+/*                //设置URL
+                try{
+                    //设置URL路径
+                    fileMsg.setFileUrl(file.toURL().toString());
+                }catch (MalformedURLException mie){
+                    mie.printStackTrace();
+                    Log.e("setFileUrl","failed");
+                    return;
+                }*/
                 break;
             case PHOTO:
                 fileMsg = new PhotoMsgModel();

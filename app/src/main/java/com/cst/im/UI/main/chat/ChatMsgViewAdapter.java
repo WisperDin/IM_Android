@@ -656,15 +656,19 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
-                File file = new File(fileMsg.getFileUrl());
+/*                if(fileMsg.getFileUrl()==null){
+                    Log.e("toFileUserLayout","fileURL null");
+                    return;
+                }*/
+                File file = new File(fileMsg.getFile().getAbsolutePath());
                 if (file != null && file.exists()) {
                     // 文件存在，直接打开
                     DealFileTypeUtils.openFile(file, (Activity) context);
                 } else {
-                    // 下载
+/*                    // 下载
                     context.startActivity(new Intent(context,
                             ShowNormalFileActivity.class).putExtra("msgbody",
-                            (Serializable) fileMsg));
+                            (Serializable) fileMsg));*/
                 }
             }
         });
