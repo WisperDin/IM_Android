@@ -54,6 +54,9 @@ public class FileSweet {
     public String getFileParam() {
         return fileParam;
     }
+    public void setFileParam(String fileParam) {
+        this.fileParam = fileParam;
+    }
 
     public int getFileType() {
         return fileType;
@@ -108,7 +111,8 @@ public class FileSweet {
        // this.fileName =  file.getName();
         //去除后缀
         this.fileName =  FileUtils.getFileNameNoEx(file.getName());
-        this.fileParam= FileUtils.getAutoFileOrFilesSize(file);
+        //默认为文件大小
+        //this.fileParam= FileUtils.getAutoFileOrFilesSize(file);
         filePostfix=fileName.substring(fileName.lastIndexOf(".")+1);
         feature= Md5Utils.getMd5(getDataCharacteristic(file));
         StringBuffer sb=new StringBuffer((filePostfix!=null && !filePostfix.isEmpty())?(filePostfix+" "):"");
