@@ -51,7 +51,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         ComService.setChatMsgCallback(this);
 
        //test
-       /* FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_PICTURE, FileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
+       /* FileImRequest.Builder().downLoadFile(FileSweet.FILE_TYPE_PICTURE, EmojiFileUtils.getFileNameNoEx("1.txt"),new ImRequest.ResultCallBack(){
 
             @Override
             public void fail(int code, String msg) {
@@ -94,14 +94,15 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 return;
             case FILE:
-                fileType = FileSweet.FILE_TYPE_FILE;
-/*                handler.post(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iChatView.onRecvMsg();
+                        iChatView.onReceriveFileText((FileMsgModel)msgRecv);
                     }
-                });*/
-                break;
+                });
+                fileType = FileSweet.FILE_TYPE_FILE;
+
+                return;
             case PHOTO:
                 handler.post(new Runnable() {
                     @Override
@@ -154,7 +155,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });
 /*        ArrayList<String> imgList = new ArrayList<String>();
-        File file = new File(FileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
+        File file = new File(EmojiFileUtils.getFilePath(FileSweet.FILE_TYPE_PICTURE),fileNameNoEx);
         if(!file.exists()){
             Log.e("file","open failed");
         }
@@ -174,6 +175,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         switch(msgType) {
             case FILE:
                 fileMsg = new FileMsgModel();
+                iChatView.onSendFileMsg(fileMsg);
                 fileType = FileSweet.FILE_TYPE_FILE;
                 break;
             case PHOTO:
@@ -282,7 +284,9 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
 /*        ArrayList<String> imgList = new ArrayList<String>();
         imgList.add(file.getAbsolutePath());
         ((ListViewChatActivity) activity).mAdapter.setImageList(imgList);*/
+        if(fileMsg.getMsgType() == IBaseMsg.MsgType.PHOTO){
         ((ListViewChatActivity) activity).mAdapter.getImageList().add(file.getAbsolutePath());
+        }
     }
 
 

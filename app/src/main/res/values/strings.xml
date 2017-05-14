@@ -108,4 +108,8 @@
     <string name="tooshort">录音时间过短</string>
     <string name="toolong">录音时间过长</string>
 
+    <!--文件-->
+    <string name="text_ack_msg">已读</string>
+    <string name="text_delivered_msg">送达</string>
+
 </resources>

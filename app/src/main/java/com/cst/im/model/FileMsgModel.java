@@ -12,6 +12,7 @@ public class FileMsgModel extends MsgModelBase implements IFileMsg {
     String fileParam;
     String fileFeathre;
     String fileName;
+    String fileUrl;
     //文件
     public File getFile(){return file;}
     public void setFile(File file){
@@ -36,6 +37,16 @@ public class FileMsgModel extends MsgModelBase implements IFileMsg {
     @Override
     public void setFileParam(String fileParam) {
         this.fileParam = fileParam;
+    }
+
+    @Override
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    @Override
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
     @Override

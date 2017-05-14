@@ -1,4 +1,4 @@
-package com.cst.im.UI.main.chat;
+package com.cst.im.tools;
 
 import android.content.Context;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * 文件工具类
  */
 
-public class FileUtils {
+public class EmojiFileUtils {
     /**
      * 读取表情配置文件
      *

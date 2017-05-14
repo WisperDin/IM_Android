@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableString;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,24 +22,33 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.R;
 import com.cst.im.dataBase.ChatConst;
+import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IFileMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.PhotoMsgModel;
-
 import java.io.File;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+
 
 /**
  * Created by wzb on 2017/5/9.
@@ -46,7 +56,6 @@ import java.util.List;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
     private Context context;
-    //private List<ChatMessageBean> userList = new ArrayList<ChatMessageBean>();
     private ArrayList<String> imageList = new ArrayList<String>();
     private HashMap<Integer,Integer> imagePosition = new HashMap<Integer,Integer>();
     public static final int FROM_USER_MSG = 0;//接收消息类型
@@ -55,8 +64,11 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     public static final int TO_USER_IMG = 3;//发送消息类型
     public static final int FROM_USER_VOICE = 4;//接收消息类型
     public static final int TO_USER_VOICE = 5;//发送消息类型
+    public static final int TO_USE_FILE = 6;//发送消息类型
+    public static final int FROM_USE_FILE = 7;//接收消息类型
     private int mMinItemWith;// 设置对话框的最大宽度和最小宽度
     private List<IBaseMsg> coll;// 消息对象数组
+    private Map<String, Timer> timers = new Hashtable<String, Timer>();
     private int mMaxItemWith;
     public MyHandler handler;
     private Animation an;
@@ -156,7 +168,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     @Override
     public int getViewTypeCount() {
         // TODO Auto-generated method stub
-        return 6;
+        return 8;
     }
 
 
@@ -178,7 +190,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder = (FromUserMsgViewHolder) view.getTag();
                 }
-                fromMsgUserLayout((FromUserMsgViewHolder) holder, msg, i);
+                fromMsgUserLayout(holder, msg, i);
                 break;
             case FROM_USER_IMG:
                 FromUserImageViewHolder holder1;
@@ -218,7 +230,68 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder2 = (FromUserVoiceViewHolder) view.getTag();
                 }
-                fromVoiceUserLayout((FromUserVoiceViewHolder) holder2, msg, i);
+                fromVoiceUserLayout(holder2, msg, i);
+                break;
+
+            case FROM_USE_FILE:
+                FromUserFileViewHolder holder6;
+                if (view == null) {
+                    holder6 = new FromUserFileViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_received_file, null);
+                    holder6.head_iv = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder6.tv_file_name = (TextView) view
+                            .findViewById(R.id.tv_file_name);
+                    holder6.tv_file_size = (TextView) view
+                            .findViewById(R.id.tv_file_size);
+                    holder6.pb = (ProgressBar) view
+                            .findViewById(R.id.pb_sending);
+                    holder6.staus_iv = (ImageView) view
+                            .findViewById(R.id.msg_status);
+                    holder6.tv_file_download_state = (TextView) view
+                            .findViewById(R.id.tv_file_state);
+                    holder6.ll_container = (LinearLayout) view
+                            .findViewById(R.id.ll_file_container);
+                    // 这里是进度值
+                    holder6.tv = (TextView) view
+                            .findViewById(R.id.percentage);
+                    holder6.tv_userId = (TextView) view
+                            .findViewById(R.id.tv_userid);
+                    view.setTag(holder6);
+                } else {
+                    holder6 = (FromUserFileViewHolder) view.getTag();
+                }
+                fromFileUserLayout(holder6, msg, i);
+                break;
+            case TO_USE_FILE:
+                FromUserFileViewHolder holder7;
+                if (view == null) {
+                    holder7 = new FromUserFileViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.layout_sent_file, null);
+                    holder7.head_iv = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder7.tv_file_name = (TextView) view
+                            .findViewById(R.id.tv_file_name);
+                    holder7.tv_file_size = (TextView) view
+                            .findViewById(R.id.tv_file_size);
+                    holder7.pb = (ProgressBar) view
+                            .findViewById(R.id.pb_sending);
+                    holder7.staus_iv = (ImageView) view
+                            .findViewById(R.id.msg_status);
+                    holder7.tv_file_download_state = (TextView) view
+                            .findViewById(R.id.tv_file_state);
+                    holder7.ll_container = (LinearLayout) view
+                            .findViewById(R.id.ll_file_container);
+                    // 这里是进度值
+                    holder7.tv = (TextView) view
+                            .findViewById(R.id.percentage);
+                    holder7.tv_userId = (TextView) view
+                            .findViewById(R.id.tv_userid);
+                    view.setTag(holder7);
+                } else {
+                    holder7 = (FromUserFileViewHolder) view.getTag();
+                }
+                toFileUserLayout(holder7, msg, i);
                 break;
             case TO_USER_MSG:
                 ToUserMsgViewHolder holder3;
@@ -283,7 +356,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 } else {
                     holder5 = (ToUserVoiceViewHolder) view.getTag();
                 }
-                toVoiceUserLayout((ToUserVoiceViewHolder) holder5, msg, i);
+                toVoiceUserLayout(holder5, msg, i);
                 break;
         }
 
@@ -310,6 +383,29 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         public FrameLayout voice_image;
         public View receiver_voice_unread;
         public View voice_anim;
+    }
+
+    public class FromUserFileViewHolder {
+        ImageView iv;
+        TextView tv;
+        ProgressBar pb;
+        ImageView staus_iv;
+        ImageView head_iv;
+        TextView tv_userId;
+        ImageView playBtn;
+        TextView timeLength;
+        TextView size;
+        LinearLayout container_status_btn;
+        LinearLayout ll_container;
+        ImageView iv_read_status;
+        // 显示已读回执状态
+        TextView tv_ack;
+        // 显示送达回执状态
+        TextView tv_delivered;
+
+        TextView tv_file_name;
+        TextView tv_file_size;
+        TextView tv_file_download_state;
     }
 
     public class ToUserMsgViewHolder {
@@ -414,7 +510,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     }
 
     private void fromVoiceUserLayout(final FromUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
-        final ISoundMsg soundUrl = ((ISoundMsg)msg);
+        //final ISoundMsg soundUrl = ((ISoundMsg)msg);
         holder.headicon.setBackgroundResource(R.mipmap.tongbao_hiv);
         /* time */
         if (position != 0) {
@@ -458,6 +554,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             holder.voice_anim
                     .setBackgroundResource(R.mipmap.receiver_voice_node_playing003);
         }
+        final ISoundMsg soundMsgUrl = ((ISoundMsg)msg);
         holder.voice_group.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -475,19 +572,30 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 drawable = (AnimationDrawable) holder.voice_anim
                         .getBackground();
                 drawable.start();
-//                String voicePath = tbub.getUserVoicePath() == null ? "" : tbub
-//                        .getUserVoicePath();
-//                File file = new File(voicePath);
-//                if (!(!voicePath.equals("") && FileSaveUtil
-//                        .isFileExists(file))) {
-//                    voicePath = tbub.getUserVoiceUrl() == null ? ""
-//                            : tbub.getUserVoiceUrl();
-//                }
-//                voicePath = soundUrl.getSoundUrl();
+                File file = new File(com.cst.im.tools.FileUtils.getFilePath(FileSweet.FILE_TYPE_VIDEO));
+                String voicePath = null;
+                try{
+                    voicePath = file.toURL().getPath();
+                }catch (MalformedURLException mue){
+                    Log.w("to url","failed");
+                    return;
+                }
+                if(voicePath==null){
+                    Log.w("url","null");
+                    return;
+                }
+                soundMsgUrl.setSoundUrl(voicePath);
+                //String voicePath = soundMsgUrl.getSoundUrl()== null ? "" : soundMsgUrl.getSoundUrl();
+                //File file = new File(voicePath);
+                if (!(!voicePath.equals("") && FileSaveUtil
+                        .isFileExists(file))) {
+                    voicePath = soundMsgUrl.getSoundUrl() == null ? ""
+                            : soundMsgUrl.getSoundUrl();
+                }
                 if (voiceIsRead != null) {
                     voiceIsRead.voiceOnClick(position);
                 }
-                MediaManager.playSound(soundUrl.getSoundUrl(),
+                MediaManager.playSound(voicePath ,
                         new MediaPlayer.OnCompletionListener() {
 
                             @Override
@@ -500,16 +608,105 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             }
 
         });
-        float voiceTime = soundUrl.getUserVoiceTime();
+        float voiceTime = soundMsgUrl.getUserVoiceTime();
         BigDecimal b = new BigDecimal(voiceTime);
         float f1 = b.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
         holder.voice_time.setText(f1 + "\"");
         ViewGroup.LayoutParams lParams = holder.voice_image
                 .getLayoutParams();
-        lParams.width = (int) (mMinItemWith + mMaxItemWith / 60f
-                * soundUrl.getUserVoiceTime());
+        lParams.width = (int) (mMinItemWith + mMaxItemWith / 10f
+                * soundMsgUrl.getUserVoiceTime());
         holder.voice_image.setLayoutParams(lParams);
     }
+
+    private void fromFileUserLayout(final FromUserFileViewHolder holder, final IBaseMsg msg, final int position){
+
+        holder.head_iv.setBackgroundResource(R.mipmap.tongbao_hiv);
+        final IFileMsg fileMsg = ((FileMsgModel)msg);
+//        final String filePath = fileMsg.getFileUrl();
+        holder.tv_file_name.setText(fileMsg.getFileName());
+        holder.tv_file_size.setText(fileMsg.getFileSize());
+        holder.ll_container.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                File file = new File(fileMsg.getFileUrl());
+                if (file != null && file.exists()) {
+                    // 文件存在，直接打开
+                    DealFileTypeUtils.openFile(file, (Activity) context);
+                } else {
+                    // 下载
+                    context.startActivity(new Intent(context,
+                            ShowNormalFileActivity.class).putExtra("msgbody",
+                            (Serializable) fileMsg));
+                }
+            }
+        });
+
+
+        //holder.pb.setVisibility(View.INVISIBLE);
+        //holder.pb.setVisibility(View.VISIBLE);
+        holder.pb.setVisibility(View.INVISIBLE);
+
+    }
+    private void toFileUserLayout(final FromUserFileViewHolder holder, final IBaseMsg msg, final int position){
+        holder.head_iv.setBackgroundResource(R.mipmap.tongbao_hiv);
+        /* time */
+//        final NormalFileMessageBody fileMessageBody = (NormalFileMessageBody) message
+//                .getBody();
+        final IFileMsg fileMsg = ((FileMsgModel)msg);
+//        final String filePath = fileMsg.getFileUrl();
+        holder.tv_file_name.setText(fileMsg.getFileName());
+        holder.tv_file_size.setText(fileMsg.getFileSize());
+        holder.ll_container.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                File file = new File(fileMsg.getFileUrl());
+                if (file != null && file.exists()) {
+                    // 文件存在，直接打开
+                    DealFileTypeUtils.openFile(file, (Activity) context);
+                } else {
+                    // 下载
+                    context.startActivity(new Intent(context,
+                            ShowNormalFileActivity.class).putExtra("msgbody",
+                            (Serializable) fileMsg));
+                }
+            }
+        });
+
+//        holder.pb.setVisibility(View.INVISIBLE);
+//        holder.pb.setVisibility(View.VISIBLE);
+//        holder.tv.setVisibility(View.VISIBLE);
+        //holder.tv.setText(message.progress + "%");
+        holder.pb.setVisibility(View.INVISIBLE);
+    }
+//        holder.tv.setVisibility(View.INVISIBLE);}
+//        holder.tv.setVisibility(View.INVISIBLE);
+//        holder.staus_iv.setVisibility(View.INVISIBLE);
+//        final Timer timer = new Timer();
+//        timers.put(fileMsg.getFileUrl(), timer);
+//        timer.schedule(new TimerTask() {
+//
+//            @Override
+//            public void run() {
+//                activity.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        holder.pb.setVisibility(View.VISIBLE);
+//                        holder.tv.setVisibility(View.VISIBLE);
+//                        //holder.tv.setText(message.progress + "%");
+//                        holder.pb.setVisibility(View.INVISIBLE);
+//                        holder.tv.setVisibility(View.INVISIBLE);
+//                        timer.cancel();
+//
+//                    }
+//                });
+//
+//            }
+//        }, 0, 500);
+//    }
 
     private void toMsgUserLayout(final ToUserMsgViewHolder holder, final IBaseMsg msg, final int position) {
         holder.headicon.setBackgroundResource(R.mipmap.grzx_tx_s);

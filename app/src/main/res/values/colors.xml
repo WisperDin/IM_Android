@@ -23,6 +23,7 @@
     <color name="colorChatList">#ebebeb</color>
 
 
+    <color name="common_bg">#fcfcfc</color>
         <color name="transparent">#0000</color>
         <color name="three_transparent">#30ffffff</color>
         <color name="black">#000000</color>

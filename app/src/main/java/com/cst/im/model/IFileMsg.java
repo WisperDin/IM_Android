@@ -23,6 +23,10 @@ public interface IFileMsg extends IBaseMsg {
     String getFileParam();
     void setFileParam(String fileParam);
 
+    //文件路径
+    String getFileUrl();
+    void setFileUrl(String fileUrl);
+
     //文件指纹
     String getFileFeature();
     void setFileFeature(String fileFeature);
