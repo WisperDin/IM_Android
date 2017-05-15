@@ -193,7 +193,7 @@
         </LinearLayout>
 
         <!--注册及第三方登录-->
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/ll_divider"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -234,7 +234,7 @@
                     android:layout_height="1px"
                     android:background="#BDBDBD" />
             </LinearLayout>
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/ll_oauth"
@@ -251,6 +251,7 @@
                 android:layout_weight="1">
                 <ImageView
                     android:id="@+id/oauth_wechat"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:src="@mipmap/login_wechat"
                     android:layout_height="wrap_content" />
@@ -263,6 +264,7 @@
                 android:layout_weight="1">
                 <ImageView
                     android:id="@+id/oauth_qq"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:src="@mipmap/login_qq"
                     android:layout_height="wrap_content" />
@@ -275,6 +277,7 @@
                 android:layout_weight="1">
                 <ImageView
                     android:id="@+id/oauth_weibo"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:src="@mipmap/login_weibo"
                     android:layout_height="wrap_content" />
