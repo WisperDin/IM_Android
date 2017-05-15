@@ -30,6 +30,13 @@ public class DeEnCode {
         }
         try {
             frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
         return baos.toByteArray();
@@ -58,6 +65,13 @@ public class DeEnCode {
             }
             try {
                 frame.writeTo(baos);
+                //添加消息长度
+                long msglength=baos.toByteArray().length;
+                baos.reset();
+                Frame.Builder builder=frame.toBuilder();
+                builder.setMsgLength(msglength);
+                frame=builder.build();
+                frame.writeTo(baos);
             } catch (IOException e) {
             }
             return baos.toByteArray();
@@ -75,6 +89,13 @@ public class DeEnCode {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
         return baos.toByteArray();
@@ -89,6 +110,13 @@ public class DeEnCode {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
+            frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
             frame.writeTo(baos);
         } catch (IOException e) {
         }
@@ -105,6 +133,13 @@ public class DeEnCode {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
         return baos.toByteArray();
@@ -120,6 +155,13 @@ public class DeEnCode {
             return null;
         }
         try {
+            frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
             frame.writeTo(baos);
         } catch (IOException e) {
         }
@@ -171,6 +213,13 @@ public class DeEnCode {
         }
         try {
             frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
+            frame.writeTo(baos);
         } catch (IOException e) {
         }
         return baos.toByteArray();
@@ -184,6 +233,13 @@ public class DeEnCode {
             return null;
         }
         try{
+            buildFrame.writeTo(byteArrayOutputStream);
+            //添加消息长度
+            long msglength=byteArrayOutputStream.toByteArray().length;
+            byteArrayOutputStream.reset();
+            Frame.Builder builder=buildFrame.toBuilder();
+            builder.setMsgLength(msglength);
+            buildFrame=builder.build();
             buildFrame.writeTo(byteArrayOutputStream);
         }catch (IOException e){
 
@@ -199,6 +255,13 @@ public class DeEnCode {
             return null;
         }
         try{
+            buildFrame.writeTo(byteArrayOutputStream);
+            //添加消息长度
+            long msglength=byteArrayOutputStream.toByteArray().length;
+            byteArrayOutputStream.reset();
+            Frame.Builder builder=buildFrame.toBuilder();
+            builder.setMsgLength(msglength);
+            buildFrame=builder.build();
             buildFrame.writeTo(byteArrayOutputStream);
         }catch (IOException e){
 
