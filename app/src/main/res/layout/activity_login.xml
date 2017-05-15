@@ -193,21 +193,21 @@
         </LinearLayout>
 
         <!--注册及第三方登录-->
-        <!--<LinearLayout
+        <LinearLayout
             android:id="@+id/ll_divider"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_marginTop="20dp"
+            android:gravity="center"
             android:weightSum="4"
             android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="15dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_weight="1">
-                <view
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="#BDBDBD" />
@@ -220,7 +220,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:gravity="center"
-                    android:layout_height="15sp"
+                    android:textSize="15sp"
+                    android:layout_height="wrap_content"
                     android:text="@string/prompt_other_login" />
             </LinearLayout>
 
@@ -229,12 +230,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_weight="1">
-                <view
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="#BDBDBD" />
             </LinearLayout>
-        </LinearLayout>-->
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_oauth"
