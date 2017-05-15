@@ -165,14 +165,7 @@
     </LinearLayout>
 
 
-    <!--注册及第三方登录-->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginEnd="72dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="24dp"
-        android:background="#BDBDBD" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -199,54 +192,95 @@
 
         </LinearLayout>
 
-
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/prompt_other_login"
-            android:textColor="#ffffff"
-            android:textSize="18dp" />
-
+        <!--注册及第三方登录-->
         <LinearLayout
+            android:id="@+id/ll_divider"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginTop="20dp"
+            android:weightSum="4"
+            android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/qq_login"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="24dp"
-                android:background="@drawable/login_login_by_qq" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <view
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#BDBDBD" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/wechat_login"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/login_login_by_wechat" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="15sp"
+                    android:text="@string/prompt_other_login" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/weibo_login"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="24dp"
-                android:background="@drawable/login_login_by_weibo" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1">
+                <view
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#BDBDBD" />
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/forget_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/prompt_forget_password"
-            android:textColor="#ffffff"
-            android:textSize="12sp" />-->
+        <LinearLayout
+            android:id="@+id/ll_oauth"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:weightSum="3"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/oauth_wechat"
+                    android:layout_width="wrap_content"
+                    android:src="@mipmap/login_wechat"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/oauth_qq"
+                    android:layout_width="wrap_content"
+                    android:src="@mipmap/login_qq"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/oauth_weibo"
+                    android:layout_width="wrap_content"
+                    android:src="@mipmap/login_weibo"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
