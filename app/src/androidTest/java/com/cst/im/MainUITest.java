@@ -13,6 +13,7 @@ import com.cst.im.model.FriendModel;
 import com.cst.im.model.UserModel;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -133,7 +134,7 @@ public class MainUITest {
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(Integer.toString(age)),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(Integer.toString(age)),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -151,7 +152,7 @@ public class MainUITest {
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(realName),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(realName),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -159,7 +160,7 @@ public class MainUITest {
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(phonoNo),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(phonoNo),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -167,7 +168,7 @@ public class MainUITest {
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(email),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(email),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -175,7 +176,7 @@ public class MainUITest {
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(address),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(address),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -183,7 +184,7 @@ public class MainUITest {
 //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText(sign),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(replaceText(sign),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
 
@@ -224,6 +225,7 @@ public class MainUITest {
         Thread.sleep(1000);
     }
     //添加好友
+    @Ignore
     @Test
     public void SearchFriend()throws InterruptedException {
         SwitchBottomNav(Nav.Friend);
@@ -231,7 +233,7 @@ public class MainUITest {
         onView(withId(R.id.img_search)).perform(click());
         for(int i=0;i<=10;i++){
             //输入好友id
-            onView(withId(R.id.et_search)).perform(replaceText(Integer.toString(1)),closeSoftKeyboard());
+            onView(withId(R.id.et_search)).perform(replaceText(Integer.toString(i)),closeSoftKeyboard());
             //点击搜索
             onView(withId(R.id.bt_search)).perform(click());
         }
