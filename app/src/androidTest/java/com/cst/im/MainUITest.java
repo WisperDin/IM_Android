@@ -26,9 +26,11 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 
 /**
@@ -54,8 +56,8 @@ public class MainUITest {
         //假的好友列表
         ArrayList<String> friendlist = new ArrayList<String>();
         HashMap<String ,Integer> friendNameAndID = new HashMap<String , Integer>();
-        friendlist.add("lzy");
-        friendNameAndID.put("lzy",1);
+        friendlist.add("wzb");
+        friendNameAndID.put("wzb",2);
         FriendModel.InitFriendModel(friendlist,friendNameAndID);
 
         if(UserModel.localUser==null){
@@ -152,8 +154,6 @@ public class MainUITest {
         ChatWithFriend();
         Thread.sleep(1000);
     }
-
-
     //点击一个好友，向那个好友发送文件
     @Test
     public void SendFileToFriendFromFriendList() throws InterruptedException {
@@ -161,15 +161,8 @@ public class MainUITest {
         ClickFriend();
         //发送文件
         SendFileToFriend();
-        Thread.sleep(10000);
+        Thread.sleep(1000);
     }
-/*
-    @Test
-    public void ChatWithFriendInMsgList{
-
-    }
-*/
-
     //验证点击个人消息
     @Test
     public void ClickMe() throws InterruptedException {
@@ -177,19 +170,77 @@ public class MainUITest {
         SwitchBottomNav(Nav.me);
         //检查listview是否出现
         onView(withId(R.id.lv_setting)).check(matches(isDisplayed()));
-        //点击listview中的某一项
+        //点击listview中的某一项，进入个人信息设置ListView
         onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(0).perform(click());
+        int i=2;
+        SaveAge(22,i++);
+        SaveSex(false,i++);
+        SaveRealName("lzy",i++);
+        SavePhonoNO("13538842294",i++);
+        SaveEmail("734800224@qq.com",i++);
+        SaveAddress("GZHU",i++);
+        SaveSign("GOOD",i++);
 
+        Thread.sleep(2000);
+    }
+    void SaveAge(int age,int i){
         //点击listview中的某一项
-        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(4).perform(click());
-
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(typeText("UItestInfo"),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(Integer.toString(age)),closeSoftKeyboard());
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
+    }
+    void SaveSex(boolean sex,int i){
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withText("女"))
+    .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()))
+                .perform(click());
 
+    }
+    void SaveRealName(String realName,int i){
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText(realName),closeSoftKeyboard());
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
+    }
+    void SavePhonoNO(String phonoNo,int i){
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText(phonoNo),closeSoftKeyboard());
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
+    }
+    void SaveEmail(String email,int i){
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText(email),closeSoftKeyboard());
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
+    }
+    void SaveAddress(String address,int i){
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText(address),closeSoftKeyboard());
+        //点击保存
+        onView(withId(R.id.save_bt)).perform(click());
+    }
+    void SaveSign(String sign,int i){
+//点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //更改属性
+        onView(withId(R.id.detail_et)).perform(typeText(sign),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
 
-        Thread.sleep(5000);
     }
 
 
