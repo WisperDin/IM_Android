@@ -26,20 +26,35 @@ public class ChatListModel implements IChatList {
         preAddress= new HashMap<ChatItem,Integer>();
     }
 
-    //接收到消息或发送消息时，消息顶置，若不存在该消息则添加该消息
+    //接收到消息或发送消息时，消息置前，若不存在该消息则添加该消息并置前（置前不同于顶置）
     @Override
     public void newChatItem(ChatItem chatItem) {
         chatItem.setRead(false);
         int existPos=checkChatItem(chatItem);
+        int count=0;    //记录已有多少个顶置
         //消息对象已存在检查是否已经置顶
         if(existPos!=-1){
-            //检查是否已经置顶
-            if(!MsgList.get(existPos).isHasTop()){
-                setTop(MsgList.get(existPos));
+            //检查是否已经设置为置顶，若设置为置顶，则直接置顶，若否则置前
+            if(MsgList.get(existPos).isHasTop()){
+                MsgList.remove(existPos);
+                MsgList.add(existPos,chatItem);
+                setTop(chatItem);
+            }else
+            {
+                while(MsgList.get(count).isHasTop())
+                {
+                    count++;
+                }
+                MsgList.remove(existPos);
+                MsgList.add(count,chatItem);
             }
         }else{
-            //消息不存在，添加到列表并置顶
-            MsgList.addFirst(chatItem);
+            while(MsgList.get(count).isHasTop())
+            {
+                count++;
+            }
+            //消息不存在，添加到列表并置前
+            MsgList.add(count,chatItem);
         }
     }
 
@@ -82,17 +97,21 @@ public class ChatListModel implements IChatList {
         return ok;
     }
 
+    //顶置消息，用于长按时的置顶，不可用于其他
     @Override
     public void setTop(ChatItem chatItem) {
         preAddress.put(chatItem,MsgList.indexOf(chatItem));
         MsgList.remove(MsgList.indexOf(chatItem));
+        chatItem.setHasTop(true);
         MsgList.addFirst(chatItem);
     }
 
+    //取消消息顶置，用于长按时的取消置顶，不可用于其他
     @Override
     public void offsetTop(ChatItem chatItem) {
         Integer offset=preAddress.get(chatItem);
         MsgList.remove(MsgList.indexOf(chatItem));
+        chatItem.setHasTop(false);
         MsgList.add(offset,chatItem);
     }
 }

@@ -98,15 +98,11 @@ public class MsgFragment extends Fragment implements IMsgView,
                     myAdapter.notifyDataSetChanged();
                 }else if(choice[i].equals("取消顶置")){
                     chatListPresenter.OffsetTop(accept);
-                    //设置为未顶置
-                    accept.setHasTop(false);
                     //通知listView更新
                     myAdapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "已取消顶置", Toast.LENGTH_LONG).show();
                 }else if(choice[i].equals("顶置聊天")){
                     chatListPresenter.SetTop(accept);
-                    //设置为顶置
-                    accept.setHasTop(true);
                     //通知listView更新
                     myAdapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "已顶置", Toast.LENGTH_LONG).show();
