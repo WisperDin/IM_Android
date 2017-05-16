@@ -1,5 +1,6 @@
 package com.cst.im.UI.main.friend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,6 +29,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     Button bt;
     TextView tv;
     ImageView img;
+    Button bt_search;
     private IFriendPresenter IsFriend=new FriendPresenterCompl(this);
     private IFriendPresenter AddFriend=new FriendPresenterCompl(this);
     @Override
@@ -38,6 +40,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
         bt=(Button)findViewById(R.id.bt_search);
         img=(ImageView)findViewById(R.id.img_friend_add);
         tv=(TextView)findViewById(R.id.tv_searchname);
+        bt_search=(Button)findViewById(R.id.bt_uncertain);
         bt.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -67,6 +70,14 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
             public void onClick(View v) {
                 int IsFriendId =Integer.parseInt(et.getText().toString());
                 AddFriend.AddFriend(localUser.getId(),IsFriendId);
+            }
+        });
+        bt_search.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchFriend.this, AddFriendUncertain.class);
+                startActivity(intent);
             }
         });
     }

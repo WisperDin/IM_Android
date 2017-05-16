@@ -30,6 +30,12 @@
             android:hint="输入需要添加好友的ID"
             android:textSize="14dp"
             android:inputType="textPersonName" />
+        <Button
+            android:id="@+id/bt_uncertain"
+            android:layout_width="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="27dp"
+            android:background="@drawable/bt_uncertain_search" />
 
     </LinearLayout>
 
