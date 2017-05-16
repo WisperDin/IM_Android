@@ -43,11 +43,28 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private IChatView iChatView;
     private  Handler handler;
     private final Activity activity;
-    public ChatPresenter(IChatView chatView , List<IBaseMsg> msg) {
+    //此窗口的目的用户
+    private IUser[] dstUser;
+    private int[] dst_ID;
+    public ChatPresenter(IChatView chatView , List<IBaseMsg> msg,IUser[] dstUser) {
+        //参数检查
+        //TODO ||chatView==null
+        if(dstUser==null||dstUser.length<=0||msg==null){
+            Log.e("ChatPresenter","param error");
+            activity= null;
+            return;
+        }
         this.iChatView =  chatView;
         this.activity= ((ListViewChatActivity) chatView);
         this.mDataArrays = msg;
         handler = new Handler(Looper.getMainLooper());
+        //开启的这个聊天窗口的目的用户
+        this.dstUser = dstUser;
+        //将dstUser的ID取出
+        dst_ID = new int[dstUser.length];
+        for(int i = 0 ; i <dstUser.length ; i++){
+            dst_ID[i] = dstUser[i].getId();
+        }
         //监听收到消息的接口
         ComService.setChatMsgCallback(this);
 
@@ -75,12 +92,36 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             }
         });*/
     }
-
-
+    //匹配发来的信息的发送源用户是否存在于当前窗口的目的用户
+    public boolean CheckSrcID(int srcID){
+        for(int i=0;i<dst_ID.length;i++){
+                if(dst_ID[i]==srcID){//匹配
+                    return true;
+                }
+        }
+        return false;
+    }
+    //匹配发来的信息的目的用户是否就是自己
+    public static boolean CheckDstID(int[] dstID){
+        for(int i=0;i<dstID.length;i++){
+            if(dstID[i]==UserModel.localUser.getId()){//匹配
+                return true;
+            }
+        }
+        return false;
+    }
     //接受到新的消息 //参数为接收到的消息
     @Override
     public void handleChatMsgEvent(final IBaseMsg msgRecv){
         //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
+        if(!CheckSrcID(msgRecv.getSrc_ID())){
+            Log.d("handleChatMsgEvent","这条信息的发送者不在当前窗口的对象用户-----------------");
+            return;
+        }
+        if(!CheckDstID(msgRecv.getDst_ID())){
+            Log.w("handleChatMsgEvent","这条信息的目的用户不是自身-----------------");
+            return;
+        }
         mDataArrays.add(msgRecv);
         DBManager.InsertMsg(msgRecv);
         int fileType = 0;
@@ -170,16 +211,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //发送一般文件
     @Override
-    public void SendFile(IUser[] dstUser ,File file, IBaseMsg.MsgType msgType)  {
+    public void SendFile(File file, IBaseMsg.MsgType msgType)  {
         //参数检查
-        if(dstUser==null||dstUser.length<=0||file==null||!file.exists()){
+        if(file==null||!file.exists()){
             Log.e("SendFile","param error");
             return;
-        }
-        //将dstUser的ID取出
-        int dst_ID[] = new int[dstUser.length];
-        for(int i = 0 ; i <dstUser.length ; i++){
-            dst_ID[i] = dstUser[i].getId();
         }
         IFileMsg fileMsg = null;
         String fileSize = null;
@@ -328,12 +364,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
 
     //发送文字信息
     @Override
-    public void SendMsg(IUser[] dstUser,String contString){
-        //将dstUser的ID取出
-        int dst_ID[] = new int[dstUser.length];
-        for(int i = 0 ; i <dstUser.length ; i++){
-            dst_ID[i] = dstUser[i].getId();
-        }
+    public void SendMsg(String contString){
         if (contString.length() > 0) {
             ITextMsg textMsg = new TextMsgModel();
             textMsg.setSrc_ID(UserModel.localUser.getId());

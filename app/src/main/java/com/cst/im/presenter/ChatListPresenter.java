@@ -2,6 +2,7 @@ package com.cst.im.presenter;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.cst.im.NetWork.ComService;
 import com.cst.im.R;
@@ -68,6 +69,10 @@ public class ChatListPresenter implements IChatListPresenter,ComService.ChatList
     //接收到服务端转发消息
     @Override
     public void handleChatListEvent(IBaseMsg msgRecv) {
+        if(!ChatPresenter.CheckDstID(msgRecv.getDst_ID())){
+            Log.w("handleChatListEvent","这条信息的目的用户不是自身-----------------");
+            return;
+        }
         switch (msgRecv.getMsgType()) {
             case TEXT:
                 ITextMsg textMsg = ((ITextMsg) msgRecv);

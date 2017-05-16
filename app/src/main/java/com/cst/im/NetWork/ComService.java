@@ -133,7 +133,7 @@ public class ComService extends TcpService {
                     }
                     baseMsg = new TextMsgModel();
                     ((TextMsgModel)baseMsg).setText(frame.getMsg().getMsg());
-                    baseMsg.setSrc_Name(frame.getDst().getDst(0).getUserName());
+                    baseMsg.setSrc_Name(frame.getSrc().getUserName());
                     baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
                 }else if(frame.getMsgType()==BuildFrame.FileInfo){
                     if(frame.getFileInfo().getFileName()==""||frame.getFileInfo().getFileType()==0||

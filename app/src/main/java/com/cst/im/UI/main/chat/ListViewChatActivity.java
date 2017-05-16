@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v7.widget.AppCompatImageHelper;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +36,6 @@ import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.IChatPresenter;
-import com.cst.im.presenter.Tools;
 import com.cst.im.tools.RecordUtils;
 import com.cst.im.tools.UriUtils;
 import com.cst.im.view.IChatView;
@@ -141,7 +138,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         initView(bundle.getString("dstName"), msg_list);// 初始化view
 
         //初始化数据（MVP）
-        chatPresenter = new ChatPresenter(this, msg_list);
+        chatPresenter = new ChatPresenter(this, msg_list,dst);
 
         // 监控键盘与面板高度
         doAttach();
@@ -290,7 +287,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                             RecordUtils.releaseRecorder();
 
                         /* 准备发送 */
-                            chatPresenter.SendFile(dst, new File(RecordUtils.getAudioPath()), IBaseMsg.MsgType.SOUNDS);
+                            chatPresenter.SendFile(new File(RecordUtils.getAudioPath()), IBaseMsg.MsgType.SOUNDS);
 
                             // 播放录音
                             //RecordUtils.playAudio(RecordUtils.getAudioPath());
@@ -485,7 +482,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         new Thread(new Runnable() {
             @Override
             public void run() {
-                chatPresenter.SendMsg(dst, mSendEdt.getText().toString());
+                chatPresenter.SendMsg(mSendEdt.getText().toString());
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
                 // ListViewChatActivity.this.content = content;
                 //receriveHandler.sendEmptyMessageDelayed(0, 1000);
@@ -679,7 +676,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 Log.w("msgType", "null");
                 return;
             }
-            chatPresenter.SendFile(dst, new File(absolutePath), msgType);
+            chatPresenter.SendFile(new File(absolutePath), msgType);
             Toast.makeText(this, absolutePath, Toast.LENGTH_SHORT).show();
             return;
         }
