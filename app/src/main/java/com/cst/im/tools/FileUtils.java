@@ -38,13 +38,6 @@ public class FileUtils {
         if(!file.exists())
             file.mkdirs();
         return file.getAbsolutePath();
-
-        //////////////////////TODO 这里有问题？
-        /*if(file!=null && !file.exists())
-            file.mkdirs();
-        else
-            return "";
-        return file.getAbsolutePath();*/
     }
     /*
    * Java文件操作 获取文件扩展名
