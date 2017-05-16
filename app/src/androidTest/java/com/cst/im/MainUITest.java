@@ -24,6 +24,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
@@ -128,61 +129,6 @@ public class MainUITest {
         //点击文件图标
         onView(withId(R.id.chat_picture)).perform(click());
     }
-
-    //点击一个好友，向那个好友发送消息
-    @Test
-    public void ChatWithFriendFromFriendList() throws InterruptedException {
-        //点击好友
-        ClickFriend();
-        //聊天
-        ChatWithFriend();
-        Thread.sleep(1000);
-    }
-    //点击从点击好友，发信息生成的消息列表
-    @Test
-    public void ClickMsgListFromClickFriend() throws InterruptedException {
-        ClickFriend();
-        //两次返回键，从聊天返回到主界面
-        onView(isRoot()).perform(ViewActions.pressBack());
-        onView(isRoot()).perform(ViewActions.pressBack());
-        //切换到消息列表
-        SwitchBottomNav(Nav.MsgList);
-        //点击消息列表
-        //点击listview中的某一项
-        onData(anything()).inAdapterView(withId(R.id.chat_list)).atPosition(0).perform(click());
-        //聊天
-        ChatWithFriend();
-        Thread.sleep(1000);
-    }
-    //点击一个好友，向那个好友发送文件
-    @Test
-    public void SendFileToFriendFromFriendList() throws InterruptedException {
-        //点击好友
-        ClickFriend();
-        //发送文件
-        SendFileToFriend();
-        Thread.sleep(1000);
-    }
-    //验证点击个人消息
-    @Test
-    public void ClickMe() throws InterruptedException {
-        //切换至个人信息页面
-        SwitchBottomNav(Nav.me);
-        //检查listview是否出现
-        onView(withId(R.id.lv_setting)).check(matches(isDisplayed()));
-        //点击listview中的某一项，进入个人信息设置ListView
-        onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(0).perform(click());
-        int i=2;
-        SaveAge(22,i++);
-        SaveSex(false,i++);
-        SaveRealName("lzy",i++);
-        SavePhonoNO("13538842294",i++);
-        SaveEmail("734800224@qq.com",i++);
-        SaveAddress("GZHU",i++);
-        SaveSign("GOOD",i++);
-
-        Thread.sleep(2000);
-    }
     void SaveAge(int age,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
@@ -196,7 +142,7 @@ public class MainUITest {
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
         //更改属性
         onView(withText("女"))
-    .inRoot(isDialog()) // <---
+                .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -242,6 +188,89 @@ public class MainUITest {
         onView(withId(R.id.save_bt)).perform(click());
 
     }
+
+    //点击一个好友，向那个好友发送消息
+    @Test
+    public void ChatWithFriendFromFriendList() throws InterruptedException {
+        //点击好友
+        ClickFriend();
+        //聊天
+        ChatWithFriend();
+        Thread.sleep(1000);
+    }
+    //点击从点击好友，发信息生成的消息列表
+    @Test
+    public void ClickMsgListFromClickFriend() throws InterruptedException {
+        ClickFriend();
+        //两次返回键，从聊天返回到主界面
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(isRoot()).perform(ViewActions.pressBack());
+        //切换到消息列表
+        SwitchBottomNav(Nav.MsgList);
+        //点击消息列表
+        //点击listview中的某一项
+        onData(anything()).inAdapterView(withId(R.id.chat_list)).atPosition(0).perform(click());
+        //聊天
+        ChatWithFriend();
+        Thread.sleep(1000);
+    }
+    //点击一个好友，向那个好友发送文件
+    @Test
+    public void SendFileToFriendFromFriendList() throws InterruptedException {
+        //点击好友
+        ClickFriend();
+        //发送文件
+        SendFileToFriend();
+        Thread.sleep(1000);
+    }
+    //添加好友
+    @Test
+    public void SearchFriend()throws InterruptedException {
+        SwitchBottomNav(Nav.Friend);
+        //点击搜索好友框
+        onView(withId(R.id.img_search)).perform(click());
+        for(int i=0;i<=10;i++){
+            //输入好友id
+            onView(withId(R.id.et_search)).perform(replaceText(Integer.toString(1)),closeSoftKeyboard());
+            //点击搜索
+            onView(withId(R.id.bt_search)).perform(click());
+        }
+        Thread.sleep(1000);
+
+    }
+    //验证点击个人消息输入信息保存
+    @Test
+    public void ClickMe() throws InterruptedException {
+        //切换至个人信息页面
+        SwitchBottomNav(Nav.me);
+        //检查listview是否出现
+        onView(withId(R.id.lv_setting)).check(matches(isDisplayed()));
+        //点击listview中的某一项，进入个人信息设置ListView
+        onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(0).perform(click());
+        int i=2;
+        SaveAge(22,i++);
+        SaveSex(false,i++);
+        SaveRealName("lzy",i++);
+        SavePhonoNO("13538842294",i++);
+        SaveEmail("734800224@qq.com",i++);
+        SaveAddress("GZHU",i++);
+        SaveSign("GOOD",i++);
+        Thread.sleep(2000);
+    }
+    //验证点击退出登录
+    @Test
+    public void ClickLogOut() throws InterruptedException {
+        //切换至个人信息页面
+        SwitchBottomNav(Nav.me);
+        //检查listview是否出现
+        onView(withId(R.id.lv_setting)).check(matches(isDisplayed()));
+        //点击listview中的某一项，进入个人信息设置ListView
+        onData(anything()).inAdapterView(withId(R.id.lv_setting)).atPosition(1).perform(click());
+        //点击listview中的退出登录项
+        onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(2).perform(click());
+
+    }
+    
 
 
 
