@@ -368,6 +368,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         if (contString.length() > 0) {
             ITextMsg textMsg = new TextMsgModel();
             textMsg.setSrc_ID(UserModel.localUser.getId());
+            textMsg.setSrc_Name(UserModel.localUser.getName());
             textMsg.setMsgDate(Tools.getDate());
             textMsg.setText(contString);
             textMsg.sendOrRecv(false);
