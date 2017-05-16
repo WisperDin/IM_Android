@@ -6,56 +6,62 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
+        android:orientation="horizontal"
         android:weightSum="1">
-
-
-    <EditText
-        android:id="@+id/et_search"
-        android:layout_width="285dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:background="@drawable/friend_searchbk"
-        android:hint="输入需要添加好友的ID"
-        android:gravity="center"
-        android:layout_weight="0.36" />
 
         <Button
             android:id="@+id/bt_search"
-            android:layout_width="27dp"
+            android:layout_width="28dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="27dp"
+            android:background="@drawable/searchicon" />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="285dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/btsearch"
-            android:layout_weight="0.50" />
+            android:layout_weight="0.36"
+            android:background="@drawable/searchbar"
+            android:gravity="center_vertical"
+            android:hint="输入需要添加好友的ID"
+            android:textSize="14dp"
+            android:inputType="textPersonName" />
+        <Button
+            android:id="@+id/bt_uncertain"
+            android:layout_width="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="27dp"
+            android:background="@drawable/bt_uncertain_search" />
+
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:weightSum="1">
     <TextView
         android:id="@+id/tv_searchname"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="35dp"
         android:gravity="center_vertical"
-        android:layout_weight="0.23"
+        android:layout_weight="0.20"
         android:textSize="20dp"
         android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/img_friend_add"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_weight="0.77"
+        android:layout_height="35dp"
+        android:layout_weight="0.80"
         android:visibility="invisible"
-        app:srcCompat="@drawable/friend_add" />
+        app:srcCompat="@drawable/addfriend" />
 
     </LinearLayout>
 </LinearLayout>

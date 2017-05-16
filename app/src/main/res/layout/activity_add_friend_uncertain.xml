@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+    <Button
+        android:id="@+id/bt_search_uncertain"
+        android:layout_width="28dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="27dp"
+        android:background="@drawable/searchicon" />
+
+    <EditText
+        android:id="@+id/et_search_uncertain"
+        android:layout_width="285dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.36"
+        android:background="@drawable/searchbar"
+        android:gravity="center_vertical"
+        android:hint="昵称/关键字"
+        android:textSize="14dp"
+        android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_age_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="年龄："
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/et_age_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:gravity="center_vertical"
+            android:hint="纯数字"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_sex_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="性别："
+            android:textSize="18dp" />
+        <EditText
+            android:id="@+id/et_sex_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:gravity="center_vertical"
+            android:hint="男/女"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_email_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="email："
+            android:textSize="15dp" />
+        <EditText
+            android:id="@+id/et_email_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:gravity="center_vertical"
+            android:hint="example@example.com"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_phone_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="手机："
+            android:textSize="18dp" />
+        <EditText
+            android:id="@+id/et_phone_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:gravity="center_vertical"
+            android:hint="123456789"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_address_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="地址："
+            android:textSize="18dp" />
+        <EditText
+            android:id="@+id/et_address_search_uncertain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:gravity="center_vertical"
+            android:hint="广东"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_msg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/et_bk_search_uncertain"
+        android:gravity="center"
+        android:text="查找"
+        android:textSize="22dp" />
+</LinearLayout>
