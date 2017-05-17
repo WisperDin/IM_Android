@@ -26,7 +26,18 @@ public class FriendModel implements IFriend{
     }
 
     private int resultcode;
+    public static class Searchinfo {
+        public  String keyword;
+        public int age;
+        public String sex;
+        public String email;
+        public String telephone;
+        public String address;
+    }
 
+
+
+    private Searchinfo info=new Searchinfo();
 
 
     //好友姓名列表
@@ -60,6 +71,9 @@ public class FriendModel implements IFriend{
         this.friendNameAndID=NameAndID;
     }
     public FriendModel(){};
+    public FriendModel(Searchinfo info){
+        this.info=info;
+    }
 
 
     //用于获取好友列表
@@ -91,6 +105,13 @@ public class FriendModel implements IFriend{
     @Override
     public void SetRealtCode(int code){
         this.resultcode=code;
+    }
+
+
+    //用于添加好友
+    @Override
+    public Searchinfo getinfo() {
+        return info;
     }
 
 }

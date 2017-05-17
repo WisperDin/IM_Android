@@ -1,5 +1,6 @@
 package com.cst.im.presenter;
 
+import com.cst.im.model.FriendModel;
 import com.cst.im.model.IFriend;
 
 /**
@@ -12,4 +13,5 @@ public interface IFriendPresenter {
     void handleIsFriendEvent(final IFriend msgRecv);
     void AddFriend(int ownerid,int friendid);
     void handleAddFriendEvent(final IFriend msgRecv);
+    void AddFriendUncertain(FriendModel.Searchinfo info);
 }

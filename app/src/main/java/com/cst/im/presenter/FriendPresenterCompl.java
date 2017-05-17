@@ -38,6 +38,31 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         ComService.setaddfriendCallback(this);
     }
 
+    //发送请求添加好友（模糊查找）
+    @Override
+    public void AddFriendUncertain(FriendModel.Searchinfo info){
+        IFriend AddFriendUncertain=new FriendModel(info);
+        final byte[] AddFriendUncertainFrame = DeEnCode.encodeAddFriendUncertainFrame(AddFriendUncertain);
+        if( AddFriendUncertainFrame==null){
+            Log.w("GetFriendFrame","null");
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData( AddFriendUncertainFrame);
+                    Log.w("send","send data chenggong");
+                }
+                catch (IOException ioe)
+                {
+                    Log.w("send","send data failed");
+                }
+            }}).start();
+    }
+
+
+    //发送请求添加好友（精确id）
     @Override
     public void AddFriend(int ownerid,int friendid){
         IFriend Addfriend=new FriendModel(ownerid,friendid);
@@ -83,7 +108,6 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
             }}).start();
     }
 
-    //发送请求获取好友列表
     @Override
     public void Isfriend(int ownerid,int IsFriendId) {
         IFriend Isfriend=new FriendModel(ownerid,IsFriendId);

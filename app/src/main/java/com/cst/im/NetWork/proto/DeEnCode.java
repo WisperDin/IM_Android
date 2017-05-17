@@ -123,6 +123,27 @@ public class DeEnCode {
         return baos.toByteArray();
     }
 
+    //编码-添加好友帧（模糊查找）
+    public static  byte[] encodeAddFriendUncertainFrame(IFriend addfrienduncertain){
+        Frame frame = new BuildFrame(BuildFrame.AddFriend).AddFriendUncertain(addfrienduncertain);
+        if(frame==null){
+            Log.w("frame null","encodeAddFriendUncertainFrame");
+            return null;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            frame.writeTo(baos);
+            //添加消息长度
+            long msglength=baos.toByteArray().length;
+            baos.reset();
+            Frame.Builder builder=frame.toBuilder();
+            builder.setMsgLength(msglength);
+            frame=builder.build();
+            frame.writeTo(baos);
+        } catch (IOException e) {
+        }
+        return baos.toByteArray();
+    }
     //编码-添加好友帧
     public static byte[] encodeAddFriendFrame(IFriend addfriend) {
         Frame frame = new BuildFrame(BuildFrame.AddFriend).IsFriend(addfriend);
