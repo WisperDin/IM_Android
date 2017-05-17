@@ -33,9 +33,22 @@
             android:src="@drawable/chat_send_file" />
 
         <ImageView
+            android:id="@+id/chat_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:clickable="true"
+            android:src="@drawable/chat_send_location"
+            />
+
+        <ImageView
+            android:id="@+id/open_cmaera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:src="@drawable/open_camera_icon"
+            />
 
         <ImageView
             android:layout_width="0dp"

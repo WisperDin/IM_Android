@@ -60,6 +60,8 @@ public class MsgModelBase implements IBaseMsg {
                 return 3;
             case SOUNDS:
                 return 4;
+            case LOCATION:
+                return 5;
             default:
                 return 0;
         }

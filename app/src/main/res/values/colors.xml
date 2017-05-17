@@ -151,5 +151,8 @@
         <color name="transparentWhit2">#efffffff</color>
         <color name="transparentGray">#e6e0e0e0</color>
 
+    <!--map-->
+    <color name="common_top_bar_blue">#22292c</color>
+
 
 </resources>

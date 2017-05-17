@@ -13,12 +13,15 @@ import com.cst.im.NetWork.Okhttp.impl.ImRequest;
 import com.cst.im.NetWork.proto.DeEnCode;
 import com.cst.im.UI.main.chat.ChatMsgViewAdapter;
 import com.cst.im.UI.main.chat.ListViewChatActivity;
+import com.cst.im.UI.main.chat.LocationMessageBody;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.model.ILocationMsg;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.IUser;
+import com.cst.im.model.LocationMsgModel;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.TextMsgModel;
@@ -33,6 +36,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.cst.im.model.IBaseMsg.MsgType.LOCATION;
 
 /**
  * Created by ASUS on 2017/4/23.
@@ -339,6 +344,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             textMsg.setSrc_ID(UserModel.localUser.getId());
             textMsg.setMsgDate(Tools.getDate());
             textMsg.setText(contString);
+            //textMsg.setSrc_Name(UserModel.localUser.getName());
             textMsg.sendOrRecv(false);
             textMsg.setDst_ID(dst_ID);
             textMsg.setMsgType(IBaseMsg.MsgType.TEXT);
@@ -365,6 +371,45 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                     iChatView.onSendMsg();
                 }});
         }
+
+    }
+    /**
+     * 发送位置信息
+     *
+     * @param latitude
+     * @param longitude
+     * @param imagePath
+     * @param locationAddress
+     */
+    @Override
+    public void SendLocation(double latitude, double longitude,IUser[] dstUser,
+                                 String imagePath, String locationAddress) {
+        //参数检查
+        if(dstUser==null||dstUser.length<=0){
+            Log.e("SendFile","param error");
+            return;
+        }
+        //将dstUser的ID取出
+        int dst_ID[] = new int[dstUser.length];
+        for(int i = 0 ; i <dstUser.length ; i++){
+            dst_ID[i] = dstUser[i].getId();
+        }
+        ILocationMsg localMsg = new LocationMsgModel();
+
+
+        // 如果是群聊，设置chattype,默认是单聊
+        //if (chatType == CHATTYPE_GROUP)
+        //    message.setChatType(ChatType.GroupChat);
+        LocationMessageBody locBody = new LocationMessageBody(locationAddress,
+                latitude, longitude);
+        localMsg.setLocalBody(locBody);
+        localMsg.setSrc_ID(UserModel.localUser.getId());
+        localMsg.setDst_ID(dst_ID);
+        localMsg.setMsgType(LOCATION);
+        localMsg.setType(ChatMsgViewAdapter.TO_USER_LOCATION);
+        localMsg.setMsgDate(Tools.getDate());
+        //msg_List.add(localMsg);
+        //sendMessageHandler.sendEmptyMessage(SEND_OK);
 
     }
 }

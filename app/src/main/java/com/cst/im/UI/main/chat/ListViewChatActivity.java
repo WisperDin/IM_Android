@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,9 +32,12 @@ import com.cst.im.UI.main.msg.MsgFragment;
 import com.cst.im.dataBase.DBManager;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.model.ILocationMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.IUser;
+import com.cst.im.model.LocationMsgModel;
 import com.cst.im.model.SoundMsgModel;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
@@ -55,6 +59,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 import static com.cst.im.UI.main.chat.ChatMsgViewAdapter.returnTime;
+import static com.cst.im.model.IBaseMsg.MsgType.LOCATION;
 
 
 public class ListViewChatActivity extends SwipeBackActivity implements View.OnClickListener, IChatView {
@@ -84,6 +89,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     private ImageView mEmojiKeyboard; // Emoji 后面的键盘按钮
     private ImageView mVoiceBtn; // 语音按钮
     private Button mVoicePressBtn; // 按住说话按钮
+    private ImageView mSendLocatBtn;//发送定位按钮
+    private ImageView mOpenCameraBtm;//打开相机按钮
 
     private static final int IMAGE_SIZE = 100 * 1024;// 300kb
     public static final int SEND_OK = 0x1110;
@@ -99,6 +106,9 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     private static final int PHOTO_REQUEST_GALLERY = 2;
     //拍摄视频
     private static final int VIDEO_REQUEST_CAREMA = 3;
+
+    //打开位置
+    private static final int REQUEST_CODE_MAP = 4;
 
     //临时文件
     private File tempPhotoFile;
@@ -306,6 +316,9 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mSendBtn.setOnClickListener(this);
         mFileBtn.setOnClickListener(this);
         mPictureBtn.setOnClickListener(this);
+        mSendLocatBtn.setOnClickListener(this);
+        mOpenCameraBtm.setOnClickListener(this);
+
     }
 
     // 弹出键盘
@@ -365,6 +378,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         mVoiceBtn = (ImageView) findViewById(R.id.voice_btn);
         mVoiceKeyboard = (ImageView) findViewById(R.id.voice_keyboard);
         mVoicePressBtn = (Button) findViewById(R.id.voice_press_btn);
+        mSendLocatBtn = (ImageView)findViewById(R.id.chat_location);
+        mOpenCameraBtm = (ImageView)findViewById(R.id.open_cmaera);
     }
 
     @Override
@@ -473,7 +488,13 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             case R.id.chat_picture://发送图片
                 Log.d("Viewing", "Photo----");
                 GetImgFromGallery();
-
+                break;
+            case R.id.chat_location://发送位置
+                startActivityForResult(new Intent(this, LocationActivity.class),
+                        REQUEST_CODE_MAP);
+                break;
+            case R.id.open_cmaera:
+                GetPhotoFromCamera();
                 break;
         }
     }
@@ -566,6 +587,46 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         }).start();
     }
 
+    /**
+     * 发送位置信息
+     *
+     * @param latitude
+     * @param longitude
+     * @param imagePath
+     * @param locationAddress
+     */
+//    private void sendLocationMsg(double latitude, double longitude,IUser[] dstUser,
+//                                 String imagePath, String locationAddress) {
+//        //参数检查
+//        if(dstUser==null||dstUser.length<=0){
+//            Log.e("SendFile","param error");
+//            return;
+//        }
+//        //将dstUser的ID取出
+//        int dst_ID[] = new int[dstUser.length];
+//        for(int i = 0 ; i <dstUser.length ; i++){
+//            dst_ID[i] = dstUser[i].getId();
+//        }
+//        ILocationMsg localMsg = new LocationMsgModel();
+//
+//
+//        // 如果是群聊，设置chattype,默认是单聊
+//        //if (chatType == CHATTYPE_GROUP)
+//        //    message.setChatType(ChatType.GroupChat);
+//        LocationMessageBody locBody = new LocationMessageBody(locationAddress,
+//                latitude, longitude);
+//        localMsg.setLocalBody(locBody);
+//        localMsg.setSrc_ID(UserModel.localUser.getId());
+//        localMsg.setDst_ID(dst_ID);
+//        localMsg.setMsgType(LOCATION);
+//        localMsg.setType(ChatMsgViewAdapter.TO_USER_LOCATION);
+//        localMsg.setMsgDate(Tools.getDate());
+//        msg_List.add(localMsg);
+//        sendMessageHandler.sendEmptyMessage(SEND_OK);
+//        setResult(RESULT_OK);
+//
+//    }
+
 
     /**
      * 接收文字
@@ -655,6 +716,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
@@ -690,6 +752,19 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         if (requestCode == VIDEO_REQUEST_CAREMA) {// 获取视频
             Toast.makeText(this, Uri.fromFile(tempVideoFile).getPath(), Toast.LENGTH_SHORT).show();
             return;
+        }
+        if(requestCode == REQUEST_CODE_MAP){
+            double latitude = data.getDoubleExtra("latitude", 0);
+            double longitude = data.getDoubleExtra("longitude", 0);
+            String locationAddress = data.getStringExtra("address");
+            if (locationAddress != null && !locationAddress.equals("")) {
+                //more(more);
+                mPanelRoot.setVisibility(View.GONE);
+                chatPresenter.SendLocation(latitude, longitude, dst ,"", locationAddress);
+            } else {
+                Toast.makeText(this, "无法获取到您的位置信息！", Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 

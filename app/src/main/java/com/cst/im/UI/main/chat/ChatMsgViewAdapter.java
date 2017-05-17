@@ -26,15 +26,18 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
 import com.cst.im.FileAccess.FileSweet;
 import com.cst.im.R;
 import com.cst.im.dataBase.ChatConst;
 import com.cst.im.model.FileMsgModel;
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.IFileMsg;
+import com.cst.im.model.ILocationMsg;
 import com.cst.im.model.IPhotoMsg;
 import com.cst.im.model.ISoundMsg;
 import com.cst.im.model.ITextMsg;
+import com.cst.im.model.LocationMsgModel;
 import com.cst.im.model.PhotoMsgModel;
 import com.cst.im.tools.FileUtils;
 
@@ -69,6 +72,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     public static final int TO_USER_VOICE = 5;//发送消息类型
     public static final int TO_USE_FILE = 6;//发送消息类型
     public static final int FROM_USE_FILE = 7;//接收消息类型
+    public static final int TO_USER_LOCATION = 8;
+    public static final int FROM_USER_LOCATION = 9;
+    private static final int MESSAGE_TYPE_RECV_LOCATION = 4;
     private int mMinItemWith;// 设置对话框的最大宽度和最小宽度
     private List<IBaseMsg> coll;// 消息对象数组
     private Map<String, Timer> timers = new Hashtable<String, Timer>();
@@ -170,7 +176,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
     @Override
     public int getViewTypeCount() {
         // TODO Auto-generated method stub
-        return 8;
+        return 10;
     }
 
 
@@ -359,6 +365,48 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                     holder5 = (ToUserVoiceViewHolder) view.getTag();
                 }
                 toVoiceUserLayout(holder5, msg, i);
+                break;
+            case TO_USER_LOCATION:
+                FromUserFileViewHolder holder8;
+                if (view == null) {
+                    holder8 = new FromUserFileViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.row_sent_location, null);
+                    holder8.head_iv = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder8.tv = (TextView) view
+                            .findViewById(R.id.tv_location);
+                    holder8.pb = (ProgressBar) view
+                            .findViewById(R.id.pb_sending);
+                    holder8.staus_iv = (ImageView) view
+                            .findViewById(R.id.msg_status);
+                    holder8.tv_userId = (TextView) view
+                            .findViewById(R.id.tv_userid);
+                    view.setTag(holder8);
+                } else {
+                    holder8 = (FromUserFileViewHolder) view.getTag();
+                }
+                handleLocationMessage(holder8, msg,i ,view);
+                break;
+            case FROM_USER_LOCATION:
+                FromUserFileViewHolder holder9;
+                if (view == null) {
+                    holder9 = new FromUserFileViewHolder();
+                    view = mLayoutInflater.inflate(R.layout.row_received_location, null);
+                    holder9.head_iv = (ImageView) view
+                            .findViewById(R.id.iv_userhead);
+                    holder9.tv = (TextView) view
+                            .findViewById(R.id.tv_location);
+                    holder9.pb = (ProgressBar) view
+                            .findViewById(R.id.pb_sending);
+                    holder9.staus_iv = (ImageView) view
+                            .findViewById(R.id.msg_status);
+                    holder9.tv_userId = (TextView) view
+                            .findViewById(R.id.tv_userid);
+                    view.setTag(holder9);
+                } else {
+                    holder9 = (FromUserFileViewHolder) view.getTag();
+                }
+                handleLocationMessage(holder9, msg,i ,view);
                 break;
         }
 
@@ -832,6 +880,44 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             });
         }
     }
+    /**
+     * 处理位置消息
+     *
+     * @param msg
+     * @param holder
+     * @param position
+     * @param convertView
+     */
+    private void handleLocationMessage(final FromUserFileViewHolder holder, final IBaseMsg msg, final int position ,View convertView) {
+        TextView locationView = ((TextView) convertView
+                .findViewById(R.id.tv_location));
+        ILocationMsg localMsg = (LocationMsgModel)msg;
+        LocationMessageBody locBody = localMsg.getLocalBody();
+        locationView.setText(locBody.getAddress());
+        LatLng loc = new LatLng(locBody.getLatitude(), locBody.getLongitude());
+        locationView.setOnClickListener(new MapClickListener(loc, locBody
+                .getAddress()));
+
+//        if (message.direct == EMMessage.Direct.RECEIVE) {
+//            return;
+//        }
+        // deal with send message
+//        switch (message.status) {
+//            case SUCCESS:
+                holder.pb.setVisibility(View.GONE);
+                holder.staus_iv.setVisibility(View.GONE);
+//                break;
+//            case FAIL:
+//                holder.pb.setVisibility(View.GONE);
+//                holder.staus_iv.setVisibility(View.VISIBLE);
+//                break;
+//            case INPROGRESS:
+//                holder.pb.setVisibility(View.VISIBLE);
+//                break;
+//            default:
+                //sendMsgInBackground(message, holder);
+ //       }
+    }
 
     private void toVoiceUserLayout(final ToUserVoiceViewHolder holder, final IBaseMsg msg, final int position) {
         holder.headicon.setBackgroundResource(R.mipmap.ic_default);
@@ -1032,5 +1118,31 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             MediaManager.pause();
             voicePlayPosition = -1;
         }
+    }
+
+    /*
+     * 点击地图消息listener
+     */
+    class MapClickListener implements View.OnClickListener {
+
+        LatLng location;
+        String address;
+
+        public MapClickListener(LatLng loc, String address) {
+            location = loc;
+            this.address = address;
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent;
+            intent = new Intent(context, BaiduMapActivity.class);
+            intent.putExtra("latitude", location.latitude);
+            intent.putExtra("longitude", location.longitude);
+            intent.putExtra("address", address);
+            context.startActivity(intent);
+        }
+
     }
 }

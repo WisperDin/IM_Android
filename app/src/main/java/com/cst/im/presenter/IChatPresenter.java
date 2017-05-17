@@ -14,4 +14,7 @@ public interface IChatPresenter {
     //发送一般文件
     void SendFile(IUser[] dstUser, File file, IBaseMsg.MsgType msgType);
 
+    void SendLocation(double latitude, double longitude,IUser[] dstUser,
+                      String imagePath, String locationAddress);
+
 }

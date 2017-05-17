@@ -21,7 +21,7 @@ public interface IBaseMsg {
     //消息类型，标志消息是文字，图片，语音，文件等
     //分别为1，2，3，4
     enum MsgType{
-        TEXT,PHOTO,FILE,SOUNDS
+        TEXT,PHOTO,FILE,SOUNDS,LOCATION
     }
     MsgType  getMsgType();
     int  getMsgTypeInt();
