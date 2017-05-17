@@ -50,11 +50,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginView,View.
 
     //登录业务逻辑
     ILoginPresenter loginPresenter;
-
     ComService comService;
     ServiceConnection serviceConn;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

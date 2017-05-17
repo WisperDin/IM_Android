@@ -1,20 +1,16 @@
 package com.cst.im.UI;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cst.im.R;
-import com.cst.im.UI.main.MainActivity;
 import com.cst.im.presenter.IRegisterPresenter;
 import com.cst.im.presenter.RegisterPresenterCompl;
 import com.cst.im.presenter.Status;
