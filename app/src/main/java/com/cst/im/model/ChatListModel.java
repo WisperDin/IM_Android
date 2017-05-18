@@ -49,10 +49,13 @@ public class ChatListModel implements IChatList {
                 MsgList.add(count,chatItem);
             }
         }else{
-/*            while(MsgList.get(count).isHasTop())
+            if(!MsgList.isEmpty())
             {
-                count++;
-            }*/
+                while(MsgList.get(count).isHasTop())
+                {
+                    count++;
+                }
+            }
             //消息不存在，添加到列表并置前
             MsgList.add(count,chatItem);
         }

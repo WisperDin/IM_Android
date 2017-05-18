@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cst.im.R;
 import com.cst.im.model.FriendModel;
@@ -23,12 +25,14 @@ import static com.cst.im.model.UserModel.localUser;
 
 public class FriendViewFragment extends Fragment implements
         AdapterView.OnItemClickListener,
-        AdapterView.OnItemLongClickListener {
+        AdapterView.OnItemLongClickListener, View.OnClickListener {
     MyCustomAdapter adapter=null;
     private  ArrayList<Integer> letter = new ArrayList<Integer>();//储存标题上的大写字母的位置
      ArrayList<String> NameSequencebylistview;//记录item上的名字
     ListView Friendlistview;
     ImageView img_search;
+
+    Button To_friend_group;    //用于跳转到分组界面
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,6 +42,11 @@ public class FriendViewFragment extends Fragment implements
         InitView(img_search,Friendlistview);
         Friendlistview.setOnItemClickListener(this);    //设置单击监听，接口实现
         Friendlistview.setOnItemLongClickListener(this);  //设置长按监听，接口实现
+
+        //byjijinping 5.18
+        To_friend_group=(Button)view.findViewById(R.id.button_friend_group);
+        To_friend_group.setOnClickListener(this);
+
         img_search.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -129,4 +138,13 @@ public class FriendViewFragment extends Fragment implements
         return true;
     }
 
+    @Override
+    public void onClick(View view) {
+        if(view==To_friend_group)
+        {
+            Toast.makeText(getActivity(),"跳转到分组界面",Toast.LENGTH_SHORT).show();
+            Intent ntent=new Intent(getActivity(),friendgroupActivity.class);
+            startActivity(ntent);
+        }
+    }
 }
