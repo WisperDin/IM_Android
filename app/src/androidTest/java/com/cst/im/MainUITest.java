@@ -133,8 +133,10 @@ public class MainUITest {
     void SaveAge(int age,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(Integer.toString(age)),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(Integer.toString(age)),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
@@ -151,40 +153,50 @@ public class MainUITest {
     void SaveRealName(String realName,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(realName),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(realName),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
     void SavePhonoNO(String phonoNo,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(phonoNo),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(phonoNo),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
     void SaveEmail(String email,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(email),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(email),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
     void SaveAddress(String address,int i){
         //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(address),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(address),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
     }
     void SaveSign(String sign,int i){
 //点击listview中的某一项
         onData(anything()).inAdapterView(withId(R.id.setting_parent_lv)).atPosition(i).perform(click());
+        //清空
+        onView(withId(R.id.detail_et)).perform(replaceText(""),closeSoftKeyboard());
         //更改属性
-        onView(withId(R.id.detail_et)).perform(replaceText(sign),closeSoftKeyboard());
+        onView(withId(R.id.detail_et)).perform(typeText(sign),closeSoftKeyboard());
         //点击保存
         onView(withId(R.id.save_bt)).perform(click());
 
@@ -216,13 +228,14 @@ public class MainUITest {
         Thread.sleep(1000);
     }
     //点击一个好友，向那个好友发送文件
+    @Ignore
     @Test
     public void SendFileToFriendFromFriendList() throws InterruptedException {
         //点击好友
         ClickFriend();
         //发送文件
         SendFileToFriend();
-        Thread.sleep(1000);
+        Thread.sleep(5000);
     }
     //添加好友
     @Ignore

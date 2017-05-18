@@ -24,6 +24,6 @@ public interface IFriend {
 
 
     //添加好友
-
+    FriendModel.Searchinfo getinfo();
 
 }

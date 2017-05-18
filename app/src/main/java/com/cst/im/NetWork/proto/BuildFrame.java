@@ -175,6 +175,28 @@ public class BuildFrame {
         return null;
     }
 
+    //获取添加好友（模糊查找）
+    public Frame AddFriendUncertain(IFriend AddFriend){
+        if (AddFriend.getId()!=0&&AddFriend.getinfo()!=null)
+        {
+            User.Builder src = User.newBuilder();
+            src.setUserID(AddFriend.getId());
+            DstUser.Builder dstGroup = DstUser.newBuilder();
+            User.Builder dst = User.newBuilder();
+            dst.setUserName(AddFriend.getinfo().keyword);
+            dst.setAge(AddFriend.getinfo().age);
+            dst.setSex(AddFriend.getinfo().sex);
+            dst.setEmail(AddFriend.getinfo().email);
+            dst.setPhone(AddFriend.getinfo().telephone);
+            dst.setAddress(AddFriend.getinfo().address);
+            dstGroup.addDst(dst);
+            frame.setSrc(src.build());
+            frame.setDst(dstGroup);
+            return frame.build();
+        }
+        Log.e(" bad value", "BuildFrame,AddFriendUncertain");
+        return null;
+    }
     //获取判断是否为好友帧
     public Frame IsFriend(IFriend IsFriend){
         if (IsFriend.getId()!=0&&IsFriend.SearchId()!=0)
