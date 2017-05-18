@@ -93,12 +93,16 @@ public class ComService extends TcpService {
     }
     @Override
     public void OnMessageCome(Frame frame) {
+        if(frame==null){
+            Log.e("OnMessageCome","frame null");
+            return;
+        }
         //根据消息类型分发客户端收到的消息
         switch (frame.getMsgType()){
             case BuildFrame.FeedBack://反馈信息
             {
                 Log.d("OnMessage","feedback");
-                Action action =  frame.getFbAction();
+                Action action =  frame.getFbAction();//若空则返回默认类型
                 User user = frame.getSrc();
                 //选择反馈信息的类型
                 switch (action.getActionType()){
@@ -112,14 +116,16 @@ public class ComService extends TcpService {
                         if(registerEvent!=null)//执行登录反馈事件
                             registerEvent.handleFbEvent(action.getRslCode(),0);
                         break;
+                    default:
+                        Log.e("OnMessageCome","FeedBack 反馈类型不正确");
                 }
                 break;
             }
             case BuildFrame.TextMsg://聊天消息
             case BuildFrame.FileInfo://文件简要消息
             {
-                //检查是否空
-                if (frame.getDst().getDstCount()<=0){
+                //检查目的用户数量是否>0,srcid不等于0
+                if (frame.getDst().getDstCount()<=0||frame.getSrc().getUserID()==0){
                     Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
                     return;
                 }
@@ -127,7 +133,7 @@ public class ComService extends TcpService {
                 IBaseMsg baseMsg = null;
                 //实例化对象
                 if(frame.getMsgType()==BuildFrame.TextMsg){
-                    if(frame.getMsg().getMsg()==""){
+                    if(frame.getMsg().getMsg()==""||frame.getSrc().getUserName()==""){//空消息和空用户名不被允许
                         Log.e(" bad value", "ComService,OnMessageCome TextMsg");
                         return;
                     }
@@ -136,9 +142,10 @@ public class ComService extends TcpService {
                     baseMsg.setSrc_Name(frame.getSrc().getUserName());
                     baseMsg.setMsgType(IBaseMsg.MsgType.TEXT);
                 }else if(frame.getMsgType()==BuildFrame.FileInfo){
+                    //关于文件信息参数的检查
                     if(frame.getFileInfo().getFileName()==""||frame.getFileInfo().getFileType()==0||
                             frame.getFileInfo().getFileParam()==""||frame.getFileInfo().getFileFeature()==""){
-                        Log.e(" bad value", "ComService,OnMessageCome FileInfo");
+                        Log.e(" bad value", "ComService,OnMessageCome FileInfo fileParam");
                         return;
                     }
                     switch (frame.getFileInfo().getFileType()){
@@ -169,6 +176,10 @@ public class ComService extends TcpService {
                 //初始化一些公有的东西
                 int dst[] = new int[frame.getDst().getDstCount()];
                 for(int i = 0 ; i < frame.getDst().getDstCount() ; i++){
+                    if(frame.getDst().getDst(i).getUserID()==0){
+                        Log.e(" bad value", "ComService,chatMsg dstID equal 0");
+                        return;
+                    }
                     dst[i] = frame.getDst().getDst(i).getUserID();
                 }
                 baseMsg.setSrc_ID(frame.getSrc().getUserID());

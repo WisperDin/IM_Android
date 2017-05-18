@@ -34,10 +34,12 @@ public class MsgModelBase implements IBaseMsg {
     //发送目的用户id组
     public int[] getDst_ID(){return dstID;}
     public int getDst_IDAt(int pos){
-        if (pos<dstID.length)
-            return dstID[pos];
-        Log.w("getDstID","get dst index beyond the group");
-        return -1;
+        if (pos>=dstID.length||pos<0){//位置必须在0～length之间
+            Log.e("getDstID","get dst index beyond the group");
+            return -1;
+        }
+        return dstID[pos];
+
     }
     public void setDst_ID(int[] dst_id){
         this.dstID=dst_id;
