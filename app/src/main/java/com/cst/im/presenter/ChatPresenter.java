@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -244,9 +245,19 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     //发送一般文件
     @Override
     public void SendFile(File file, IBaseMsg.MsgType msgType)  {
-        //参数检查
-        if(file==null||!file.exists()){
+        //传入参数检查 消息，文件
+        if(file==null||!file.exists()||msgType==null){
             Log.e("SendFile","param error");
+            return;
+        }
+        //参数检查 目的用户
+        if(dst_ID==null||dst_ID.length<=0){
+            Log.e("SendFile","dst_ID bad value");
+            return;
+        }
+        //参数检查 localUser
+        if(UserModel.localUser==null||UserModel.localUser.getId()==0){
+            Log.e("SendFile","UserModel.localUser exception");
             return;
         }
         IFileMsg fileMsg = null;
@@ -259,6 +270,10 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileType = FileSweet.FILE_TYPE_FILE;
                 //参数
                 fileSize = FileUtils.getAutoFileOrFilesSize(file);
+                if(fileSize==null||fileSize==""){
+                    Log.e("SendFile","fileSize exception");
+                    return;
+                }
                 fileMsg.setFileSize(fileSize);
                 fileMsg.setFileParam(fileSize);
 /*                //设置URL
@@ -277,12 +292,26 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileType = FileSweet.FILE_TYPE_PICTURE;
 
                 //添加图片到imgList
+                if(activity==null){
+                    Log.e("SendFile","activity null");
+                    return;
+                }
                 ChatMsgViewAdapter chatMsgAdapter = ((ListViewChatActivity) activity).mAdapter;
-                chatMsgAdapter.getImageList().add(file.getAbsolutePath());
-                chatMsgAdapter.getImagePosition().put(chatMsgAdapter.getCount()-1,chatMsgAdapter.getImageList().size()-1);
+                ArrayList<String> imgList = chatMsgAdapter.getImageList();//
+                HashMap<Integer,Integer> imgPos =  chatMsgAdapter.getImagePosition();
+                if(chatMsgAdapter==null||imgList==null||imgPos==null){
+                    Log.e("SendFile","photo about adapter exception");
+                    return;
+                }
+                imgList.add(file.getAbsolutePath());
+                imgPos.put(chatMsgAdapter.getCount()-1,imgList.size()-1);
 
                 //参数
                 fileSize = FileUtils.getAutoFileOrFilesSize(file);
+                if(fileSize==null||fileSize==""){
+                    Log.e("SendFile","fileSize exception");
+                    return;
+                }
                 fileMsg.setFileSize(fileSize);
                 fileMsg.setFileParam(fileSize);
                 break;
@@ -298,8 +327,16 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 }
                 // 设置时长
                 String filePath = RecordUtils.getAudioPath();
+                if(filePath==null||filePath==""){
+                    Log.e("SendFile","Audio Path error");
+                    return;
+                }
                 int duration = RecordUtils.getDuration(filePath);
                 Log.d("Record", "duration : " + String.valueOf(duration));
+                if (duration <= 0) {
+                    Log.e("SendFile","duration <=0");
+                    return;
+                }
                 float voiceTime = duration/1000.0f;
                 ((SoundMsgModel) fileMsg).setUserVoiceTime(voiceTime);
 
@@ -313,6 +350,9 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 iChatView.onSendVoice(((SoundMsgModel) fileMsg));
                 fileType = FileSweet.FILE_TYPE_SOUND;
                 break;
+            default:
+                Log.e("SendFile","msgType 类型不正确");
+                return;
         }
         if(msgType==null||fileType==0){
             Log.w("msgType||fileType","null");
@@ -337,11 +377,13 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if(fs==null){
-            Log.e("SendFile","FileSweet null");
+        if(fs==null||fs.getFeature()==null
+                ||fs.getFeature()==""){
+            Log.e("SendFile","FileSweet param error");
             return;
         }
         fs.setFileParam(fileMsg.getFileParam());
+
         FileImRequest.Builder().upLoadFile(fs, new ImRequest.ResultCallBack() {
             @Override
             public void fail(int code, String msg) {
@@ -373,11 +415,11 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         //文件指纹
         fileMsg.setFileFeature(fs.getFeature());
         //文件名,如果是语音文件就用指纹代替
-        fileMsg.setFileName(msgType== IBaseMsg.MsgType.SOUNDS ? fs.getFeature():file.getName());
+        fileMsg.setFileName(msgType == IBaseMsg.MsgType.SOUNDS ? fs.getFeature():file.getName());
         final byte[] fileHeadToSend = DeEnCode.encodeFileMsgFrameHead(fileMsg);
         if(fileHeadToSend==null){
-            Log.w("file","fileHeadToSend null");
-            System.out.println("fileHeadToSend null");
+            Log.e("file","fileHeadToSend data null");
+            return;
         }
         handler.post(new Runnable() {
             @Override
@@ -385,8 +427,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 try {
                     ComService.client.SendData(fileHeadToSend);
                 } catch (IOException ioe) {
-                    Log.w("send", "send file []byte failed");
-                    System.out.println("send file []byte failed");
+                    Log.e("send", "send file []byte failed");
+                    return;
                 }
             }
         });
@@ -397,38 +439,47 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     //发送文字信息
     @Override
     public void SendMsg(String contString){
-        if (contString.length() > 0) {
-            ITextMsg textMsg = new TextMsgModel();
-            textMsg.setSrc_ID(UserModel.localUser.getId());
-            textMsg.setSrc_Name(UserModel.localUser.getName());
-            textMsg.setMsgDate(Tools.getDate());
-            textMsg.setText(contString);
-            textMsg.sendOrRecv(false);
-            textMsg.setDst_ID(dst_ID);
-            textMsg.setMsgType(IBaseMsg.MsgType.TEXT);
-            DBManager.InsertMsg(textMsg);
-            //发送数据到服务器
-            //编码聊天消息帧
-            final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(textMsg);
-            //调用发送数据接口
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ComService.client.SendData(chatMsgFrame);
-                    }
-                    catch (IOException ioe)
-                    {
-                        Log.w("send","send data failed");
-                    }
-                }});
-            mDataArrays.add(textMsg);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    iChatView.onSendMsg();
-                }});
+        //参数检查
+        if(UserModel.localUser==null||UserModel.localUser.getId()==0||UserModel.localUser.getName()==""
+                ||contString==null||contString.length() <= 0
+                ||dst_ID==null||dst_ID.length<=0){
+            Log.e("SendMsg", "param error");
+            return;
         }
+        ITextMsg textMsg = new TextMsgModel();
+        textMsg.setSrc_ID(UserModel.localUser.getId());
+        textMsg.setSrc_Name(UserModel.localUser.getName());
+        textMsg.setMsgDate(Tools.getDate());
+        textMsg.setText(contString);
+        textMsg.sendOrRecv(false);
+        textMsg.setDst_ID(dst_ID);
+        textMsg.setMsgType(IBaseMsg.MsgType.TEXT);
+        DBManager.InsertMsg(textMsg);
+        //发送数据到服务器
+        //编码聊天消息帧
+        final byte[] chatMsgFrame = DeEnCode.encodeChatMsgFrame(textMsg);
+        if (chatMsgFrame == null) {
+            Log.e("SendMsg", "chatMsgFrame data null");
+            return;
+        }
+        //调用发送数据接口
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ComService.client.SendData(chatMsgFrame);
+                } catch (IOException ioe) {
+                    Log.w("send", "send data failed");
+                }
+            }
+        });
+        mDataArrays.add(textMsg);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                iChatView.onSendMsg();
+            }
+        });
 
     }
 }
