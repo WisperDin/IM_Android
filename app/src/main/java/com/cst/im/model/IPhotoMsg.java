@@ -6,7 +6,4 @@ package com.cst.im.model;
 
 public interface IPhotoMsg extends IFileMsg {
     //图片
-    String getPhotoUrl();
-    void setPhotoUrl(String photoUrl);
-
 }

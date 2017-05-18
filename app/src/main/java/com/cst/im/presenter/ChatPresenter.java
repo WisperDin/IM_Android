@@ -258,7 +258,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 fileMsg = new SoundMsgModel();
                 try{
                     //设置URL路径
-                    ((SoundMsgModel) fileMsg).setSoundUrl(file.toURL().toString());
+                    ((SoundMsgModel) fileMsg).setFileUrl(file.toURL().toString());
                 }catch (MalformedURLException mie){
                     mie.printStackTrace();
                     Log.e("setSoundUrl","failed");

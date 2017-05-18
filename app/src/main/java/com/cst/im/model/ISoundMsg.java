@@ -6,8 +6,6 @@ package com.cst.im.model;
 
 public interface ISoundMsg extends IFileMsg {
     //语音
-    String getSoundUrl();
-    void setSoundUrl(String soundUrl);
     float getUserVoiceTime();
     void setUserVoiceTime(float UserVoiceTime);
 

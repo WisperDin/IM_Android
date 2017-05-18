@@ -1,6 +1,7 @@
 package com.cst.im.presenter;
 
 import com.cst.im.model.IBaseMsg;
+import com.cst.im.model.IUser;
 
 import java.io.File;
 

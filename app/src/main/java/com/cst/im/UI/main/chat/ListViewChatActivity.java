@@ -513,7 +513,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
 //                            0f, ChatConst.COMPLETED));
 //                    i = -1;
 //                }
-                msg.getPhotoUrl();
+                msg.getFileUrl();
                 msg.setType(ChatMsgViewAdapter.TO_USER_IMG);
                 msg_List.add(msg);
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
@@ -538,7 +538,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 msg_List.add(soundMsg);
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
                 ListViewChatActivity.this.seconds = soundMsg.getUserVoiceTime();
-                voiceFilePath = soundMsg.getSoundUrl();
+                voiceFilePath = soundMsg.getFileUrl();
                 soundMsg.setType(ChatMsgViewAdapter.TO_USER_VOICE);
                 //RecordUtils.playAudio(voiceFilePath);
             }
@@ -594,7 +594,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 IPhotoMsg photoMsg = msg;
                 String time = returnTime();
                 photoMsg.setMsgDate(time);
-                photoMsg.setPhotoLocal(photoMsg.getPhotoUrl());
+                photoMsg.setPhotoLocal(photoMsg.getFileUrl());
                 photoMsg.setType(ChatMsgViewAdapter.FROM_USER_IMG);
                 msg_List.add(msg);
                 imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
@@ -622,7 +622,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 String time = returnTime();
                 soundMsg.setMsgDate(time);
                 soundMsg.setUserVoiceTime(seconds);
-                soundMsg.setSoundUrl(filePath);
+                soundMsg.setFileUrl(filePath);
                 mAdapter.unReadPosition.add(msg_List.size() + "");
                 soundMsg.setType(ChatMsgViewAdapter.FROM_USER_VOICE);
                 msg_List.add(soundMsg);
