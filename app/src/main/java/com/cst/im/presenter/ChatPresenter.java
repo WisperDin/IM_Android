@@ -48,8 +48,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     private int[] dst_ID;
     public ChatPresenter(IChatView chatView , List<IBaseMsg> msg,IUser[] dstUser) {
         //参数检查
-        //TODO ||chatView==null
-        if(dstUser==null||dstUser.length<=0||msg==null){
+        if(dstUser==null||dstUser.length<=0||msg==null||chatView==null){
             Log.e("ChatPresenter","param error");
             activity= null;
             return;
@@ -94,6 +93,14 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //匹配发来的信息的发送源用户是否存在于当前窗口的目的用户
     public boolean CheckSrcID(int srcID){
+        if(srcID==0){
+            Log.e("CheckSrcID","srcID bad value");
+            return false;
+        }
+        if(dst_ID==null||dst_ID.length<=0){
+            Log.e("CheckSrcID","dst_ID bad value");
+            return false;
+        }
         for(int i=0;i<dst_ID.length;i++){
                 if(dst_ID[i]==srcID){//匹配
                     return true;
@@ -103,6 +110,14 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     }
     //匹配发来的信息的目的用户是否就是自己
     public static boolean CheckDstID(int[] dstID){
+        if(dstID==null||dstID.length<=0){
+            Log.e("CheckDstID","dstID bad value");
+            return false;
+        }
+        if(UserModel.localUser==null||UserModel.localUser.getId()==0){
+            Log.e("CheckDstID","localUser id bad value");
+            return false;
+        }
         for(int i=0;i<dstID.length;i++){
             if(dstID[i]==UserModel.localUser.getId()){//匹配
                 return true;
@@ -113,11 +128,16 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
     //接受到新的消息 //参数为接收到的消息
     @Override
     public void handleChatMsgEvent(final IBaseMsg msgRecv){
-        //TODO: 做一个判断，判断这条信息的确是发给当前这个聊天窗口的对象的
+        if(msgRecv==null||msgRecv.getMsgType()==null){
+            Log.e("handleChatMsgEvent","msgRecv 相关参数为空");
+            return;
+        }
+        //判断收到这条信息的确是来自当前这个聊天窗口的对象的
         if(!CheckSrcID(msgRecv.getSrc_ID())){
             Log.d("handleChatMsgEvent","这条信息的发送者不在当前窗口的对象用户-----------------");
             return;
         }
+        //判断这条信息的确是发给自己的
         if(!CheckDstID(msgRecv.getDst_ID())){
             Log.w("handleChatMsgEvent","这条信息的目的用户不是自身-----------------");
             return;
@@ -134,7 +154,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                         iChatView.onRecvMsg();
                     }
                 });
-                return;
+                return;//文字消息的处理到这里就结束了
             case FILE:
                 handler.post(new Runnable() {
                     @Override
@@ -163,9 +183,21 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
                 });
                 fileType = FileSweet.FILE_TYPE_SOUND;
                 break;
+            default:
+                Log.e("handleChatMsgEvent","msgRecv 类型不正确");
+                return;
+
         }
         //file name without prefix
+        if(((FileMsgModel) msgRecv).getFileName()==null||((FileMsgModel) msgRecv).getFileName()==""){
+            Log.e("handleChatMsgEvent","filename bad value");
+            return;
+        }
         final String fileNameNoEx = FileUtils.getFileNameNoEx(((FileMsgModel) msgRecv).getFileName());
+        if(fileNameNoEx==null||fileNameNoEx==""){
+            Log.e("handleChatMsgEvent","fileNameNoEx bad value");
+            return;
+        }
         FileImRequest.Builder().downLoadFile(fileType,fileNameNoEx,new ImRequest.ResultCallBack(){
 
             @Override
