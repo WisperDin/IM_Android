@@ -99,6 +99,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
 
     @Override
     public void onReaultCode(int code,String username){
+        //如果code为0表示用户不存在
         this.reaultcode=code;
         this.name=username;
         tv.setVisibility(View.VISIBLE);
@@ -123,7 +124,7 @@ public class SearchFriend extends AppCompatActivity implements IFriendView {
     }
     @Override
     public void onReaultCodebyAddFriend(int code,int id,String name){
-        if(code==200){
+        if(code==200&&id!=0&&name!=null){
             friendModel.getfriendlist().add(name);
             friendModel.getFriendNameAndID().put(name,id);
             Toast.makeText(this,"添加成功",Toast.LENGTH_SHORT).show();

@@ -135,8 +135,10 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Log.w("send","Get data success");
-                ifriendview.onRecvMsg(msgRecv.getfriendlist(),msgRecv.getFriendNameAndID());
+                if(msgRecv!=null){
+                    Log.w("send","Get data success");
+                    ifriendview.onRecvMsg(msgRecv.getfriendlist(),msgRecv.getFriendNameAndID());
+                }
             }});
 
         }
@@ -146,8 +148,10 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Log.w("send","Get data success");
-                ifriendview.onReaultCode(msgRecv.ReaultCode(),msgRecv.getname());
+                if(msgRecv!=null){
+                    Log.w("send","Get data success");
+                    ifriendview.onReaultCode(msgRecv.ReaultCode(),msgRecv.getname());
+                }
             }});
 
     }
@@ -158,8 +162,10 @@ public class FriendPresenterCompl implements IFriendPresenter,ComService.FriendL
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Log.w("send","Get data success");
-                ifriendview.onReaultCodebyAddFriend(msgRecv.ReaultCode(),msgRecv.getId(),msgRecv.getname());
+                if(msgRecv!=null){
+                    Log.w("send","Get data success");
+                    ifriendview.onReaultCodebyAddFriend(msgRecv.ReaultCode(),msgRecv.getId(),msgRecv.getname());
+                }
             }});
 
     }

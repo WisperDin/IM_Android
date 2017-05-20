@@ -67,7 +67,8 @@ public class FriendViewFragment extends Fragment implements
         for(int i = 0; i< size; i++){
             addfriend.SortAndAdd(FriendModel.friendModel.getfriendlist().get(i));
         }
-        for (int i = 0; i < addfriend.getTittle().length; i++) {
+        int len=addfriend.getTittle().length;
+        for (int i = 0; i < len; i++) {
             //查看某个字母下的用户
             if (addfriend.getFriendname().get(addfriend.getTittle()[i]).size() != 0) {
                 adapter.addSeparatorItem(addfriend.getTittle()[i], R.drawable.friend_icon);
