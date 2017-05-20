@@ -9,13 +9,11 @@ import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.ILoginUser;
 import com.cst.im.model.ITextMsg;
 import com.cst.im.model.LoginUserModel;
-import com.cst.im.model.UserModel;
 import com.cst.im.model.TextMsgModel;
+import com.cst.im.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 
 /**
@@ -41,6 +39,11 @@ public class DBManager {
      * status 表示发送或者接收的状态，在Constant类中有SEND和RECEIVE两个常量表示两种状态
      * */
     public static void InsertMsg(IBaseMsg msg){
+        //参数判断
+        if(msg.getMsgType()==null||helper==null){
+            Log.e("InsertMsg","param exception");
+            return;
+        }
         //判断接受/发送状态
         switch(msg.getMsgType()){
             case TEXT:
@@ -71,6 +74,9 @@ public class DBManager {
                 return;
             case SOUNDS:
                 Log.d("存储语音" ,"语音————————————");
+                return;
+            default:
+                Log.e("InsertMsg","msgType exception");
                 return;
          }
     }
