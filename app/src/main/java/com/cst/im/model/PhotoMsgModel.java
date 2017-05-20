@@ -5,16 +5,5 @@ package com.cst.im.model;
  */
 
 public class PhotoMsgModel extends FileMsgModel implements IPhotoMsg {
-    String photoUrl;
-
-    @Override
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    @Override
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
 
 }

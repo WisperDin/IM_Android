@@ -475,12 +475,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
         if (isPicRefresh) {
             holder.image_Msg.setImageBitmap(null);
             IPhotoMsg photoUrl = ((IPhotoMsg)msg);
-            final String imageSrc = photoUrl.getPhotoUrl() == null ? "" :
+            final String imageSrc = photoUrl.getFileUrl() == null ? "" :
                     photoUrl.getPhotoLocal();
-            final String imageUrlSrc = photoUrl.getPhotoUrl() == null ? "" :
-                    photoUrl.getPhotoUrl();
-            final String imageIconUrl = photoUrl.getPhotoUrl() == null ? ""
-                    : photoUrl.getPhotoUrl();
+            final String imageUrlSrc = photoUrl.getFileUrl() == null ? "" :
+                    photoUrl.getFileUrl();
+            final String imageIconUrl = photoUrl.getFileUrl() == null ? ""
+                    : photoUrl.getFileUrl();
             File file = new File(imageSrc);
             final boolean hasLocal = !imageSrc.equals("")
                    && FileSaveUtil.isFileExists(file);
@@ -579,12 +579,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                     return;
                 }
                 try{
-                        soundMsgUrl.setSoundUrl(file.toURL().toString()); ;
+                        soundMsgUrl.setFileUrl(file.toURL().toString()); ;
                 }catch (MalformedURLException mue){
                     Log.w("to url","failed");
                     return;
                 }
-                if(soundMsgUrl.getSoundUrl()==null){
+                if(soundMsgUrl.getFileUrl()==null){
                     Log.w("url","null");
                     return;
                 }
@@ -592,7 +592,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 if (voiceIsRead != null) {
                     voiceIsRead.voiceOnClick(position);
                 }
-                MediaManager.playSound(soundMsgUrl.getSoundUrl(), new MediaPlayer.OnCompletionListener() {
+                MediaManager.playSound(soundMsgUrl.getFileUrl(), new MediaPlayer.OnCompletionListener() {
 
                     @Override
                     public void onCompletion(MediaPlayer mp) {
@@ -799,12 +799,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
             holder.image_Msg.setImageBitmap(null);
             holder.image_group.setVisibility(View.VISIBLE);
             IPhotoMsg photoUrl = ((IPhotoMsg)msg);
-            final String imageSrc = photoUrl.getPhotoUrl() == null ? "" :
+            final String imageSrc = photoUrl.getFileUrl() == null ? "" :
                     photoUrl.getPhotoLocal();
-            final String imageUrlSrc = photoUrl.getPhotoUrl() == null ? "" :
-                    photoUrl.getPhotoUrl();
-            final String imageIconUrl = photoUrl.getPhotoUrl() == null ? ""
-                    : photoUrl.getPhotoUrl();
+            final String imageUrlSrc = photoUrl.getFileUrl() == null ? "" :
+                    photoUrl.getFileUrl();
+            final String imageIconUrl = photoUrl.getFileUrl() == null ? ""
+                    : photoUrl.getFileUrl();
             File file = new File(imageSrc);
             final boolean hasLocal = !imageSrc.equals("")
                     && FileSaveUtil.isFileExists(file);
@@ -932,8 +932,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
                 drawable = (AnimationDrawable) holder.voice_anim
                         .getBackground();
                 drawable.start();
-                String voicePath = soundMsgUrl.getSoundUrl() == null ? ""
-                        : soundMsgUrl.getSoundUrl();
+                String voicePath = soundMsgUrl.getFileUrl() == null ? ""
+                        : soundMsgUrl.getFileUrl();
                 if (voiceIsRead != null) {
                     voiceIsRead.voiceOnClick(position);
                 }
