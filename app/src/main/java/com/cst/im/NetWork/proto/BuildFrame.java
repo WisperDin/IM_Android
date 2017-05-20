@@ -77,50 +77,36 @@ public class BuildFrame {
 
     //获得聊天帧
     public Frame GetChatMsgFrame(IBaseMsg chatMsg){
-        if(chatMsg.getDst_ID()!=null&&chatMsg.getDst_ID().length!=0){
-            //chatMsg.getDst_ID()!=null&&chatMsg.getDst_ID().length!=0&&chatMsg.getMsgType()!=null
-            //发送源
-            User.Builder src = User.newBuilder();
-            src.setUserID(chatMsg.getSrc_ID());
-            //接收者
-            User.Builder dst = User.newBuilder();
-            dst.setUserID(chatMsg.getDst_IDAt(0));
-            DstUser.Builder dstGroup = DstUser.newBuilder();
-            dstGroup.addDst(dst);
-            //要发送的信息，先模拟字符串发送
-            ITextMsg txtMsg = ((ITextMsg) chatMsg);
-            Msg.Builder msg = Msg.newBuilder();
-            msg.setMsg(txtMsg.getText());
-            frame.setSrc(src.build());
-            frame.setDst(dstGroup.build());
-            frame.setMsg(msg);
-            //设置消息布局类型<文本>
-            txtMsg.setType(ChatMsgViewAdapter.TO_USER_MSG);
-            return frame.build();
-//            switch(chatMsg.getMsgType()){
-//                case TEXT:
-//                    ITextMsg txtMsg = ((ITextMsg) chatMsg);
-//                    Msg.Builder msg = Msg.newBuilder();
-//                    msg.setMsg(txtMsg.getText());
-//                    frame.setSrc(src.build());
-//                    frame.setDst(dstGroup.build());
-//                    frame.setMsg(msg);
-//                    return frame.build();
-//                case FILE:
-//                    break;
-//                case SOUNDS:
-//                    break;
-//                case PHOTO:
-//                    break;
-//            }
+        if(chatMsg.getDst_ID()==null&&chatMsg.getDst_ID().length<=0||chatMsg.getSrc_ID()==0||chatMsg.getSrc_Name()==null||
+                chatMsg.getSrc_Name()==""){
+            Log.e(" bad value", "BuildFrame,GetLoginFrame");
+            return null;
         }
-        Log.e(" bad value", "BuildFrame,GetLoginFrame");
-        return null;
+        //发送源
+        User.Builder src = User.newBuilder();
+        src.setUserID(chatMsg.getSrc_ID());
+        src.setUserName(chatMsg.getSrc_Name());
+        //接收者
+        User.Builder dst = User.newBuilder();
+        dst.setUserID(chatMsg.getDst_IDAt(0));
+        DstUser.Builder dstGroup = DstUser.newBuilder();
+        dstGroup.addDst(dst);
+        //要发送的信息
+        ITextMsg txtMsg = ((ITextMsg) chatMsg);
+        Msg.Builder msg = Msg.newBuilder();
+        msg.setMsg(txtMsg.getText());
+        frame.setSrc(src.build());
+        frame.setDst(dstGroup.build());
+        frame.setMsg(msg);
+        //设置消息布局类型<文本>
+        txtMsg.setType(ChatMsgViewAdapter.TO_USER_MSG);
+        return frame.build();
     }
     //获取文件简要消息帧
     public Frame GetFileInfoFrame(IFileMsg fileMsg){
         //参数判断
-        if(fileMsg.getSrc_ID()==0||fileMsg.getDst_ID()==null||fileMsg.getDst_ID().length<=0||
+        if(fileMsg.getSrc_ID()==0||fileMsg.getSrc_Name()==null||fileMsg.getSrc_Name()==""||
+                fileMsg.getDst_ID()==null||fileMsg.getDst_ID().length<=0||
                 fileMsg.getFile()==null||fileMsg.getFileName()==null||fileMsg.getFileName()==""||
                 fileMsg.getFileFeature()==null||fileMsg.getFileParam()==null){
             Log.e(" bad value", "BuildFrame,GetFileInfoFrame");
@@ -129,6 +115,7 @@ public class BuildFrame {
         //发送源
         User.Builder src = User.newBuilder();
         src.setUserID(fileMsg.getSrc_ID());
+        src.setUserName(fileMsg.getSrc_Name());
         //接收者
         User.Builder dst = User.newBuilder();
         dst.setUserID(fileMsg.getDst_IDAt(0));

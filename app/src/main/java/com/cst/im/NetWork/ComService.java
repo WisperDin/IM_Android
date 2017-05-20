@@ -125,7 +125,7 @@ public class ComService extends TcpService {
             case BuildFrame.FileInfo://文件简要消息
             {
                 //检查目的用户数量是否>0,srcid不等于0
-                if (frame.getDst().getDstCount()<=0||frame.getSrc().getUserID()==0){
+                if (frame.getDst().getDstCount()<=0||frame.getSrc().getUserID()==0||frame.getSrc().getUserName()==""){
                     Log.e(" bad value", "ComService,OnMessageCome ChatMsg");
                     return;
                 }
@@ -133,7 +133,7 @@ public class ComService extends TcpService {
                 IBaseMsg baseMsg = null;
                 //实例化对象
                 if(frame.getMsgType()==BuildFrame.TextMsg){
-                    if(frame.getMsg().getMsg()==""||frame.getSrc().getUserName()==""){//空消息和空用户名不被允许
+                    if(frame.getMsg().getMsg()==""){//空消息不被允许
                         Log.e(" bad value", "ComService,OnMessageCome TextMsg");
                         return;
                     }
@@ -182,6 +182,7 @@ public class ComService extends TcpService {
                     }
                     dst[i] = frame.getDst().getDst(i).getUserID();
                 }
+                baseMsg.setSrc_Name(frame.getSrc().getUserName());
                 baseMsg.setSrc_ID(frame.getSrc().getUserID());
                 baseMsg.setDst_ID(dst);
                 baseMsg.setMsgDate(Tools.getDate());

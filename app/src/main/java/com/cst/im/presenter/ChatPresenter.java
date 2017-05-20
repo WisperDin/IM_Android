@@ -209,7 +209,8 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
             return;
         }
         //参数检查 localUser
-        if(UserModel.localUser==null||UserModel.localUser.getId()==0){
+        if(UserModel.localUser==null||UserModel.localUser.getId()==0||
+                UserModel.localUser.getName()==null||UserModel.localUser.getName()==""){
             Log.e("SendFile","UserModel.localUser exception");
             return;
         }
@@ -290,6 +291,7 @@ public class ChatPresenter implements IChatPresenter,ComService.ChatMsgHandler{
         }
         fileMsg.setFile(file);
         fileMsg.setSrc_ID(UserModel.localUser.getId());
+        fileMsg.setSrc_Name(UserModel.localUser.getName());
         fileMsg.setDst_ID(dst_ID);
         fileMsg.setMsgType(msgType);
         fileMsg.setMsgDate(Tools.getDate());
