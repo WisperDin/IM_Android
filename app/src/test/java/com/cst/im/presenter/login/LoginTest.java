@@ -1,8 +1,10 @@
-package com.cst.im.presenter;
+package com.cst.im.presenter.login;
 
 //import org.mockito.Mock;
 
 import com.cst.im.NetWork.ComService;
+import com.cst.im.presenter.LoginPresenterCompl;
+import com.cst.im.presenter.Status;
 import com.cst.im.view.ILoginView;
 
 import org.junit.Before;

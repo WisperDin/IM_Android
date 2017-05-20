@@ -60,8 +60,8 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     private TextView mSendBtn;//发送按钮
     private ListView mListView;//消息列表
     public ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
-    public ArrayList<String> imageList = new ArrayList<String>();//adapter图片数据
-    public HashMap<Integer, Integer> imagePosition = new HashMap<Integer, Integer>();//图片下标位置
+    //public ArrayList<String> imageList = new ArrayList<String>();//adapter图片数据
+    //public HashMap<Integer, Integer> imagePosition = new HashMap<Integer, Integer>();//图片下标位置
     private SendMessageHandler sendMessageHandler;
     private TextView opposite_name;     //显示聊天对象名字
     public List<IBaseMsg> msg_List = new ArrayList<IBaseMsg>();
@@ -132,13 +132,13 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         //InitData();//本地数据库测试
 
         //从数据库获取聊天数据
-        final List<IBaseMsg> msg_list = DBManager.QueryMsg(dstUser.getId());
+        final List<IBaseMsg> his_msgList = DBManager.QueryMsg(dstUser.getId());
+        msg_List = his_msgList;
 
-
-        initView(bundle.getString("dstName"), msg_list);// 初始化view
+        initView(bundle.getString("dstName"), his_msgList);// 初始化view
 
         //初始化数据（MVP）
-        chatPresenter = new ChatPresenter(this, msg_list,dst);
+        chatPresenter = new ChatPresenter(this,dst);
 
         // 监控键盘与面板高度
         doAttach();
@@ -322,17 +322,23 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         imm.hideSoftInputFromWindow(mSendEdt.getWindowToken(), 0);
     }
 
-    //接收到消息就会执行
     @Override
+    public void onShowMsg(IBaseMsg msg) {
+        if(msg==null){
+            Log.e("onShowMsg","msg null");
+            return;
+        }
+        msg_List.add(msg);
+    }
+
+    //接收到消息就会执行
+/*    @Override
     public void onRecvMsg() {
         mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
         mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
-    }
+    }*/
 
 
-    @Override
-    public void onSendMsg() {
-    }
 
     /**
      * 初始化view
@@ -501,23 +507,20 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //判断发送状态
-//                if (i == 0) {
-//                    msg_List.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
-//                            0f, ChatConst.SENDING));
-//                } else if (i == 1) {
-//                    tblist.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
-//                            0f, ChatConst.SENDERROR));
-//                } else if (i == 2) {
-//                    tblist.add(getTbub(userName, ChatListViewAdapter.TO_USER_IMG, null, null, null, filePath, null, null,
-//                            0f, ChatConst.COMPLETED));
-//                    i = -1;
-//                }
-                msg.getFileUrl();
+                if(mAdapter==null){
+                    Log.e("onSendImg","mAdapter null");
+                    return;
+                }
+                ArrayList<String> imgList = mAdapter.getImageList();
+                HashMap<Integer,Integer> imgPos =  mAdapter.getImagePosition();
+                if(imgList==null||imgPos==null){
+                    Log.e("onSendImg","imgList imgPos exception");
+                    return;
+                }
                 msg.setType(ChatMsgViewAdapter.TO_USER_IMG);
                 msg_List.add(msg);
-                imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
-                imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
+                imgList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
+                imgPos.put(mAdapter.getCount() - 1, imgList.size() - 1);
                 sendMessageHandler.sendEmptyMessage(SEND_OK);
                 ListViewChatActivity.this.filePath = filePath;
                 i++;
@@ -567,7 +570,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
     /**
      * 接收文字
      */
-    public void receriveMsgText(final IPhotoMsg msg) {
+    public void onRecvTextMsg(final ITextMsg msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -575,6 +578,7 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 String time = returnTime();
                 txtmsg.setMsgDate(time);
                 txtmsg.setType(ChatMsgViewAdapter.FROM_USER_MSG);
+                msg_List.add(msg);
                 sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
             }
         }).start();
@@ -594,18 +598,40 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
                 IPhotoMsg photoMsg = msg;
                 String time = returnTime();
                 photoMsg.setMsgDate(time);
-                photoMsg.setPhotoLocal(photoMsg.getFileUrl());
+                //photoMsg.setPhotoLocal(photoMsg.getFileUrl());
                 photoMsg.setType(ChatMsgViewAdapter.FROM_USER_IMG);
                 msg_List.add(msg);
-                imageList.add(msg_List.get(msg_List.size() - 1).getPhotoLocal());
-                imagePosition.put(msg_List.size() - 1, imageList.size() - 1);
                 sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
                 //RecordUtils.playAudio(photoMsg.getPhotoUrl());
                 // mChatDbManager.insert(tbub);
             }
         }).start();
     }
+    //成功下载完图片的回调
+    @Override
+    public void onDownLoadImageSuccess(IPhotoMsg msg){
 
+        Toast.makeText(this, "下载成功", Toast.LENGTH_SHORT).show();
+
+
+        if(msg==null||msg.getPhotoLocal()==null||msg.getPhotoLocal()==""){
+            Log.e("onDownLoadImageSuccess","msg exception");
+            return;
+        }
+        if(mAdapter==null){
+            Log.e("onDownLoadImageSuccess","mAdapter null");
+            return;
+        }
+        ArrayList<String> imgList = mAdapter.getImageList();
+        HashMap<Integer,Integer> imgPos =  mAdapter.getImagePosition();
+        if(imgList==null||imgPos==null){
+            Log.e("onDownLoadImageSuccess","imgList imgPos exception");
+            return;
+        }
+        imgList.add(msg.getPhotoLocal());
+        imgPos.put(mAdapter.getCount() - 1, imgList.size() - 1);
+        sendMessageHandler.sendEmptyMessage(RECERIVE_OK);
+    }
     /**
     * 接收语音
     */
@@ -650,6 +676,16 @@ public class ListViewChatActivity extends SwipeBackActivity implements View.OnCl
             }
         }).start();
 
+    }
+
+    @Override
+    public void onFileDownloadFailed(int code, String msg) {
+        Toast.makeText(this, "下载失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFileUploadFailed(int code, String msg) {
+        Toast.makeText(this, "上传失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -1,7 +1,8 @@
-package com.cst.im.presenter;
+package com.cst.im.presenter.chat;
 
 import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.UserModel;
+import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.view.IChatView;
 
 import org.junit.Before;
