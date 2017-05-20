@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
 
     @Override
     public void onRecvMsg(ArrayList<String> list,HashMap<String ,Integer> NameAndID){
+        if(list!=null&&NameAndID!=null){
         FriendModel.InitFriendModel(list,NameAndID);
-        System.out.println("运行");
+        }
     }
     @Override
     public void onReaultCode(int code,String name){}
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements IFriendView,ILogi
     @Override
     protected void onNewIntent(Intent intent) {//退出登录
         super.onNewIntent(intent);
+        FriendModel.friendModel=new FriendModel();//好友列表赋值为空
         Intent intent1 = new Intent(this, SplashActivity.class);
         startActivity(intent1);
         this.finish();

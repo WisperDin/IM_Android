@@ -26,7 +26,7 @@ public class FriendModel implements IFriend{
     }
 
     private int resultcode;
-    public static class Searchinfo {
+    public  class Searchinfo {
         public  String keyword;
         public int age;
         public String sex;

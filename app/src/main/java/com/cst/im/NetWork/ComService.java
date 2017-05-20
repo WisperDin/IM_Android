@@ -220,19 +220,31 @@ public class ComService extends TcpService {
 
             case BuildFrame.IsFriend://判断是否为好友
             {
-                Log.d("OnMessage", "feedbackofIsFriend");
-                IFriend IsFriend=new FriendModel(frame.getDst().getDst(0).getUserName());
-                if(frame.getDst().getDst(0).getUserID()!=0){
-                    IsFriend.SetRealtCode(1);
+                IFriend IsFriend;
+                if(frame.getDst().getDstCount()<=0){
+                    Log.w("onMessageCome","IsFriend null");
+                    IsFriend=new FriendModel();
+                }else{
+                    IsFriend=new FriendModel(frame.getDst().getDst(0).getUserName());
+                    if(frame.getDst().getDst(0).getUserID()!=0){
+                        IsFriend.SetRealtCode(1);
+                    }
                 }
+                Log.d("OnMessage", "feedbackofIsFriend");
                 isfriendEvent.handleIsFriendEvent(IsFriend);
                 break;
             }
 
             case BuildFrame.AddFriend://添加好友
             {
+                IFriend addFriend;
+                if(frame.getDst().getDstCount()<=0){
+                    Log.w("onMessageCome","AddFriend null");
+                    addFriend=new FriendModel();
+                }else{
+                    addFriend=new FriendModel(frame.getDst().getDst(0).getUserID(),frame.getDst().getDst(0).getUserName());
+                }
                 Log.d("OnMessage", "feedbackofAddFriend");
-                IFriend addFriend=new FriendModel(frame.getDst().getDst(0).getUserID(),frame.getDst().getDst(0).getUserName());
                 addFriend.SetRealtCode(frame.getFbAction().getRslCode());
                 addfriendEvent.handleAddFriendEvent(addFriend);
                 break;
