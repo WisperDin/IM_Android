@@ -33,7 +33,8 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
-            android:background="@mipmap/msg_state_fail_resend_pressed" />
+             />
+        <!--发送状态android:background="@mipmap/msg_state_fail_resend_pressed"-->
 
         <LinearLayout
             android:id="@+id/voice_group"

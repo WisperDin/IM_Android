@@ -46,7 +46,15 @@
             android:textSize="20dp"
             android:layout_toEndOf="@+id/iv_userhead"
             android:layout_marginStart="12dp"
-            android:layout_alignTop="@+id/iv_userhead" />
+            android:layout_alignTop="@+id/iv_userhead"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="right|center"
+            android:lineSpacingExtra="2dp"
+            android:textColor="#ff000000"
+            android:layout_marginEnd="13dp"
+            android:layout_alignParentTop="true"
+            />
         <!--android:layout_above="@+id/tv_username"-->
 
         <!--<TextView

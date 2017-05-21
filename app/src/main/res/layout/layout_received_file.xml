@@ -45,9 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:layout_toLeftOf="@+id/pb_sending"
             android:layout_toRightOf="@id/iv_userhead"
             android:background="@drawable/chat_from_bg" >
+            <!--下载进度条位置android:layout_toLeftOf="@+id/pb_sending"-->
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -98,14 +98,14 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ProgressBar
+        <!--<ProgressBar
             android:id="@+id/pb_sending"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:visibility="invisible" />
+            android:visibility="invisible" />-->
     </RelativeLayout>
 
 </LinearLayout>
