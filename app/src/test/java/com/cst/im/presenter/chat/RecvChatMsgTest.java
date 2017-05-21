@@ -37,7 +37,7 @@ public class RecvChatMsgTest {
         c.setId(2);
         UserModel[] dst = new UserModel[]{a,b,c};
 
-        chatPresenter=new ChatPresenter(iChatViewView,msg,dst);
+        chatPresenter=new ChatPresenter(iChatViewView,dst);
     }
     //    @Test
 //    public void login_Failed() throws Exception {
