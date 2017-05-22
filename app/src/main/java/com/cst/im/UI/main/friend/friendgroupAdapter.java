@@ -1,7 +1,6 @@
 package com.cst.im.UI.main.friend;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.cst.im.R;
+import com.cst.im.model.FriendgroupModel;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,9 @@ import java.util.ArrayList;
  */
 
 public class friendgroupAdapter extends BaseAdapter{
-    private ArrayList<friendgroupItem> mGroupItem;
+    private ArrayList<FriendgroupModel> mGroupItem;
     private Context mContext;
-    public friendgroupAdapter(ArrayList<friendgroupItem> mGroupItem,Context mContext)
+    public friendgroupAdapter(ArrayList<FriendgroupModel> mGroupItem, Context mContext)
     {
         this.mGroupItem=mGroupItem;
         this.mContext=mContext;

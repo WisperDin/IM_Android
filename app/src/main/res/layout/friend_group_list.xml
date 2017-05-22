@@ -3,11 +3,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/friend_group_top2"/>
     <ListView
         android:id="@+id/friend_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </ListView>
-
-
 </LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/group_item_icon"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+    <TextView
+        android:id="@+id/group_item_name"
+        android:layout_marginLeft="17dp"
+        android:text="李逍遥"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_width="45dp"
+        android:layout_height="17dp" />
+</LinearLayout>

@@ -91,6 +91,7 @@
         <activity android:name=".UI.main.friend.friendinformationActivity" />
         <activity android:name=".UI.main.friend.friendremarkActivity" />
         <activity android:name=".UI.main.friend.friendgroupActivity"/>
+        <activity android:name=".UI.main.friend.edit_friendgroupActivity"/>
         <activity android:name=".UI.main.friend.SearchFriend" />
         <activity android:name=".UI.main.friend.AddFriendUncertain"></activity>
     </application>

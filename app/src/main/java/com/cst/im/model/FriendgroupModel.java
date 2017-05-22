@@ -1,19 +1,19 @@
-package com.cst.im.UI.main.friend;
+package com.cst.im.model;
 
 /**
  * Created by jijinping on 2017/5/18.
  */
 
-public class friendgroupItem {
-    String name;
-    int number;
+public class FriendgroupModel {
+    String name;   //组名
+    int number;    //组人数
 
-    public friendgroupItem(String name,int number)
+    public FriendgroupModel(String name, int number)
     {
         this.name=name;
         this.number=number;
     }
-    public friendgroupItem(String name)
+    public FriendgroupModel(String name)
     {
         this.name=name;
         this.number=0;

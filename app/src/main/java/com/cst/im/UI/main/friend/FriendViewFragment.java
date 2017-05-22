@@ -143,7 +143,7 @@ public class FriendViewFragment extends Fragment implements
     public void onClick(View view) {
         if(view==To_friend_group)
         {
-            Toast.makeText(getActivity(),"跳转到分组界面",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(),"跳转到分组界面",Toast.LENGTH_SHORT).show();
             Intent ntent=new Intent(getActivity(),friendgroupActivity.class);
             startActivity(ntent);
         }

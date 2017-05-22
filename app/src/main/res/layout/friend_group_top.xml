@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/blue3"
+    android:weightSum="1">
+    <Button
+        android:id="@+id/friend_group_back"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/back"/>
+    <TextView
+        android:id="@+id/friend_group_title"
+        android:text="编辑分组标签"
+        android:textSize="22dp"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/friend_group_back" />
+    <Button
+        android:id="@+id/friend_group_save"
+        android:text="保存"
+        android:textColor="@color/white"
+        android:layout_width="65dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/green"
+        android:layout_alignBaseline="@+id/friend_group_back"
+        android:layout_alignBottom="@+id/friend_group_back"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
