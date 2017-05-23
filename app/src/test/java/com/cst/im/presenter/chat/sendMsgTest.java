@@ -3,6 +3,7 @@ package com.cst.im.presenter.chat;
 //import org.mockito.Mock;
 
 import com.cst.im.NetWork.ComService;
+import com.cst.im.model.IBaseMsg;
 import com.cst.im.model.UserModel;
 import com.cst.im.presenter.ChatPresenter;
 import com.cst.im.presenter.LoginPresenterCompl;
@@ -16,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.File;
 
 /**
  * Created by ASUS on 2017/4/23.
@@ -54,10 +57,18 @@ public class sendMsgTest {
         chatPresenter = new ChatPresenter(iChatView,new UserModel[]{new UserModel("wzb","",2)});
     }
     @Test
-    public void login_Success() throws Exception {
+    public void sendMsg_Success() throws Exception {
         chatPresenter.SendMsg("hello from unittest");
-
     }
 
+    @Test
+    public void sendFile_Success() throws Exception {
+        chatPresenter.SendFile(new File("D:\\IM\\IM\\app\\src\\test\\java\\com\\cst\\im\\presenter\\chat\\协议.docx"), IBaseMsg.MsgType.FILE);
+    }
+
+    @Test
+    public void sendImg_Success() throws Exception {
+        chatPresenter.SendFile(new File("D:\\IM\\IM\\app\\src\\test\\java\\com\\cst\\im\\presenter\\chat\\123.png"), IBaseMsg.MsgType.PHOTO);
+    }
 
 }

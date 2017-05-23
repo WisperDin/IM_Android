@@ -2,6 +2,7 @@ package com.cst.im.FileAccess;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.cst.im.tools.FileUtils;
 import com.cst.im.tools.Md5Utils;
@@ -122,7 +123,11 @@ public class FileSweet {
                 Bitmap bm;
                 try {
                     bm= BitmapFactory.decodeStream(new FileInputStream(file));
-                    sb.append(bm.getWidth()+" "+bm.getHeight());
+                    if(bm==null){
+                        Log.e("initParam", "Bitmap null");
+                    }else{
+                        sb.append(bm.getWidth()+" "+bm.getHeight());
+                    }
                 } catch (IOException e) {
                     throw new FileNotFoundException(e.toString());
                 }
